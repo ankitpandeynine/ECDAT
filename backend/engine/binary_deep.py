@@ -8,8 +8,10 @@ import struct
 import zipfile
 from .binary_scanner import (scan_binary_data, calculate_shannon_entropy, AES_SBOX_PREFIX,
     AES_INVSBOX_PREFIX, DES_IP_TABLE, MD5_IV_LITTLE, SHA1_IV_BIG, SHA256_IV_BIG)
+from .limits import MAX_DIRECT_UPLOAD_BYTES, human_mb
 
-MAX_BYTES = 8 * 1024 * 1024
+MAX_BYTES = MAX_DIRECT_UPLOAD_BYTES
+MAX_UPLOAD_DESCRIPTION = human_mb(MAX_BYTES)
 
 
 def sections(data):
@@ -172,7 +174,7 @@ def scan_one(data, name):
 
 def scan_upload(data, name):
     if not data or len(data) > MAX_BYTES:
-        raise ValueError('File must contain 1 byte to 8 MiB')
+        raise ValueError(f'File must contain 1 byte to {MAX_UPLOAD_DESCRIPTION}')
     if zipfile.is_zipfile(io.BytesIO(data)):
         findings, members, total, evidence_all = [], [], 0, []
         with zipfile.ZipFile(io.BytesIO(data)) as archive:

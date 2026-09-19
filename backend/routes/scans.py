@@ -1,9 +1,14 @@
 """Scan routes including GitHub repository ingestion."""
 from typing import Optional
+from urllib.parse import unquote_plus
+
 from fastapi import APIRouter, Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+
 from engine.github_scanner import scan_github_repo
+from engine.binary_deep import MAX_BYTES
+from engine.limits import MAX_CHUNKED_UPLOAD_BYTES, MAX_SOURCE_FILE_CHARS, human_mb
 
 router = APIRouter(tags=["scans"])
 
@@ -61,7 +66,7 @@ def scan_github(req: GithubScanRequest, request: Request):
             subdir=subdir_val
         )
 
-    from urllib.parse import unquote_plus
+    from urllib.parse import unquote_plus as _uq  # noqa: F401 (kept for clarity)
     proj = unquote_plus(req.project_id or "default")
     if "%" in proj:
         proj = unquote_plus(proj)
@@ -196,15 +201,15 @@ async def upload_chunk(request: Request):
             status="uploading"
         )
 
-    # Enforce 500MB max file size
+    # Enforce maximum assembled file size (ECDAT_MAX_CHUNKED_MB, default 1 GiB)
     current_size = os.path.getsize(temp_path)
-    if current_size > 500 * 1024 * 1024:
+    if current_size > MAX_CHUNKED_UPLOAD_BYTES:
         store.update_upload_session(upload_id, status="failed")
         if os.path.exists(temp_path):
             os.remove(temp_path)
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            detail="File exceeds maximum allowed size of 500MB"
+            detail=f"File exceeds maximum allowed size of {human_mb(MAX_CHUNKED_UPLOAD_BYTES)}"
         )
 
     # Last chunk (index == total - 1): mark assembling, then trigger scanner
@@ -231,13 +236,13 @@ async def upload_chunk(request: Request):
                                 if ext in EXTENSIONS or is_manifest_file(member.filename):
                                     try:
                                         with zf.open(member) as ms:
-                                            txt = ms.read(500_000).decode("utf-8", errors="replace")
+                                            txt = ms.read(MAX_SOURCE_FILE_CHARS).decode("utf-8", errors="replace")
                                         files_to_scan.append({"path": member.filename, "content": txt})
                                     except Exception:
                                         pass
                     else:
                         with open(fpath, "r", encoding="utf-8", errors="replace") as sf:
-                            txt = sf.read(500_000)
+                            txt = sf.read(MAX_SOURCE_FILE_CHARS)
                         files_to_scan.append({"path": fname, "content": txt})
                     return scan_sources(files_to_scan) if files_to_scan else {
                         "findings": [], "total_findings": 0, "status": "success", "evidence": []
@@ -262,7 +267,7 @@ async def upload_chunk(request: Request):
                 try:
                     with open(fpath, "rb") as bf:
                         raw = bf.read()
-                    if len(raw) <= 8 * 1024 * 1024:
+                    if len(raw) <= MAX_BYTES:
                         return scan_upload(raw, fname)
                     return scan_one(raw, fname)
                 finally:
@@ -323,10 +328,22 @@ def get_upload_status(upload_id: str, request: Request):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Upload session '{upload_id}' not found"
         )
+    current_status = session["status"]
+    scan_job_id = session.get("scan_job_id")
+    if current_status == "processing" and scan_job_id:
+        try:
+            with store.connect() as db:
+                row = db.execute("SELECT status FROM scans WHERE id = ?", (scan_job_id,)).fetchone()
+                if row and row[0] in ("completed", "failed", "cancelled"):
+                    current_status = row[0]
+                    store.update_upload_session(upload_id, status=current_status)
+        except Exception:
+            pass
+
     return {
         "upload_id": session["upload_id"],
         "received_chunks": session["received_chunks"],
         "total_chunks": session["total_chunks"],
-        "status": session["status"],
-        "scan_job_id": session.get("scan_job_id"),
+        "status": current_status,
+        "scan_job_id": scan_job_id,
     }

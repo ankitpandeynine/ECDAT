@@ -114,43 +114,44 @@ def scan_sources(files, deep_scan: bool = True):
     call_graph, observations = [], []
     constants = {}
 
-    # Pass 1: Resolve module-level direct constants across Python modules
+    # Pre-parse Python modules once to avoid redundant ast.parse executions across passes
+    python_ast_cache = {}
     for file in files:
-        if file['path'].endswith('.py'):
+        if file.get('path', '').endswith('.py') and file.get('content'):
             try:
-                module = file['path'][:-3].replace('/', '.').replace('\\', '.')
-                for node in ast.parse(file['content']).body:
-                    if isinstance(node, ast.Assign) and isinstance(node.value, ast.Constant):
-                        for target in node.targets:
-                            if isinstance(target, ast.Name):
-                                constants[f'{module}.{target.id}'] = node.value.value
-                                constants[target.id] = node.value.value
+                python_ast_cache[file['path']] = ast.parse(file['content'])
             except SyntaxError:
                 pass
 
+    # Pass 1: Resolve module-level direct constants across Python modules
+    for path, tree in python_ast_cache.items():
+        module = path[:-3].replace('/', '.').replace('\\', '.')
+        for node in tree.body:
+            if isinstance(node, ast.Assign) and isinstance(node.value, ast.Constant):
+                for target in node.targets:
+                    if isinstance(target, ast.Name):
+                        constants[f'{module}.{target.id}'] = node.value.value
+                        constants[target.id] = node.value.value
+
     # Pass 2: Multi-hop cross-file import chaining (e.g. config -> auth -> crypto)
     for _ in range(3):
-        for file in files:
-            if file['path'].endswith('.py'):
-                try:
-                    curr_module = file['path'][:-3].replace('/', '.').replace('\\', '.')
-                    for node in ast.parse(file['content']).body:
-                        if isinstance(node, ast.ImportFrom) and node.module:
-                            for alias in node.names:
-                                src_key = f"{node.module}.{alias.name}"
-                                if src_key in constants:
-                                    val = constants[src_key]
-                                    constants[f"{curr_module}.{alias.asname or alias.name}"] = val
-                                    constants[alias.asname or alias.name] = val
-                        elif isinstance(node, ast.Assign):
-                            if isinstance(node.value, ast.Name) and node.value.id in constants:
-                                val = constants[node.value.id]
-                                for target in node.targets:
-                                    if isinstance(target, ast.Name):
-                                        constants[f"{curr_module}.{target.id}"] = val
-                                        constants[target.id] = val
-                except SyntaxError:
-                    pass
+        for path, tree in python_ast_cache.items():
+            curr_module = path[:-3].replace('/', '.').replace('\\', '.')
+            for node in tree.body:
+                if isinstance(node, ast.ImportFrom) and node.module:
+                    for alias in node.names:
+                        src_key = f"{node.module}.{alias.name}"
+                        if src_key in constants:
+                            val = constants[src_key]
+                            constants[f"{curr_module}.{alias.asname or alias.name}"] = val
+                            constants[alias.asname or alias.name] = val
+                elif isinstance(node, ast.Assign):
+                    if isinstance(node.value, ast.Name) and node.value.id in constants:
+                        val = constants[node.value.id]
+                        for target in node.targets:
+                            if isinstance(target, ast.Name):
+                                constants[f"{curr_module}.{target.id}"] = val
+                                constants[target.id] = val
 
     # Process files
     for file in files:

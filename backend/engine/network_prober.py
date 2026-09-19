@@ -190,6 +190,10 @@ def probe_tls_endpoint(host, port=443, timeout=2.0):
             result['evidence'].append(ev.to_dict())
 
     except (OSError, ValueError) as exc:
+        # SSRF policy violations (private targets without an explicit allowlist) must
+        # propagate loudly instead of being reported as a soft connection error.
+        if isinstance(exc, ValueError) and 'allowlist' in str(exc):
+            raise
         result['error'] = f'TLS collection failed: {exc}'
         return result
 

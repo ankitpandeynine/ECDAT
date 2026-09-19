@@ -327,51 +327,28 @@ export function ScanStudio({
           const zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
           setIsZipping(false);
           const zipFile = new File([zipBlob], `${folderName || "project"}.zip`, { type: "application/zip" });
-          if (zipFile.size < 10 * 1024 * 1024) {
-            const fd = new FormData();
-            fd.append("file", zipFile);
-            const res = await fetch(`/api/scan/binary/upload?project=${encodeURIComponent(projectId)}`, {
+          // Archives always go through the chunked source path: the backend
+          // extracts source files and manifests from the ZIP before scanning.
+          createdJobId = await uploadInChunks(zipFile, "code");
+        } else if ((sourceMode === "file" || sourceMode === "archive") && sourceFile) {
+          const isArchive = /\.(zip|tar|gz|tgz|7z)$/i.test(sourceFile.name);
+          if (isArchive) {
+            // Archives always go through the chunked source path (ZIP extraction
+            // + source scanning on the backend) instead of the binary surface.
+            createdJobId = await uploadInChunks(sourceFile, "code");
+          } else if (sourceFile.size < 10 * 1024 * 1024) {
+            const txt = await sourceFile.text();
+            const res = await fetch(`/api/scan/code?project=${encodeURIComponent(projectId)}`, {
               method: "POST",
-              body: fd,
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ source_code: txt, language: sourceLang }),
             });
             if (!res.ok) {
               const errData = await res.json().catch(() => ({}));
-              throw new Error(errData.detail || "Failed to upload folder project archive");
+              throw new Error(errData.detail || "Failed to submit source file scan");
             }
             const data = await res.json();
             createdJobId = data.scan_id || data.id;
-          } else {
-            createdJobId = await uploadInChunks(zipFile, "code");
-          }
-        } else if ((sourceMode === "file" || sourceMode === "archive") && sourceFile) {
-          if (sourceFile.size < 10 * 1024 * 1024) {
-            if (sourceFile.name.endsWith(".zip") || sourceFile.name.endsWith(".tar") || sourceFile.name.endsWith(".gz")) {
-              const fd = new FormData();
-              fd.append("file", sourceFile);
-              const res = await fetch(`/api/scan/binary/upload?project=${encodeURIComponent(projectId)}`, {
-                method: "POST",
-                body: fd,
-              });
-              if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.detail || "Failed to upload archive");
-              }
-              const data = await res.json();
-              createdJobId = data.scan_id || data.id;
-            } else {
-              const txt = await sourceFile.text();
-              const res = await fetch(`/api/scan/code?project=${encodeURIComponent(projectId)}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ source_code: txt, language: sourceLang }),
-              });
-              if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.detail || "Failed to submit source file scan");
-              }
-              const data = await res.json();
-              createdJobId = data.scan_id || data.id;
-            }
           } else {
             // file.size >= 10MB: chunked upload
             createdJobId = await uploadInChunks(sourceFile, "code");
@@ -704,7 +681,7 @@ export function ScanStudio({
         {/* TAB 3: Binary */}
         {scanType === "binary" && (
           <div className="space-y-4">
-            <label className="block text-xs font-semibold mb-1.5">Executable, Library, or Archive Upload (Up to 500MB)</label>
+            <label className="block text-xs font-semibold mb-1.5">Executable, Library, or Archive Upload (Up to 1GB)</label>
             <input
               type="file"
               onChange={(e) => handleFileSelected(e.target.files?.[0] || null, "binary")}
@@ -725,7 +702,7 @@ export function ScanStudio({
               </div>
             )}
             <p className="text-[11px] text-quiet">
-              Analyzes ELF/PE sections, S-box constants, sliding entropy, and embedded key material without executing foreign code. Files larger than 10MB are uploaded in 2MB sequential chunks. Max allowed size: 500MB.
+              Analyzes ELF/PE sections, S-box constants, sliding entropy, and embedded key material without executing foreign code. Files larger than 10MB are uploaded in 2MB sequential chunks. Max allowed size: 1GB.
             </p>
           </div>
         )}

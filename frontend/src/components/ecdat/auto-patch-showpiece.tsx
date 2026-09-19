@@ -150,7 +150,16 @@ export function AutoPatchShowpiece({
     setTerminalLogs([]);
     setPatchResult(null);
 
-    const checkedPatterns = findings.filter((f) => f.checked).map((f) => f.pattern_id);
+    // Only send concrete, applicable pattern ids — null/undefined patterns
+    // (e.g. quantum-safe findings with no migration template) must not be
+    // forwarded, or the backend would skip every template.
+    const checkedPatterns = Array.from(
+      new Set(
+        findings
+          .filter((f) => f.checked && f.pattern_id)
+          .map((f) => f.pattern_id)
+      )
+    );
 
     try {
       // Initiate API call

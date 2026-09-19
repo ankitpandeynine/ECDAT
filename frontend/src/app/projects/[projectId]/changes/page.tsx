@@ -155,7 +155,7 @@ export default function ProjectChangesPage({
                 <div className="flex items-center gap-2">
                   <h1 className="text-xl font-bold text-foreground">Cryptographic Transformation Verified</h1>
                   <span className="px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                    {result?.verdict || "VERIFIED"}
+                    {result?.verdict ?? "PENDING"}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -183,7 +183,7 @@ export default function ProjectChangesPage({
               <span className="text-xs text-muted-foreground">Vulnerable Primitives</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-2xl font-bold text-red-500 font-mono">
-                  {result?.before_state?.critical_vulnerabilities ?? 2}
+                  {result?.before_state?.critical_vulnerabilities ?? 0}
                 </span>
                 <span className="text-sm text-muted-foreground">→</span>
                 <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">
@@ -191,7 +191,7 @@ export default function ProjectChangesPage({
                 </span>
               </div>
               <span className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block">
-                Weaknesses retired: {result?.verification_report?.retired_weaknesses?.length || 2}
+                Weaknesses retired: {result?.verification_report?.retired_weaknesses?.length ?? 0}
               </span>
             </div>
 
@@ -199,15 +199,15 @@ export default function ProjectChangesPage({
               <span className="text-xs text-muted-foreground">Security Posture Score</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-2xl font-bold text-muted-foreground font-mono">
-                  {result?.before_state?.security_score ?? 28}
+                  {result?.before_state?.security_score ?? "—"}
                 </span>
                 <span className="text-sm text-muted-foreground">→</span>
                 <span className="text-2xl font-bold text-cyan-600 dark:text-cyan-400 font-mono">
-                  {result?.after_state?.security_score ?? 98}
+                  {result?.after_state?.security_score ?? "—"}
                 </span>
               </div>
               <span className="text-[11px] text-cyan-600 dark:text-cyan-400 mt-1 block">
-                +70 pts score increase
+                Security posture change
               </span>
             </div>
 
@@ -215,7 +215,7 @@ export default function ProjectChangesPage({
               <span className="text-xs text-muted-foreground">Quantum Deficit (Mosca)</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-2xl font-bold text-red-500 font-mono">
-                  {result?.before_state?.quantum_deficit_years ?? 4}y
+                  {result?.before_state?.quantum_deficit_years ?? "—"}
                 </span>
                 <span className="text-sm text-muted-foreground">→</span>
                 <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">
@@ -231,15 +231,15 @@ export default function ProjectChangesPage({
               <span className="text-xs text-muted-foreground">Crypto-Agility Index</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-2xl font-bold text-muted-foreground font-mono">
-                  {result?.before_state?.crypto_agility_score ?? 2.1}
+                  {result?.before_state?.crypto_agility_score ?? "—"}
                 </span>
                 <span className="text-sm text-muted-foreground">→</span>
                 <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                  {result?.after_state?.crypto_agility_score ?? 9.4}
+                  {result?.after_state?.crypto_agility_score ?? "—"}
                 </span>
               </div>
               <span className="text-[11px] text-muted-foreground mt-1 block">
-                Zero regressions detected
+                Regressions detected: {result?.verification_report?.regressions?.length ?? 0}
               </span>
             </div>
           </div>
@@ -277,7 +277,7 @@ export default function ProjectChangesPage({
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            Differential Regression Test ({result?.regression_test?.status?.toUpperCase() || "PASSED"})
+            Differential Regression Test ({result?.regression_test?.status?.toUpperCase() ?? "NOT RUN"})
           </button>
           <button
             onClick={() => setActiveSubTab("verification")}
@@ -287,7 +287,7 @@ export default function ProjectChangesPage({
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            Verification Evidence Diff ({result?.verification_report?.retired_weaknesses?.length || 2} Retired)
+            Verification Evidence Diff ({result?.verification_report?.retired_weaknesses?.length ?? 0} Retired)
           </button>
           <button
             onClick={() => setActiveSubTab("cbom")}
@@ -411,7 +411,7 @@ export default function ProjectChangesPage({
                 </p>
               </div>
               <span className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                {result?.regression_test?.status?.toUpperCase() || "PASSED"}
+                {result?.regression_test?.status?.toUpperCase() ?? "NOT RUN"}
               </span>
             </div>
 
@@ -425,7 +425,7 @@ export default function ProjectChangesPage({
             <div className="space-y-2">
               <span className="text-xs font-medium text-muted-foreground">Test Output / Execution Logs:</span>
               <pre className="p-3 rounded-lg bg-canvas border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-mono text-xs overflow-x-auto">
-                {result?.regression_test?.output || "TEST EXECUTION SUCCESSFUL"}
+                {result?.regression_test?.output || "// No test output available"}
               </pre>
             </div>
           </div>

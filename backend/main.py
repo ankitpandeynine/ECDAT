@@ -46,9 +46,11 @@ from fastapi import FastAPI, APIRouter, File, HTTPException, Query, Request, Upl
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
 from engine.scan_store import ScanStore, now
+from engine.limits import (MAX_DIRECT_UPLOAD_BYTES, MAX_CHUNKED_UPLOAD_BYTES,
+                           MAX_SOURCE_FILE_CHARS, MAX_JSON_BODY_BYTES, human_mb)
 from engine.mosca import mosca_assess, normalize_algo_and_keysize
 from engine.source_scan import scan_sources, LANGUAGES
-from engine.binary_deep import scan_upload, MAX_BYTES
+from engine.binary_deep import scan_upload, MAX_BYTES, MAX_UPLOAD_DESCRIPTION
 from engine.website_inspector import scan_website
 from engine.migration_planner import build_plan
 from engine.cbom_generator import generate_cyclonedx_cbom
@@ -104,15 +106,21 @@ async def access_and_size(request: Request, call_next):
             request.scope['query_string'] = re.sub(rb'%25([0-9a-fA-F]{2})', rb'%\1', qs)
 
     # Bound both declared and streamed request bodies, before JSON/multipart parsing.
+    # The chunked-upload endpoint streams its own (potentially GiB-scale) body and is
+    # exempt from intermediate buffering; it enforces MAX_CHUNKED_UPLOAD_BYTES itself.
     if request.method == 'POST':
-        content_type = request.headers.get('content-type', '').lower()
-        if 'multipart/form-data' not in content_type:
-            body = bytearray()
-            async for chunk in request.stream():
-                body.extend(chunk)
-                if len(body) > 18 * 1024 * 1024:
-                    return JSONResponse({'detail': 'Request exceeds 18 MiB'}, status_code=413)
-            request._body = bytes(body)
+        path_str = request.url.path
+        if not path_str.endswith('/upload/chunk'):
+            content_type = request.headers.get('content-type', '').lower()
+            if 'multipart/form-data' not in content_type:
+                body = bytearray()
+                async for chunk in request.stream():
+                    body.extend(chunk)
+                    if len(body) > MAX_JSON_BODY_BYTES:
+                        return JSONResponse(
+                            {'detail': f'Request exceeds {human_mb(MAX_JSON_BODY_BYTES)}'},
+                            status_code=413)
+                request._body = bytes(body)
     return await call_next(request)
 
 
@@ -137,7 +145,7 @@ class NetworkRequest(BaseModel):
 
 class SourceFile(BaseModel):
     path: str = Field(min_length=1, max_length=300)
-    content: str = Field(max_length=500_000)
+    content: str = Field(max_length=MAX_SOURCE_FILE_CHARS)
     language: str | None = None
 
     @model_validator(mode='after')
@@ -150,17 +158,17 @@ class SourceFile(BaseModel):
 
 
 class CodeRequest(BaseModel):
-    source_code: str = Field(min_length=1, max_length=500_000)
+    source_code: str = Field(min_length=1, max_length=MAX_SOURCE_FILE_CHARS)
     language: Literal['python', 'java', 'c_cpp', 'golang', 'javascript'] = 'python'
 
 
 class SourcesRequest(BaseModel):
-    files: list[SourceFile] = Field(min_length=1, max_length=100)
+    files: list[SourceFile] = Field(min_length=1, max_length=500)
 
     @model_validator(mode='after')
     def valid_total(self):
-        if sum(len(f.content.encode()) for f in self.files) > MAX_BYTES:
-            raise ValueError('Source bundle exceeds 8 MiB')
+        if sum(len(f.content.encode()) for f in self.files) > MAX_DIRECT_UPLOAD_BYTES:
+            raise ValueError(f'Source bundle exceeds {human_mb(MAX_DIRECT_UPLOAD_BYTES)}')
         if len({f.path for f in self.files}) != len(self.files):
             raise ValueError('Duplicate source paths')
         return self
@@ -211,7 +219,7 @@ def binary(req: BinaryRequest, request: Request, project: str = Project):
         if not raw or len(raw) > MAX_BYTES:
             raise ValueError()
     except ValueError:
-        raise HTTPException(422, 'Supply valid hex representing 1 byte to 8 MiB')
+        raise HTTPException(422, f'Supply valid hex representing 1 byte to {MAX_UPLOAD_DESCRIPTION}')
     return enqueue(request, project, 'binary', {'bytes': base64.b64encode(raw).decode(), 'file_name': req.file_name}, binary_worker)
 
 
@@ -220,7 +228,7 @@ async def upload(request: Request, file: UploadFile = File(...), project: str = 
     raw = await file.read(MAX_BYTES + 1)
     await file.close()
     if not raw or len(raw) > MAX_BYTES:
-        raise HTTPException(413, 'Upload must contain 1 byte to 8 MiB')
+        raise HTTPException(413, f'Upload must contain 1 byte to {MAX_UPLOAD_DESCRIPTION}')
     return enqueue(request, project, 'binary', {'bytes': base64.b64encode(raw).decode(), 'file_name': (file.filename or 'upload.bin')[:300]}, binary_worker)
 
 
@@ -1472,7 +1480,7 @@ def scan_pcap(req: PcapRequest, request: Request, project: str = Project):
             if not raw or len(raw) > MAX_BYTES:
                 raise ValueError()
         except ValueError:
-            raise HTTPException(422, 'Supply valid hex representing a PCAP file up to 8 MiB')
+            raise HTTPException(422, f'Supply valid hex representing a PCAP file up to {MAX_UPLOAD_DESCRIPTION}')
     else:
         raw = PcapEngine.generate_synthetic_pcap(with_pqc_hybrid=req.with_pqc_hybrid)
     return enqueue(request, project, 'pcap', {'bytes': base64.b64encode(raw).decode(), 'file_name': req.file_name}, pcap_worker)
@@ -1489,7 +1497,7 @@ async def upload_pcap(request: Request, file: UploadFile = File(...), project: s
     raw = await file.read(MAX_BYTES + 1)
     await file.close()
     if not raw or len(raw) > MAX_BYTES:
-        raise HTTPException(413, 'Upload must contain 1 byte to 8 MiB')
+        raise HTTPException(413, f'Upload must contain 1 byte to {MAX_UPLOAD_DESCRIPTION}')
     return enqueue(request, project, 'pcap', {'bytes': base64.b64encode(raw).decode(), 'file_name': (file.filename or 'capture.pcap')[:300]}, pcap_worker)
 
 
@@ -1550,7 +1558,7 @@ def run_ebpf_trace(req: EbpfTraceRequest):
 
 
 class CustomCryptoRequest(BaseModel):
-    code: str = Field(min_length=1, max_length=500_000)
+    code: str = Field(min_length=1, max_length=MAX_SOURCE_FILE_CHARS)
     file_path: str = Field(default='custom_crypto.py', max_length=300)
 
 
@@ -1565,7 +1573,7 @@ def custom_crypto_benchmark():
 
 
 class AutoPatchRequest(BaseModel):
-    source_code: str = Field(min_length=1, max_length=500_000)
+    source_code: str = Field(min_length=1, max_length=MAX_SOURCE_FILE_CHARS)
     file_path: str = Field(default='app.py', max_length=300)
     language: str = 'python'
     run_tests: bool = True
@@ -1586,7 +1594,57 @@ class PatchFromScanRequest(BaseModel):
     selected_patterns: Optional[list] = None
     override_code: Optional[str] = None
     file_path: Optional[str] = None
+    language: Optional[str] = None
     project_id: str = "default"
+
+
+# Language inference from common source file extensions.
+EXTENSION_LANGUAGE_MAP = {
+    '.py': 'python', '.pyw': 'python',
+    '.c': 'c_cpp', '.h': 'c_cpp', '.cpp': 'c_cpp', '.cc': 'c_cpp', '.cxx': 'c_cpp', '.hpp': 'c_cpp',
+    '.java': 'java',
+    '.go': 'golang',
+    '.js': 'javascript', '.ts': 'javascript', '.jsx': 'javascript', '.tsx': 'javascript', '.mjs': 'javascript',
+    '.rs': 'rust',
+}
+
+
+def infer_language_from_path(file_path: str) -> Optional[str]:
+    ext = os.path.splitext(file_path or '')[1].lower()
+    return EXTENSION_LANGUAGE_MAP.get(ext)
+
+
+def extract_source_payload(payload: Optional[str]) -> tuple[Optional[str], Optional[str]]:
+    """Extract (source_code, file_path) from a stored scan payload.
+
+    Handles every payload shape ECDAT has ever persisted:
+      - JSON list of files: [{"path": ..., "content": ...}, ...]
+      - Dict with "files" list (produced by /scan/code and /scan/sources)
+      - Dict with "content"/"code" keys (single-file payloads)
+    Returns (None, None) when no source text is present; never fabricates code.
+    """
+    if not payload:
+        return None, None
+    try:
+        pld = json.loads(payload)
+    except (ValueError, TypeError):
+        return None, None
+
+    files_list: Optional[list] = None
+    if isinstance(pld, list) and pld:
+        files_list = pld
+    elif isinstance(pld, dict):
+        if isinstance(pld.get('files'), list) and pld['files']:
+            files_list = pld['files']
+        else:
+            content = pld.get('content') or pld.get('code')
+            if isinstance(content, str) and content.strip():
+                return content, pld.get('path') or pld.get('filename')
+    if files_list:
+        for entry in files_list:
+            if isinstance(entry, dict) and isinstance(entry.get('content'), str) and entry['content'].strip():
+                return entry['content'], entry.get('path')
+    return None, None
 
 
 @router.post('/patch/from-scan')
@@ -1600,29 +1658,19 @@ def patch_from_scan(req: PatchFromScanRequest, request: Request):
         raise HTTPException(404, f"Scan job '{req.scan_id}' not found")
 
     code = req.override_code
-    file_name = req.file_path or "snippet.py"
+    file_name = req.file_path
+    language = req.language
 
     if not code:
-        # Check raw payload in db
+        # Recover the original source from the stored scan payload (all shapes).
         with store.connect() as db:
             row = db.execute("SELECT payload FROM scans WHERE id=?", (req.scan_id,)).fetchone()
-            if row and row[0]:
-                try:
-                    pld = json.loads(row[0])
-                    if isinstance(pld, list) and len(pld) > 0 and "content" in pld[0]:
-                        code = pld[0]["content"]
-                        file_name = pld[0].get("path", file_name)
-                    elif isinstance(pld, dict):
-                        if "content" in pld:
-                            code = pld["content"]
-                        elif "code" in pld:
-                            code = pld["code"]
-                        if "filename" in pld:
-                            file_name = pld["filename"]
-                except Exception:
-                    pass
+        payload_code, payload_path = extract_source_payload(row[0] if row and row[0] else None)
+        if payload_code:
+            code = payload_code
+            file_name = req.file_path or payload_path or file_name
 
-    # If still no full code, synthesize from findings in scan result
+    # If still no full source, synthesize a best-effort snippet from the finding lines.
     if not code and scan.get("result"):
         findings = scan["result"].get("findings", [])
         if findings:
@@ -1630,6 +1678,8 @@ def patch_from_scan(req: PatchFromScanRequest, request: Request):
             imports = set()
             for f in sorted(findings, key=lambda x: x.get("line", 1)):
                 c = f.get("code", "")
+                if not c:
+                    continue
                 if "hashlib" in c:
                     imports.add("import hashlib")
                 if "RSA" in c or "rsa" in c:
@@ -1640,17 +1690,27 @@ def patch_from_scan(req: PatchFromScanRequest, request: Request):
             code = "\n".join(sorted(list(imports))) + "\n\n" + "\n\n".join(code_lines) if code_lines else ""
 
     if not code:
-        code = "import hashlib\nfrom cryptography.hazmat.primitives.asymmetric import rsa\n\nkey = rsa.generate_private_key(65537, 2048)\ntoken = hashlib.md5(b'legacy_auth').hexdigest()\n"
+        # No dummy snippet: report honestly that this scan carries no patchable source.
+        raise HTTPException(
+            422,
+            "No source code is associated with this scan (binary/network/PCAP scans cannot be "
+            "auto-patched). Re-scan with source code or pass 'override_code' with the file content."
+        )
+
+    file_name = file_name or "snippet.py"
+    language = language or infer_language_from_path(file_name) or "python"
 
     result = AutoPatchEngine.batch_patch_code(
         source_code=code,
         file_path=file_name,
-        language="python",
+        language=language,
         allowed_pattern_ids=req.selected_patterns,
         run_tests=True
     )
     result["scan_id"] = req.scan_id
     result["project_id"] = req.project_id
+    result["language"] = language
+    result["file_path"] = file_name
     return result
 
 
@@ -1728,18 +1788,17 @@ def get_scan_result(scan_id: str, request: Request, project: str = Project):
             "patch_pattern": patch_pattern
         })
 
-    source_code = None
     with store.connect() as db:
         row = db.execute("SELECT payload FROM scans WHERE id=?", (scan_id,)).fetchone()
-        if row and row[0]:
-            try:
-                pld = json.loads(row[0])
-                if isinstance(pld, list) and len(pld) > 0 and "content" in pld[0]:
-                    source_code = pld[0]["content"]
-                elif isinstance(pld, dict):
-                    source_code = pld.get("content") or pld.get("code")
-            except Exception:
-                pass
+    source_code, _src_path = extract_source_payload(row[0] if row and row[0] else None)
+
+    # Honest AST coverage: share of scanned source files parsed without syntax errors.
+    coverage = result.get("coverage") or []
+    if coverage:
+        parsed_ok = sum(1 for c in coverage if c.get("status") == "ok")
+        ast_coverage_pct = round(100.0 * parsed_ok / len(coverage))
+    else:
+        ast_coverage_pct = None
 
     total_algos = len(table_rows)
     return {
@@ -1749,16 +1808,16 @@ def get_scan_result(scan_id: str, request: Request, project: str = Project):
         "status": scan.get("status"),
         "created_at": scan.get("created_at"),
         "finished_at": scan.get("finished_at"),
-        "files_scanned": len(result.get("coverage", [])) or 1,
+        "files_scanned": len(coverage) or 1,
         "algorithms_found": total_algos,
         "critical_count": crit_count,
         "high_count": high_count,
         "medium_count": med_count,
         "safe_count": safe_count,
         "findings": table_rows,
-        "coverage": result.get("coverage", []),
+        "coverage": coverage,
         "source_code": source_code,
-        "ast_coverage_pct": 94 if total_algos > 0 else 100
+        "ast_coverage_pct": ast_coverage_pct
     }
 
 
@@ -1978,7 +2037,17 @@ def generate_project_report(
     assets = store.get_assets(target_project)
     scans = store.list(target_project)
 
-    crit_count = sum(1 for a in assets if "RSA" in (a.get("algorithm") or "") or "MD5" in (a.get("algorithm") or "") or a.get("key_size", 0) <= 2048)
+    def _is_quantum_vulnerable_asset(a: dict) -> bool:
+        algo = str(a.get("algorithm") or "")
+        key_size = a.get("key_size")
+        try:
+            ks_num = int(key_size) if key_size is not None else None
+        except (TypeError, ValueError):
+            ks_num = None
+        return ("RSA" in algo or "MD5" in algo
+                or (ks_num is not None and ks_num <= 2048))
+
+    crit_count = sum(1 for a in assets if _is_quantum_vulnerable_asset(a))
     total_assets = len(assets)
 
     if target_format.lower() == "html":
@@ -2356,7 +2425,7 @@ async def upload_archive_multipart(
     raw = await file.read(MAX_BYTES + 1)
     await file.close()
     if not raw or len(raw) > MAX_BYTES:
-        raise HTTPException(413, 'Archive must contain 1 byte to 8 MiB')
+        raise HTTPException(413, f'Archive must contain 1 byte to {MAX_UPLOAD_DESCRIPTION}')
     return request.app.state.store.archive_lab.analyze_archive(
         raw_bytes=raw,
         filename=(file.filename or 'archive.zip')[:300],
@@ -2522,6 +2591,10 @@ class CustomLoopApiRequest(BaseModel):
     file_name: str = "payment_processor.py"
     language: str = "python"
     preset_name: Optional[str] = None
+    # Mosca's theorem analyst inputs (documented assumptions, not hidden constants)
+    shelf_life: int = Field(default=10, ge=0, le=100)
+    migration_time: int = Field(default=4, ge=0, le=100)
+    crqc_horizon: int = Field(default=7, ge=0, le=100)
 
 
 @router.post('/custom-loop/run')
@@ -2534,6 +2607,9 @@ def run_custom_loop(req: CustomLoopApiRequest):
         file_name=req.file_name,
         language=req.language,
         preset_name=req.preset_name,
+        shelf_life=req.shelf_life,
+        migration_time=req.migration_time,
+        crqc_horizon=req.crqc_horizon,
     )
     _latest_custom_loop_result = res.model_dump()
     return _latest_custom_loop_result

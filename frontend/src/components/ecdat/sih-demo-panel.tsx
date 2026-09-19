@@ -120,7 +120,7 @@ export function SihDemoPanel({ project, token }: SihDemoPanelProps) {
               <div className="p-3 rounded bg-canvas border border-subtle text-center">
                 <div className="text-quiet">Retired Assets</div>
                 <div className="text-lg font-bold text-emerald-400">
-                  {demoResult.verification?.summary?.retired_weaknesses_count || 2}
+                  {demoResult.verification?.summary?.retired_weaknesses_count ?? 0}
                 </div>
               </div>
               <div className="p-3 rounded bg-canvas border border-subtle text-center">

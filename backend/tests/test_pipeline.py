@@ -100,9 +100,10 @@ def test_binary_real_upload_and_zip(client):
 
 
 def test_archive_limit():
+    from engine.binary_deep import MAX_BYTES
     archive = io.BytesIO()
     with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
-        z.writestr('oversize.bin', b'0' * (8 * 1024 * 1024 + 1))
+        z.writestr('oversize.bin', b'0' * (MAX_BYTES + 1))
     with pytest.raises(ValueError, match='exceeds'):
         scan_upload(archive.getvalue(), 'bomb.zip')
 

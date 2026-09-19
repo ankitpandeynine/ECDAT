@@ -520,7 +520,8 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
                 </span>
               </div>
               <span className="text-[11px] text-cyan-600 dark:text-cyan-400 mt-1 block">
-                +70 points improvement
+                {loopResult.after_state.security_score - loopResult.before_state.security_score >= 0 ? "+" : ""}
+                {loopResult.after_state.security_score - loopResult.before_state.security_score} points change
               </span>
             </div>
 
@@ -544,12 +545,12 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
               <span className="text-xs text-muted-foreground">Retired Weaknesses</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                  {loopResult.verification_report.retired_weaknesses?.length || 2}
+                  {loopResult.verification_report.retired_weaknesses?.length ?? 0}
                 </span>
                 <span className="text-xs text-muted-foreground">primitives</span>
               </div>
               <span className="text-[11px] text-muted-foreground mt-1 block">
-                Regressions detected: 0
+                Regressions detected: {loopResult.verification_report.regressions?.length ?? 0}
               </span>
             </div>
           </div>

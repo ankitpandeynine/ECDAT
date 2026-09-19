@@ -34,6 +34,11 @@ export default function NewProjectPage() {
       .replace(/^-|-$/g, "")
       .slice(0, 32) || `proj-${Date.now()}`;
 
+    const tags = tagsInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+
     try {
       const res = await fetch("/api/projects", {
         method: "POST",

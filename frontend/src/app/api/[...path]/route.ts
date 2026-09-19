@@ -3,6 +3,14 @@ import { NextRequest } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+// Upload ceiling for requests proxied to the backend. The backend accepts
+// direct uploads up to ECDAT_MAX_DIRECT_MB (default 64 MiB; hex endpoints
+// double their payload, hence the headroom). Chunked uploads are 2 MB per
+// request so this cap is never the bottleneck for large files.
+const MAX_PROXY_BODY_MB = Number(process.env.ECDAT_PROXY_MAX_BODY_MB || 96);
+const MAX_PROXY_BODY_BYTES = MAX_PROXY_BODY_MB * 1024 * 1024;
+const UPSTREAM_TIMEOUT_MS = Number(process.env.ECDAT_PROXY_TIMEOUT_MS || 300000);
+
 async function forward(
   request: NextRequest,
   context: { params: Promise<{ path?: string[] }> | { path?: string[] } }
@@ -27,9 +35,9 @@ async function forward(
           const chunk = await reader.read();
           if (chunk.done) break;
           length += chunk.value.byteLength;
-          if (length > 18 * 1024 * 1024) {
+          if (length > MAX_PROXY_BODY_BYTES) {
             await reader.cancel();
-            return Response.json({ detail: 'Request exceeds 18 MiB' }, { status: 413 });
+            return Response.json({ detail: `Request exceeds ${MAX_PROXY_BODY_MB} MiB proxy limit` }, { status: 413 });
           }
           chunks.push(chunk.value);
         }
@@ -55,7 +63,7 @@ async function forward(
       headers,
       body: body as BodyInit | undefined,
       cache: 'no-store',
-      signal: AbortSignal.timeout(35000),
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
 
     const contentType = upstream.headers.get('content-type') || '';

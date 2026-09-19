@@ -177,6 +177,8 @@ class ScanStore:
 
             # 7. Performance Indexes
             db.execute('CREATE INDEX IF NOT EXISTS idx_scans_project ON scans(project)')
+            db.execute('CREATE INDEX IF NOT EXISTS idx_scans_proj_created ON scans(project, created_at DESC)')
+            db.execute('CREATE INDEX IF NOT EXISTS idx_upload_sessions_scan ON upload_sessions(scan_job_id)')
             db.execute('CREATE INDEX IF NOT EXISTS idx_manifests_scan ON scan_manifests(scan_id)')
             db.execute('CREATE INDEX IF NOT EXISTS idx_assets_project ON crypto_assets(project)')
             db.execute('CREATE INDEX IF NOT EXISTS idx_assets_scan ON crypto_assets(scan_id)')
@@ -326,6 +328,13 @@ class ScanStore:
             db.execute("UPDATE scans SET status=?, result=?, error=?, finished_at=? WHERE id=? AND status='running'",
                        (status, json.dumps(result) if result is not None else None, error, now(), scan_id))
 
+        # Update associated chunked upload session if triggered from upload_chunk
+        if isinstance(payload, dict) and payload.get('upload_id'):
+            try:
+                self.update_upload_session(payload['upload_id'], status=status)
+            except Exception:
+                pass
+
     def save_manifest(self, manifest: ScanManifest) -> None:
         m_dict = manifest.to_dict()
         with self.connect() as db:
@@ -361,8 +370,21 @@ class ScanStore:
     def list(self, project):
         alt = project.replace('-', ' ') if '-' in project else project.replace(' ', '-')
         with self.connect() as db:
-            ids = db.execute('SELECT id, project FROM scans WHERE (project=? OR project=?) ORDER BY created_at DESC LIMIT 200', (project, alt)).fetchall()
-        return [self.get(row['id'], row['project']) for row in ids]
+            rows = db.execute(
+                'SELECT id, project, kind, status, created_at, finished_at, input_hash, result, error '
+                'FROM scans WHERE (project=? OR project=?) ORDER BY created_at DESC LIMIT 200',
+                (project, alt)
+            ).fetchall()
+        items = []
+        for row in rows:
+            val = dict(row)
+            try:
+                val['result'] = json.loads(val['result']) if val['result'] else None
+            except Exception:
+                val['result'] = None
+            val['engine_version'] = '4.0.0'
+            items.append(val)
+        return items
 
     def cancel(self, scan_id, project):
         alt = project.replace('-', ' ') if '-' in project else project.replace(' ', '-')

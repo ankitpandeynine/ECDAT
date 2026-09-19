@@ -19,12 +19,13 @@ import uuid
 import zipfile
 
 from .binary_deep import scan_upload
+from .limits import MAX_DIRECT_UPLOAD_BYTES, human_mb
 from .source_scan import scan_sources
 
 
-MAX_ARCHIVE_BYTES = 8 * 1024 * 1024  # 8 MiB
+MAX_ARCHIVE_BYTES = MAX_DIRECT_UPLOAD_BYTES
 MAX_FILES = 100
-MAX_DECOMPRESSED_BYTES = 16 * 1024 * 1024  # 16 MiB
+MAX_DECOMPRESSED_BYTES = 64 * 1024 * 1024  # 64 MiB
 
 
 def detect_archive_format(data: bytes) -> str:

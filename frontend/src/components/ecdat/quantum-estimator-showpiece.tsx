@@ -214,7 +214,7 @@ export function QuantumEstimatorShowpiece({ projectId }: QuantumEstimatorShowpie
               Resource Estimation Results · {estimateResult.target_algorithm}
             </span>
             <span className="text-xs text-quiet font-mono">
-              Surface Code Distance: d = {estimateResult.surface_code_distance || 21}
+              Surface Code Distance: d = {estimateResult.surface_code_distance ?? "—"}
             </span>
           </div>
 

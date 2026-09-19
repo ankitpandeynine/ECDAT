@@ -172,6 +172,30 @@ class TreeSitterScanner:
                 "constants": {},
             }
 
+        norm_lang = self.LANGUAGE_MAP.get(language.lower(), language.lower())
+        # Performance optimization: For large files (>100KB), blank out repetitive non-crypto
+        # single-line comments. This avoids Tree-sitter's quadratic indentation scanner on massive
+        # comment blocks while strictly preserving line counts, line offsets, and AST semantics.
+        if len(source_code) > 100_000:
+            crypto_kw = re.compile(
+                r'\b(RSA|AES|DES|MD5|SHA|PQC|ML-KEM|Kyber|cipher|crypto|hashlib|key|token|nonce|iv|signature)\b',
+                re.I
+            )
+            is_hash_comment = norm_lang in ("python", "ruby", "bash")
+            is_slash_comment = norm_lang in ("c_cpp", "java", "javascript", "typescript", "golang", "rust")
+            if is_hash_comment or is_slash_comment:
+                lines = source_code.splitlines(True)
+                cleaned = []
+                for line in lines:
+                    stripped = line.lstrip()
+                    if is_hash_comment and stripped.startswith("#"):
+                        cleaned.append(line if crypto_kw.search(line) else "\n")
+                    elif is_slash_comment and stripped.startswith("//"):
+                        cleaned.append(line if crypto_kw.search(line) else "\n")
+                    else:
+                        cleaned.append(line)
+                source_code = "".join(cleaned)
+
         source_bytes = source_code.encode("utf-8")
         tree = parser.parse(source_bytes)
         source_lines = source_code.splitlines()
@@ -306,7 +330,6 @@ class TreeSitterScanner:
 
         lineno = node.start_point[0] + 1
         col = node.start_point[1]
-        snippet = self._get_line_snippet(source_lines, lineno)
 
         # Track function/method definitions to form call graph
         if node.type in ("function_definition", "method_declaration", "function_item", "function_declaration"):
@@ -324,7 +347,7 @@ class TreeSitterScanner:
                     name=comment_text[:50],
                     line=lineno,
                     column=col,
-                    code_snippet=snippet,
+                    code_snippet=self._get_line_snippet(source_lines, lineno),
                     file_path=file_path,
                     actual_use=False,
                     details={"comment": comment_text, "note": "Comments are non-executable candidate mentions."},
@@ -340,7 +363,7 @@ class TreeSitterScanner:
                 name=import_text,
                 line=lineno,
                 column=col,
-                code_snippet=snippet,
+                code_snippet=self._get_line_snippet(source_lines, lineno),
                 file_path=file_path,
                 actual_use=False,
                 details={"import_statement": import_text},
@@ -433,7 +456,7 @@ class TreeSitterScanner:
                     name=func_name or matched_sink.get("api", "CryptoAPI"),
                     line=lineno,
                     column=col,
-                    code_snippet=snippet,
+                    code_snippet=self._get_line_snippet(source_lines, lineno),
                     file_path=file_path,
                     actual_use=True,
                     details={
@@ -467,7 +490,7 @@ class TreeSitterScanner:
                 finding = {
                     "file": file_path,
                     "line": lineno,
-                    "code": snippet,
+                    "code": self._get_line_snippet(source_lines, lineno),
                     "primitive": primitive_name,
                     "algorithm": algorithm,
                     "category": matched_sink.get("category", "Cryptographic API"),
@@ -527,7 +550,7 @@ class TreeSitterScanner:
                     name=text,
                     line=lineno,
                     column=col,
-                    code_snippet=snippet,
+                    code_snippet=self._get_line_snippet(source_lines, lineno),
                     file_path=file_path,
                     actual_use=False,
                     details={"string_value": text, "note": "String literal is a candidate, not proof of use."},
