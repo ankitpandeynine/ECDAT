@@ -1,0 +1,32 @@
+[
+  {
+    "case_count": 100,
+    "total_time_seconds": 0.5621,
+    "throughput_cases_per_sec": 177.89,
+    "p50_latency_ms": 4.4262,
+    "p95_latency_ms": 10.0355,
+    "p99_latency_ms": 78.7945,
+    "mem_delta_mb": 0.873,
+    "peak_mem_mb": 0.8987
+  },
+  {
+    "case_count": 1000,
+    "total_time_seconds": 0.7258,
+    "throughput_cases_per_sec": 1377.74,
+    "p50_latency_ms": 0.0233,
+    "p95_latency_ms": 3.2097,
+    "p99_latency_ms": 5.8644,
+    "mem_delta_mb": 0.4111,
+    "peak_mem_mb": 0.7519
+  },
+  {
+    "case_count": 5000,
+    "total_time_seconds": 2.1835,
+    "throughput_cases_per_sec": 2289.85,
+    "p50_latency_ms": 0.0212,
+    "p95_latency_ms": 2.8255,
+    "p99_latency_ms": 4.1317,
+    "mem_delta_mb": 1.1753,
+    "peak_mem_mb": 1.2054
+  }
+]

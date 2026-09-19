@@ -1,0 +1,61 @@
+{
+  "version": "2024.1",
+  "effective_date": "2024-01-01",
+  "migration_targets": {
+    "KEY_ESTABLISHMENT": {
+      "pqc_target": "ML-KEM-768 (FIPS 203)",
+      "hybrid_target": "X25519MLKEM768",
+      "rationale": "ML-KEM provides PQC key encapsulation. Hybrid provides both classical and PQC security during transition. NOTE: ML-KEM is NOT ML-DSA.",
+      "references": [
+        {
+          "title": "NIST FIPS 203",
+          "url": "https://csrc.nist.gov/pubs/fips/203/final"
+        }
+      ]
+    },
+    "SIGNATURE": {
+      "pqc_target": "ML-DSA-65 (FIPS 204)",
+      "alternative_target": "SLH-DSA (FIPS 205)",
+      "rationale": "ML-DSA provides lattice-based signatures. Hybrid KEX does NOT replace ML-DSA for signatures.",
+      "references": [
+        {
+          "title": "NIST FIPS 204",
+          "url": "https://csrc.nist.gov/pubs/fips/204/final"
+        }
+      ]
+    },
+    "SYMMETRIC_ENCRYPTION": {
+      "pqc_target": "AES-256 with authenticated mode (AES-256-GCM)",
+      "rationale": "Grover halving: AES-256 retains ~128-bit post-quantum security."
+    }
+  },
+  "hybrid_semantics": [
+    {
+      "name": "X25519MLKEM768",
+      "components": [
+        "X25519",
+        "ML-KEM-768"
+      ],
+      "role": "KEY_ESTABLISHMENT",
+      "note": "Hybrid KEX. Does NOT provide PQC signature capability. Does NOT imply ML-DSA."
+    },
+    {
+      "name": "SecP256r1MLKEM768",
+      "components": [
+        "ECDH-P256",
+        "ML-KEM-768"
+      ],
+      "role": "KEY_ESTABLISHMENT",
+      "note": "Hybrid KEX. Same signature caveat as X25519MLKEM768."
+    },
+    {
+      "name": "SecP384r1MLKEM1024",
+      "components": [
+        "ECDH-P384",
+        "ML-KEM-1024"
+      ],
+      "role": "KEY_ESTABLISHMENT",
+      "note": "Hybrid KEX with higher security level."
+    }
+  ]
+}

@@ -55,3 +55,8 @@ desktop.ini
 
 
 backend/data/
+data/
+*.sqlite3*
+*.sqlite
+*.db
+

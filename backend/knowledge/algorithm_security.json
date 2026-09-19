@@ -1,0 +1,698 @@
+{
+  "version": "2024.1",
+  "effective_date": "2024-01-01",
+  "references": [
+    {
+      "title": "NIST SP 800-57 Part 1 Rev. 5",
+      "url": "https://doi.org/10.6028/NIST.SP.800-57pt1r5"
+    },
+    {
+      "title": "NIST FIPS 203 (ML-KEM)",
+      "url": "https://csrc.nist.gov/pubs/fips/203/final"
+    },
+    {
+      "title": "NIST FIPS 204 (ML-DSA)",
+      "url": "https://csrc.nist.gov/pubs/fips/204/final"
+    },
+    {
+      "title": "NIST FIPS 205 (SLH-DSA)",
+      "url": "https://csrc.nist.gov/pubs/fips/205/final"
+    },
+    {
+      "title": "NIST SP 800-131A Rev 2",
+      "url": "https://doi.org/10.6028/NIST.SP.800-131Ar2"
+    }
+  ],
+  "algorithms": [
+    {
+      "canonical_name": "AES-128",
+      "aliases": [
+        "AES128",
+        "aes-128",
+        "AES_128",
+        "AESGCM-128",
+        "AES-128-GCM",
+        "AES-128-CBC",
+        "AES-128-CTR",
+        "TLS_AES_128_GCM_SHA256"
+      ],
+      "category": "SYMMETRIC",
+      "roles": [
+        "SYMMETRIC_ENCRYPTION"
+      ],
+      "status": "ACCEPTABLE",
+      "classical_security_bits": 128,
+      "quantum_security_bits": 64,
+      "quantum_impact": "GROVER_HALVING",
+      "pqc_status": "CLASSICAL_SYMMETRIC",
+      "deprecation_status": "ACCEPTABLE"
+    },
+    {
+      "canonical_name": "AES-256",
+      "aliases": [
+        "AES256",
+        "aes-256",
+        "AES_256",
+        "AES-256-GCM",
+        "AES-256-CBC",
+        "AES-256-CTR",
+        "AES256GCM",
+        "AESGCM",
+        "TLS_AES_256_GCM_SHA384"
+      ],
+      "category": "SYMMETRIC",
+      "roles": [
+        "SYMMETRIC_ENCRYPTION"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 256,
+      "quantum_security_bits": 128,
+      "quantum_impact": "GROVER_HALVING",
+      "quantum_notes": "AES-256 retains ~128-bit post-quantum security. Recommended.",
+      "pqc_status": "PQC_SAFE_SYMMETRIC",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "ChaCha20-Poly1305",
+      "aliases": [
+        "CHACHA20-POLY1305",
+        "TLS_CHACHA20_POLY1305_SHA256",
+        "chacha20poly1305",
+        "ChaCha20Poly1305"
+      ],
+      "category": "AEAD",
+      "roles": [
+        "SYMMETRIC_ENCRYPTION",
+        "AEAD"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 256,
+      "quantum_security_bits": 128,
+      "quantum_impact": "GROVER_HALVING",
+      "pqc_status": "PQC_SAFE_SYMMETRIC",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "3DES",
+      "aliases": [
+        "DES-EDE",
+        "DES3",
+        "TDEA",
+        "TRIPLE-DES",
+        "DES-CBC3",
+        "DES-CBC3-SHA",
+        "3DES-EDE-CBC",
+        "DES-EDE3",
+        "DES-EDE3-CBC"
+      ],
+      "category": "SYMMETRIC",
+      "roles": [
+        "SYMMETRIC_ENCRYPTION"
+      ],
+      "status": "LEGACY",
+      "classical_security_bits": 112,
+      "quantum_security_bits": 56,
+      "quantum_impact": "GROVER_HALVING",
+      "pqc_status": "INSUFFICIENT_LEGACY",
+      "deprecation_status": "DEPRECATED"
+    },
+    {
+      "canonical_name": "DES",
+      "aliases": [
+        "DES-CBC",
+        "DES-ECB",
+        "des",
+        "des-cbc"
+      ],
+      "category": "SYMMETRIC",
+      "roles": [
+        "SYMMETRIC_ENCRYPTION"
+      ],
+      "status": "INSUFFICIENT",
+      "classical_security_bits": 56,
+      "quantum_security_bits": 28,
+      "quantum_impact": "BROKEN_CLASSICALLY",
+      "pqc_status": "BROKEN",
+      "deprecation_status": "PROHIBITED"
+    },
+    {
+      "canonical_name": "RC4",
+      "aliases": [
+        "ARCFOUR",
+        "RC4-128",
+        "RC4-40",
+        "arcfour",
+        "arcfour128",
+        "arcfour256",
+        "RC4-MD5",
+        "RC4-SHA"
+      ],
+      "category": "SYMMETRIC",
+      "roles": [
+        "SYMMETRIC_ENCRYPTION"
+      ],
+      "status": "INSUFFICIENT",
+      "classical_security_bits": 40,
+      "quantum_security_bits": 20,
+      "quantum_impact": "BROKEN_CLASSICALLY",
+      "pqc_status": "BROKEN",
+      "deprecation_status": "PROHIBITED"
+    },
+    {
+      "canonical_name": "MD5",
+      "aliases": [
+        "md5",
+        "MD-5",
+        "HMAC-MD5",
+        "hmac-md5"
+      ],
+      "category": "HASH",
+      "roles": [
+        "HASH"
+      ],
+      "status": "INSUFFICIENT",
+      "classical_security_bits": 64,
+      "quantum_security_bits": 32,
+      "quantum_impact": "GROVER_HALVING_COLLISION",
+      "pqc_status": "BROKEN_CLASSICALLY",
+      "deprecation_status": "PROHIBITED"
+    },
+    {
+      "canonical_name": "SHA-1",
+      "aliases": [
+        "SHA1",
+        "sha-1",
+        "sha1",
+        "SHA-1",
+        "hmac-sha1",
+        "HMAC-SHA1",
+        "HMAC-SHA-1"
+      ],
+      "category": "HASH",
+      "roles": [
+        "HASH",
+        "MAC"
+      ],
+      "status": "LEGACY",
+      "classical_security_bits": 80,
+      "quantum_security_bits": 40,
+      "quantum_impact": "GROVER_HALVING_COLLISION",
+      "pqc_status": "DEPRECATED_LEGACY",
+      "deprecation_status": "DEPRECATED"
+    },
+    {
+      "canonical_name": "SHA-256",
+      "aliases": [
+        "SHA256",
+        "sha-256",
+        "sha256",
+        "SHA2-256",
+        "sha2-256",
+        "SHA_256"
+      ],
+      "category": "HASH",
+      "roles": [
+        "HASH",
+        "MAC"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 128,
+      "quantum_security_bits": 64,
+      "quantum_impact": "GROVER_HALVING",
+      "quantum_notes": "Hash function. NOT broken by Shor algorithm. Grover halving only.",
+      "pqc_status": "ACCEPTABLE_HASH",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "SHA-384",
+      "aliases": [
+        "SHA384",
+        "sha-384",
+        "sha384",
+        "SHA2-384"
+      ],
+      "category": "HASH",
+      "roles": [
+        "HASH",
+        "MAC"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 192,
+      "quantum_security_bits": 96,
+      "quantum_impact": "GROVER_HALVING",
+      "pqc_status": "STRONG_HASH",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "SHA-512",
+      "aliases": [
+        "SHA512",
+        "sha-512",
+        "sha512",
+        "SHA2-512"
+      ],
+      "category": "HASH",
+      "roles": [
+        "HASH",
+        "MAC"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 256,
+      "quantum_security_bits": 128,
+      "quantum_impact": "GROVER_HALVING",
+      "pqc_status": "STRONG_HASH",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "SHA-3",
+      "aliases": [
+        "SHA3",
+        "SHA3-256",
+        "SHA3-384",
+        "SHA3-512",
+        "SHAKE128",
+        "SHAKE256",
+        "sha3",
+        "sha3-256"
+      ],
+      "category": "HASH",
+      "roles": [
+        "HASH",
+        "MAC"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 256,
+      "quantum_security_bits": 128,
+      "quantum_impact": "GROVER_HALVING",
+      "pqc_status": "STRONG_HASH",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "HMAC-SHA256",
+      "aliases": [
+        "HMAC-SHA-256",
+        "hmac-sha256"
+      ],
+      "category": "MAC",
+      "roles": [
+        "MAC"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 128,
+      "quantum_security_bits": 64,
+      "quantum_impact": "GROVER_HALVING",
+      "pqc_status": "ACCEPTABLE_HASH",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "HMAC-SHA384",
+      "aliases": [
+        "HMAC-SHA-384",
+        "hmac-sha384"
+      ],
+      "category": "MAC",
+      "roles": [
+        "MAC"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 192,
+      "pqc_status": "STRONG_HASH",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "HMAC-SHA512",
+      "aliases": [
+        "HMAC-SHA-512",
+        "hmac-sha512"
+      ],
+      "category": "MAC",
+      "roles": [
+        "MAC"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 256,
+      "pqc_status": "STRONG_HASH",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "RSA",
+      "aliases": [
+        "rsa",
+        "RSA-OAEP",
+        "RSA-PSS",
+        "RSASSA-PKCS1-v1_5",
+        "RSA-PKCS1",
+        "rsaEncryption",
+        "RSAEncryption",
+        "id-RSASSA-PSS"
+      ],
+      "category": "PUBLIC_KEY",
+      "roles": [
+        "PUBLIC_KEY_ENCRYPTION",
+        "SIGNATURE",
+        "KEY_ESTABLISHMENT"
+      ],
+      "status": "ACCEPTABLE",
+      "classical_security_bits_by_param": {
+        "1024": 80,
+        "2048": 112,
+        "3072": 128,
+        "4096": 140
+      },
+      "default_parameter_status": "UNKNOWN",
+      "quantum_impact": "SHOR_BREAKS",
+      "quantum_notes": "RSA broken by Shor's algorithm regardless of key size.",
+      "pqc_status": "QUANTUM_VULNERABLE",
+      "deprecation_status": "ACCEPTABLE_CLASSICAL"
+    },
+    {
+      "canonical_name": "DSA",
+      "aliases": [
+        "dsa",
+        "DSS",
+        "id-dsa"
+      ],
+      "category": "SIGNATURE",
+      "roles": [
+        "SIGNATURE"
+      ],
+      "status": "LEGACY",
+      "classical_security_bits": 112,
+      "quantum_impact": "SHOR_BREAKS",
+      "pqc_status": "QUANTUM_VULNERABLE",
+      "deprecation_status": "DEPRECATED"
+    },
+    {
+      "canonical_name": "DH",
+      "aliases": [
+        "Diffie-Hellman",
+        "DHE",
+        "FFDHE",
+        "diffie-hellman-group14-sha256",
+        "diffie-hellman-group16-sha512",
+        "DHE-RSA",
+        "DHE-DSS"
+      ],
+      "category": "KEY_ESTABLISHMENT",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "status": "ACCEPTABLE",
+      "classical_security_bits_by_param": {
+        "1024": 80,
+        "2048": 112,
+        "3072": 128
+      },
+      "default_parameter_status": "UNKNOWN",
+      "quantum_impact": "SHOR_BREAKS",
+      "pqc_status": "QUANTUM_VULNERABLE",
+      "deprecation_status": "ACCEPTABLE_CLASSICAL"
+    },
+    {
+      "canonical_name": "ECDH",
+      "aliases": [
+        "ECDHE",
+        "ecdh",
+        "ecdhe",
+        "ECDH-RSA",
+        "ECDHE-RSA",
+        "ECDHE-ECDSA",
+        "ecdhe-rsa",
+        "ecdhe-ecdsa",
+        "ECDH P-256",
+        "ECDH-P256",
+        "ECDH P-384",
+        "ECDH-P384",
+        "ECDHE-P256",
+        "ECDHE P-256",
+        "P-256",
+        "secp256r1",
+        "prime256v1"
+      ],
+      "category": "KEY_ESTABLISHMENT",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "status": "ACCEPTABLE",
+      "quantum_impact": "SHOR_BREAKS",
+      "pqc_status": "QUANTUM_VULNERABLE",
+      "deprecation_status": "ACCEPTABLE_CLASSICAL"
+    },
+    {
+      "canonical_name": "ECDSA",
+      "aliases": [
+        "ecdsa",
+        "EC",
+        "ecPublicKey",
+        "id-ecPublicKey",
+        "ecdsa-with-SHA256",
+        "ecdsa-with-SHA384",
+        "ecdsa-with-SHA512",
+        "ECDSA P-256",
+        "ECDSA-P256",
+        "ECDSA P-384",
+        "ECDSA-P384",
+        "ECDSA P-521",
+        "ECDSA-P521",
+        "ECDSA-SHA256",
+        "ECDSA-SHA384"
+      ],
+      "category": "SIGNATURE",
+      "roles": [
+        "SIGNATURE"
+      ],
+      "status": "ACCEPTABLE",
+      "quantum_impact": "SHOR_BREAKS",
+      "pqc_status": "QUANTUM_VULNERABLE",
+      "deprecation_status": "ACCEPTABLE_CLASSICAL"
+    },
+    {
+      "canonical_name": "Ed25519",
+      "aliases": [
+        "ED25519",
+        "EdDSA-25519",
+        "ed25519",
+        "id-EdDSA",
+        "EdDSA"
+      ],
+      "category": "SIGNATURE",
+      "roles": [
+        "SIGNATURE"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 128,
+      "quantum_impact": "SHOR_BREAKS",
+      "quantum_notes": "Ed25519 broken by Shor despite strong classical security.",
+      "pqc_status": "QUANTUM_VULNERABLE",
+      "deprecation_status": "ACCEPTABLE_CLASSICAL"
+    },
+    {
+      "canonical_name": "X25519",
+      "aliases": [
+        "x25519",
+        "curve25519",
+        "Curve25519"
+      ],
+      "category": "KEY_ESTABLISHMENT",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "status": "STRONG",
+      "classical_security_bits": 128,
+      "quantum_impact": "SHOR_BREAKS",
+      "pqc_status": "QUANTUM_VULNERABLE",
+      "deprecation_status": "ACCEPTABLE_CLASSICAL"
+    },
+    {
+      "canonical_name": "ML-KEM-512",
+      "aliases": [
+        "MLKEM512",
+        "Kyber512",
+        "kyber-512",
+        "mlkem512"
+      ],
+      "category": "PQC_KEM",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "status": "STRONG",
+      "security_level": 1,
+      "quantum_impact": "NONE_PQC_SECURE",
+      "quantum_notes": "NIST FIPS 203 PQC KEM. NOT a signature algorithm.",
+      "pqc_status": "PQC_SECURE_KEM",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "ML-KEM-768",
+      "aliases": [
+        "MLKEM768",
+        "Kyber768",
+        "kyber-768",
+        "mlkem768"
+      ],
+      "category": "PQC_KEM",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "status": "STRONG",
+      "security_level": 3,
+      "quantum_impact": "NONE_PQC_SECURE",
+      "quantum_notes": "NIST FIPS 203 PQC KEM. NOT a signature algorithm.",
+      "pqc_status": "PQC_SECURE_KEM",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "ML-KEM-1024",
+      "aliases": [
+        "MLKEM1024",
+        "Kyber1024",
+        "kyber-1024",
+        "mlkem1024"
+      ],
+      "category": "PQC_KEM",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "status": "STRONG",
+      "security_level": 5,
+      "quantum_impact": "NONE_PQC_SECURE",
+      "pqc_status": "PQC_SECURE_KEM",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "ML-DSA-44",
+      "aliases": [
+        "MLDSA44",
+        "Dilithium2",
+        "dilithium-44",
+        "mldsa44"
+      ],
+      "category": "PQC_SIGNATURE",
+      "roles": [
+        "SIGNATURE"
+      ],
+      "status": "STRONG",
+      "security_level": 2,
+      "quantum_impact": "NONE_PQC_SECURE",
+      "quantum_notes": "NIST FIPS 204 PQC signature. NOT a KEM.",
+      "pqc_status": "PQC_SECURE_SIGNATURE",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "ML-DSA-65",
+      "aliases": [
+        "MLDSA65",
+        "Dilithium3",
+        "dilithium-65",
+        "mldsa65"
+      ],
+      "category": "PQC_SIGNATURE",
+      "roles": [
+        "SIGNATURE"
+      ],
+      "status": "STRONG",
+      "security_level": 3,
+      "quantum_impact": "NONE_PQC_SECURE",
+      "pqc_status": "PQC_SECURE_SIGNATURE",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "ML-DSA-87",
+      "aliases": [
+        "MLDSA87",
+        "Dilithium5",
+        "dilithium-87",
+        "mldsa87"
+      ],
+      "category": "PQC_SIGNATURE",
+      "roles": [
+        "SIGNATURE"
+      ],
+      "status": "STRONG",
+      "security_level": 5,
+      "quantum_impact": "NONE_PQC_SECURE",
+      "pqc_status": "PQC_SECURE_SIGNATURE",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "SLH-DSA",
+      "aliases": [
+        "SLHDSA",
+        "SPHINCS+",
+        "sphincs-plus",
+        "sphincsplus"
+      ],
+      "category": "PQC_SIGNATURE",
+      "roles": [
+        "SIGNATURE"
+      ],
+      "status": "STRONG",
+      "quantum_impact": "NONE_PQC_SECURE",
+      "pqc_status": "PQC_SECURE_SIGNATURE",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "X25519MLKEM768",
+      "aliases": [
+        "x25519mlkem768",
+        "X25519+MLKEM768",
+        "x25519_mlkem_768"
+      ],
+      "category": "HYBRID_KEM",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "components": {
+        "classical": "X25519",
+        "pqc": "ML-KEM-768"
+      },
+      "status": "STRONG",
+      "quantum_impact": "HYBRID_PARTIAL",
+      "quantum_notes": "Hybrid KEX only. Does NOT provide PQC signature capability. X25519MLKEM768 != ML-DSA.",
+      "pqc_status": "HYBRID_KEM",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "SecP256r1MLKEM768",
+      "aliases": [
+        "secp256r1mlkem768",
+        "P256+MLKEM768",
+        "secp256r1_mlkem_768"
+      ],
+      "category": "HYBRID_KEM",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "components": {
+        "classical": "ECDH",
+        "classical_curve": "P-256",
+        "pqc": "ML-KEM-768"
+      },
+      "status": "STRONG",
+      "quantum_impact": "HYBRID_PARTIAL",
+      "pqc_status": "HYBRID_KEM",
+      "deprecation_status": "CURRENT"
+    },
+    {
+      "canonical_name": "SecP384r1MLKEM1024",
+      "aliases": [
+        "secp384r1mlkem1024",
+        "P384+MLKEM1024",
+        "secp384r1_mlkem_1024"
+      ],
+      "category": "HYBRID_KEM",
+      "roles": [
+        "KEY_ESTABLISHMENT"
+      ],
+      "components": {
+        "classical": "ECDH",
+        "classical_curve": "P-384",
+        "pqc": "ML-KEM-1024"
+      },
+      "status": "STRONG",
+      "quantum_impact": "HYBRID_PARTIAL",
+      "pqc_status": "HYBRID_KEM",
+      "deprecation_status": "CURRENT"
+    }
+  ]
+}

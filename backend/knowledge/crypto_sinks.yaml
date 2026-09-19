@@ -1,0 +1,535 @@
+version: "4.0.0"
+description: "ECDAT V4 Cryptographic Sink & Capability Knowledge Base"
+
+sinks:
+  # ==========================================
+  # PYTHON
+  # ==========================================
+  - language: "python"
+    library: "cryptography"
+    module: "cryptography.hazmat.primitives.asymmetric.rsa"
+    api: "rsa.generate_private_key"
+    algorithm: "RSA"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-KEM-768 / ML-DSA-65"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "cryptography"
+    module: "cryptography.hazmat.primitives.asymmetric.ec"
+    api: "ec.generate_private_key"
+    algorithm: "ECDSA"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-DSA-65 / Falcon"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "cryptography"
+    module: "cryptography.hazmat.primitives.ciphers.algorithms"
+    api: "algorithms.AES"
+    algorithm: "AES"
+    operation: "symmetric_cipher"
+    category: "Symmetric Cipher"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "cryptography"
+    module: "cryptography.hazmat.primitives.ciphers.aead"
+    api: "AESGCM"
+    algorithm: "AES-GCM"
+    operation: "aead_encryption"
+    category: "Symmetric Cipher"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "cryptography"
+    module: "cryptography.hazmat.primitives.ciphers.algorithms"
+    api: "algorithms.DES"
+    algorithm: "DES"
+    operation: "symmetric_cipher"
+    category: "Symmetric Cipher"
+    risk_relevance: "deprecated"
+    pqc_replacement: "AES-256-GCM"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "cryptography"
+    module: "cryptography.hazmat.primitives.ciphers.algorithms"
+    api: "algorithms.TripleDES"
+    algorithm: "TripleDES"
+    operation: "symmetric_cipher"
+    category: "Symmetric Cipher"
+    risk_relevance: "deprecated"
+    pqc_replacement: "AES-256-GCM"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "cryptography"
+    module: "cryptography.hazmat.primitives.ciphers.algorithms"
+    api: "algorithms.ARC4"
+    algorithm: "RC4"
+    operation: "stream_cipher"
+    category: "Stream Cipher"
+    risk_relevance: "deprecated"
+    pqc_replacement: "AES-256-GCM / ChaCha20-Poly1305"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "cryptography"
+    module: "cryptography.hazmat.primitives.ciphers.modes"
+    api: "modes.ECB"
+    algorithm: "ECB Mode"
+    operation: "cipher_mode"
+    category: "Cipher Mode"
+    risk_relevance: "insecure_mode"
+    pqc_replacement: "GCM Mode"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "hashlib"
+    module: "hashlib"
+    api: "hashlib.md5"
+    algorithm: "MD5"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "deprecated"
+    pqc_replacement: "SHA-256 / SHA-3"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "hashlib"
+    module: "hashlib"
+    api: "hashlib.sha1"
+    algorithm: "SHA-1"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "deprecated"
+    pqc_replacement: "SHA-256"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "hashlib"
+    module: "hashlib"
+    api: "hashlib.sha256"
+    algorithm: "SHA-256"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "hashlib"
+    module: "hashlib"
+    api: "hashlib.sha512"
+    algorithm: "SHA-512"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "hmac"
+    module: "hmac"
+    api: "hmac.new"
+    algorithm: "HMAC"
+    operation: "mac"
+    category: "MAC"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "pycryptodome"
+    module: "Crypto.Cipher.AES"
+    api: "AES.new"
+    algorithm: "AES"
+    operation: "symmetric_cipher"
+    category: "Symmetric Cipher"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "python"
+    library: "pycryptodome"
+    module: "Crypto.PublicKey.RSA"
+    api: "RSA.generate"
+    algorithm: "RSA"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-KEM-768"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  # ==========================================
+  # JAVA
+  # ==========================================
+  - language: "java"
+    library: "javax.crypto"
+    module: "javax.crypto.Cipher"
+    api: "Cipher.getInstance"
+    algorithm: "Cipher"
+    operation: "cipher_init"
+    category: "Symmetric Cipher"
+    risk_relevance: "parameter_dependent"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "java"
+    library: "java.security"
+    module: "java.security.KeyPairGenerator"
+    api: "KeyPairGenerator.getInstance"
+    algorithm: "KeyPairGenerator"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-KEM / ML-DSA"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "java"
+    library: "java.security"
+    module: "java.security.Signature"
+    api: "Signature.getInstance"
+    algorithm: "Signature"
+    operation: "signing"
+    category: "Digital Signature"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-DSA-65"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "java"
+    library: "java.security"
+    module: "java.security.MessageDigest"
+    api: "MessageDigest.getInstance"
+    algorithm: "MessageDigest"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "parameter_dependent"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  # ==========================================
+  # C / C++ (OpenSSL)
+  # ==========================================
+  - language: "c_cpp"
+    library: "openssl"
+    module: "openssl/evp.h"
+    api: "EVP_EncryptInit_ex"
+    algorithm: "EVP_Cipher"
+    operation: "encryption"
+    category: "Symmetric Cipher"
+    risk_relevance: "parameter_dependent"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "c_cpp"
+    library: "openssl"
+    module: "openssl/evp.h"
+    api: "EVP_aes_256_gcm"
+    algorithm: "AES-256-GCM"
+    operation: "symmetric_cipher"
+    category: "Symmetric Cipher"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+
+  - language: "c_cpp"
+    library: "openssl"
+    module: "openssl/evp.h"
+    api: "EVP_DecryptInit_ex"
+    algorithm: "EVP_Cipher"
+    operation: "decryption"
+    category: "Symmetric Cipher"
+    risk_relevance: "parameter_dependent"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "c_cpp"
+    library: "openssl"
+    module: "openssl/rsa.h"
+    api: "RSA_generate_key_ex"
+    algorithm: "RSA"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-KEM-768"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "c_cpp"
+    library: "openssl"
+    module: "openssl/ec.h"
+    api: "EC_KEY_new_by_curve_name"
+    algorithm: "ECDSA"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-DSA-65"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "c_cpp"
+    library: "openssl"
+    module: "openssl/md5.h"
+    api: "MD5"
+    algorithm: "MD5"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "deprecated"
+    pqc_replacement: "SHA-256"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "c_cpp"
+    library: "openssl"
+    module: "openssl/hmac.h"
+    api: "HMAC"
+    algorithm: "HMAC"
+    operation: "mac"
+    category: "MAC"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  # ==========================================
+  # GO
+  # ==========================================
+  - language: "golang"
+    library: "crypto/aes"
+    module: "crypto/aes"
+    api: "aes.NewCipher"
+    algorithm: "AES"
+    operation: "encryption"
+    category: "Symmetric Cipher"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "golang"
+    library: "crypto/des"
+    module: "crypto/des"
+    api: "des.NewCipher"
+    algorithm: "DES"
+    operation: "encryption"
+    category: "Symmetric Cipher"
+    risk_relevance: "deprecated"
+    pqc_replacement: "AES-256"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "golang"
+    library: "crypto/rsa"
+    module: "crypto/rsa"
+    api: "rsa.GenerateKey"
+    algorithm: "RSA"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-KEM-768"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "golang"
+    library: "crypto/ecdsa"
+    module: "crypto/ecdsa"
+    api: "ecdsa.GenerateKey"
+    algorithm: "ECDSA"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-DSA-65"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "golang"
+    library: "crypto/sha256"
+    module: "crypto/sha256"
+    api: "sha256.New"
+    algorithm: "SHA-256"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  # ==========================================
+  # RUST
+  # ==========================================
+  - language: "rust"
+    library: "aes-gcm"
+    module: "aes_gcm"
+    api: "Aes256Gcm::new"
+    algorithm: "AES-256-GCM"
+    operation: "encryption"
+    category: "Symmetric Cipher"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "rust"
+    library: "rsa"
+    module: "rsa"
+    api: "RsaPrivateKey::new"
+    algorithm: "RSA"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-KEM-768"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "rust"
+    library: "sha2"
+    module: "sha2"
+    api: "Sha256::new"
+    algorithm: "SHA-256"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "classical_secure"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "rust"
+    library: "ed25519-dalek"
+    module: "ed25519_dalek"
+    api: "SigningKey::generate"
+    algorithm: "Ed25519"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-DSA-65"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  # ==========================================
+  # JAVASCRIPT / TYPESCRIPT
+  # ==========================================
+  - language: "javascript"
+    library: "node:crypto"
+    module: "crypto"
+    api: "crypto.createCipheriv"
+    algorithm: "Cipher"
+    operation: "encryption"
+    category: "Symmetric Cipher"
+    risk_relevance: "parameter_dependent"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "javascript"
+    library: "node:crypto"
+    module: "crypto"
+    api: "crypto.createDecipheriv"
+    algorithm: "Cipher"
+    operation: "decryption"
+    category: "Symmetric Cipher"
+    risk_relevance: "parameter_dependent"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "javascript"
+    library: "node:crypto"
+    module: "crypto"
+    api: "crypto.generateKeyPairSync"
+    algorithm: "KeyPairGenerator"
+    operation: "key_generation"
+    category: "Asymmetric Key"
+    risk_relevance: "quantum_vulnerable"
+    pqc_replacement: "ML-KEM / ML-DSA"
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+  - language: "javascript"
+    library: "node:crypto"
+    module: "crypto"
+    api: "crypto.createHash"
+    algorithm: "Hash"
+    operation: "hashing"
+    category: "Hash Function"
+    risk_relevance: "parameter_dependent"
+    pqc_replacement: null
+    evidence_level: "E3"
+    observation_type: "SOURCE_API_USE"
+
+# ==========================================
+# DEPENDENCY TO CAPABILITY MAPPINGS
+# (Presence in manifest/lockfile indicates capability, NOT actual use)
+# ==========================================
+dependency_capabilities:
+  cryptography:
+    ecosystem: "python"
+    capabilities: ["AES", "RSA", "ECDSA", "Ed25519", "ChaCha20", "SHA-256", "HMAC"]
+  pycryptodome:
+    ecosystem: "python"
+    capabilities: ["AES", "DES", "TripleDES", "RSA", "DSA", "MD5", "SHA-256"]
+  pycryptodomex:
+    ecosystem: "python"
+    capabilities: ["AES", "DES", "TripleDES", "RSA", "DSA", "MD5", "SHA-256"]
+  bouncycastle:
+    ecosystem: "java"
+    capabilities: ["AES", "RSA", "ECDSA", "Kyber", "Dilithium", "SHA-256"]
+  bcprov-jdk18on:
+    ecosystem: "java"
+    capabilities: ["AES", "RSA", "ECDSA", "Kyber", "Dilithium", "SHA-256"]
+  ring:
+    ecosystem: "rust"
+    capabilities: ["AES-GCM", "ChaCha20-Poly1305", "RSA", "ECDSA", "Ed25519", "SHA-256"]
+  aes-gcm:
+    ecosystem: "rust"
+    capabilities: ["AES-GCM", "AES-128-GCM", "AES-256-GCM"]
+  rsa:
+    ecosystem: "rust"
+    capabilities: ["RSA"]
+  sha2:
+    ecosystem: "rust"
+    capabilities: ["SHA-256", "SHA-512"]
+  ed25519-dalek:
+    ecosystem: "rust"
+    capabilities: ["Ed25519"]
+  crypto-js:
+    ecosystem: "npm"
+    capabilities: ["AES", "DES", "TripleDES", "Rabbit", "RC4", "MD5", "SHA-1", "SHA-256"]
+  jsonwebtoken:
+    ecosystem: "npm"
+    capabilities: ["HMAC", "RSA", "ECDSA"]
+  jose:
+    ecosystem: "npm"
+    capabilities: ["JWE", "JWS", "AES-GCM", "RSA-OAEP", "ECDH-ES"]

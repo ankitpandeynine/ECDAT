@@ -110,13 +110,63 @@ def scan_one(data, name):
         item.update(file=name, section=next((s['name'] for s in layout if s['offset'] <= offset < s['offset'] + s['size']), None), source_hash=hashlib.sha256(data).hexdigest())
     # Cover the entire file with a bounded number of entropy windows.
     window = max(256, (len(data) + 255) // 256)
+
+    from .evidence_model import Evidence, EvidenceLevel, EvidenceState, ObservationType, Provenance
+    evidence_list = []
+    for item in detections:
+        is_key = 'PRIVATE KEY' in item.get('primitive', '').upper()
+        is_cert = 'CERTIFICATE' in item.get('primitive', '').upper()
+        if is_key:
+            level = EvidenceLevel.E3
+            obs_type = ObservationType.BINARY_REFERENCE
+            conf = 1.0 if item.get('confidence') == 'HIGH' else 0.75
+        elif is_cert:
+            level = EvidenceLevel.E3
+            obs_type = ObservationType.X509_CERTIFICATE
+            conf = 1.0 if item.get('confidence') == 'HIGH' else 0.80
+        elif item.get('section'):
+            level = EvidenceLevel.E2
+            obs_type = ObservationType.BINARY_SIGNATURE
+            conf = 0.85
+        else:
+            level = EvidenceLevel.E1
+            obs_type = ObservationType.BINARY_SIGNATURE
+            conf = 0.80
+
+        ev = Evidence(
+            state=EvidenceState.MEASURED,
+            level=level,
+            confidence=conf,
+            source_engine="binary_deep",
+            engine_version="4.0.0",
+            rule_id=item.get('primitive'),
+            rule_version="4.0.0",
+            observation_type=obs_type,
+            artifact_type="binary",
+            symbol=item.get('primitive'),
+            file_path=item.get('file'),
+            byte_offset=item.get('offset'),
+            description=item.get('description', 'Binary cryptographic indicator observed'),
+            limitations=["Static signature/byte observation; execution path not traced dynamically."],
+            raw_details={'section': item.get('section'), 'byte_order': item.get('byte_order'), 'severity': item.get('severity')},
+            provenance=Provenance(
+                input_hash=item.get('source_hash', ''),
+                source_engine="binary_deep",
+                engine_version="4.0.0",
+                scan_id="",
+                location=f"{item.get('file')}:{item.get('offset')}",
+            )
+        )
+        evidence_list.append(ev.to_dict())
+
     result.update(detections=detections, total_detections=len(detections), format=fmt, sections=layout,
                   sha256=hashlib.sha256(data).hexdigest(),
                   critical_count=sum(d['severity'] == 'CRITICAL' for d in detections),
                   high_count=sum(d['severity'] == 'HIGH' for d in detections),
                   entropy_category='Byte distribution; encryption cannot be inferred',
                   entropy_map=[{'offset': f'0x{i:08X}', 'entropy': calculate_shannon_entropy(data[i:i + window]), 'status': 'Observed byte distribution'} for i in range(0, len(data), window)],
-                  coverage={'bytes_scanned': len(data), 'entropy_window_bytes': window})
+                  coverage={'bytes_scanned': len(data), 'entropy_window_bytes': window},
+                  evidence=evidence_list)
     return result
 
 
@@ -124,7 +174,7 @@ def scan_upload(data, name):
     if not data or len(data) > MAX_BYTES:
         raise ValueError('File must contain 1 byte to 8 MiB')
     if zipfile.is_zipfile(io.BytesIO(data)):
-        findings, members, total = [], [], 0
+        findings, members, total, evidence_all = [], [], 0, []
         with zipfile.ZipFile(io.BytesIO(data)) as archive:
             entries = archive.infolist()
             if len(entries) > 100:
@@ -144,12 +194,21 @@ def scan_upload(data, name):
                     raise ValueError('Archive size mismatch')
                 member = scan_one(content, f'{name}!/{entry.filename}')
                 findings.extend(member['detections'])
+                evidence_all.extend(member.get('evidence', []))
                 members.append({'file': member['file_name'], 'sha256': member['sha256'], 'format': member['format'], 'coverage': member['coverage']})
         return {'file_name': name, 'file_size_bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest(),
                 'format': 'ZIP', 'detections': findings, 'total_detections': len(findings),
                 'critical_count': sum(d['severity'] == 'CRITICAL' for d in findings), 'high_count': sum(d['severity'] == 'HIGH' for d in findings), 'entropy_map': [], 'overall_entropy': calculate_shannon_entropy(data),
                 'entropy_category': 'Archive', 'members': members,
+                'evidence': evidence_all,
                 'coverage': {'bytes_scanned': total, 'archive_depth': 1}, 'status': 'success'}
     result = scan_one(data, name)
     result['status'] = 'success'
     return result
+
+
+def scan_binary_v4(data: bytes, name: str, project: str = "default", scan_id: str = "", asset_graph=None):
+    from .binary.binary_pipeline import BinaryDiscoveryPipeline
+    pipeline = BinaryDiscoveryPipeline(asset_graph=asset_graph)
+    return pipeline.scan(data, name, project=project, scan_id=scan_id).to_dict()
+

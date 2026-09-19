@@ -1,0 +1,190 @@
+{
+  "version": "2024.1",
+  "effective_date": "2024-01-01",
+  "rules": [
+    {
+      "id": "LEG-001",
+      "version": "1.0",
+      "title": "Deprecated or Prohibited Algorithm",
+      "severity": "HIGH",
+      "result_factor": "DEPRECATED_ALGORITHM",
+      "condition_algorithm_status": [
+        "DEPRECATED",
+        "PROHIBITED"
+      ],
+      "explanation": "The algorithm is deprecated or prohibited by current cryptographic standards.",
+      "references": [
+        "NIST SP 800-131A Rev 2"
+      ]
+    },
+    {
+      "id": "LEG-002",
+      "version": "1.0",
+      "title": "Cryptographically Broken Algorithm",
+      "severity": "CRITICAL",
+      "result_factor": "WEAK_ALGORITHM",
+      "condition_algorithm_status": [
+        "INSUFFICIENT",
+        "BROKEN",
+        "BROKEN_CLASSICALLY"
+      ],
+      "explanation": "The algorithm is cryptographically broken by classical attacks.",
+      "references": [
+        "NIST SP 800-131A Rev 2"
+      ]
+    },
+    {
+      "id": "PQ-KEX-001",
+      "version": "1.0",
+      "title": "Quantum-Vulnerable Key Establishment",
+      "severity": "HIGH",
+      "result_factor": "QUANTUM_VULNERABLE_KEX",
+      "condition_role": "KEY_ESTABLISHMENT",
+      "condition_quantum_impact": "SHOR_BREAKS",
+      "explanation": "A key-establishment mechanism vulnerable to Shor algorithm was observed. Session keys may be exposed to Harvest-Now-Decrypt-Later attacks.",
+      "references": [
+        "NIST SP 800-57 Part 1 Rev 5",
+        "NIST IR 8309"
+      ]
+    },
+    {
+      "id": "PQ-SIG-001",
+      "version": "1.0",
+      "title": "Quantum-Vulnerable Digital Signature",
+      "severity": "HIGH",
+      "result_factor": "QUANTUM_VULNERABLE_SIGNATURE",
+      "condition_role": "SIGNATURE",
+      "condition_quantum_impact": "SHOR_BREAKS",
+      "explanation": "A digital signature algorithm vulnerable to Shor algorithm was observed. Signatures can be forged by a sufficiently capable quantum computer.",
+      "references": [
+        "NIST SP 800-57 Part 1 Rev 5"
+      ]
+    },
+    {
+      "id": "PQ-ENC-001",
+      "version": "1.0",
+      "title": "Quantum-Vulnerable Public Key Encryption",
+      "severity": "HIGH",
+      "result_factor": "QUANTUM_VULNERABLE_SIGNATURE",
+      "condition_role": "PUBLIC_KEY_ENCRYPTION",
+      "condition_quantum_impact": "SHOR_BREAKS",
+      "explanation": "A public-key encryption mechanism vulnerable to Shor algorithm was observed.",
+      "references": [
+        "NIST SP 800-57 Part 1 Rev 5"
+      ]
+    },
+    {
+      "id": "PQ-SYM-001",
+      "version": "1.0",
+      "title": "Symmetric Key Weakened by Grover",
+      "severity": "MEDIUM",
+      "result_factor": "QUANTUM_WEAKENED_SYMMETRIC",
+      "condition_role": "SYMMETRIC_ENCRYPTION",
+      "condition_quantum_security_bits_lt": 128,
+      "explanation": "Symmetric encryption with fewer than 256-bit keys is weakened by Grover algorithm (effective security halved). AES-256 or equivalent recommended.",
+      "references": [
+        "NIST SP 800-57 Part 1 Rev 5"
+      ]
+    },
+    {
+      "id": "CERT-001",
+      "version": "1.0",
+      "title": "Expired Certificate",
+      "severity": "HIGH",
+      "result_factor": "EXPIRED_CERTIFICATE",
+      "condition_certificate_expired": true,
+      "explanation": "The certificate has expired. Connections using this certificate cannot be verified."
+    },
+    {
+      "id": "CERT-002",
+      "version": "1.0",
+      "title": "Certificate Trust Validation Failed",
+      "severity": "MEDIUM",
+      "result_factor": "UNVERIFIED_CERTIFICATE_TRUST",
+      "condition_trust_validation_failed": true,
+      "explanation": "Certificate trust validation was performed and failed. The certificate chain cannot be verified."
+    },
+    {
+      "id": "TLS-001",
+      "version": "1.0",
+      "title": "Legacy TLS Version Negotiated",
+      "severity": "HIGH",
+      "result_factor": "LEGACY_PROTOCOL",
+      "condition_tls_version_negotiated": [
+        "TLSv1",
+        "TLSv1.0",
+        "TLSv1_1",
+        "TLSv1.1"
+      ],
+      "explanation": "A legacy TLS version was negotiated. TLS 1.0 and 1.1 are deprecated by RFC 8996.",
+      "references": [
+        "RFC 8996"
+      ]
+    },
+    {
+      "id": "TLS-002",
+      "version": "1.0",
+      "title": "Legacy TLS Version Supported",
+      "severity": "MEDIUM",
+      "result_factor": "LEGACY_PROTOCOL",
+      "condition_tls_version_supported": [
+        "TLSv1",
+        "TLSv1.0",
+        "TLSv1_1",
+        "TLSv1.1"
+      ],
+      "explanation": "A legacy TLS version is supported (not necessarily negotiated). Supporting deprecated versions increases attack surface.",
+      "references": [
+        "RFC 8996"
+      ]
+    },
+    {
+      "id": "PQR-001",
+      "version": "1.0",
+      "title": "PQC Not Negotiated for Key Establishment",
+      "severity": "MEDIUM",
+      "result_factor": "PQC_NOT_NEGOTIATED",
+      "condition_pqc_kex_state": "CLASSICAL_ONLY",
+      "explanation": "Key establishment was observed at network level without post-quantum hybrid support."
+    },
+    {
+      "id": "PQR-002",
+      "version": "1.0",
+      "title": "Partial PQC Readiness",
+      "severity": "INFO",
+      "result_factor": "PQC_PARTIAL_READINESS",
+      "condition_pqc_kex_state": "HYBRID_NEGOTIATED",
+      "condition_pqc_sig_state": "CLASSICAL_ONLY",
+      "explanation": "Hybrid key exchange negotiated but certificate authentication uses classical signatures. Full PQC readiness requires both."
+    },
+    {
+      "id": "HNDL-001",
+      "version": "1.0",
+      "title": "HNDL Exposure on Reachable Endpoint",
+      "severity": "HIGH",
+      "result_factor": "HNDL_EXPOSURE",
+      "condition_role": "KEY_ESTABLISHMENT",
+      "condition_quantum_impact": "SHOR_BREAKS",
+      "condition_network_reachable": true,
+      "explanation": "Quantum-vulnerable key establishment on a network-reachable endpoint creates Harvest-Now-Decrypt-Later exposure."
+    },
+    {
+      "id": "UNK-001",
+      "version": "1.0",
+      "title": "Unknown Algorithm Parameters",
+      "severity": "UNKNOWN",
+      "result_factor": "UNKNOWN_PARAMETERS",
+      "condition_parameter_status": "UNKNOWN",
+      "explanation": "Algorithm parameters (key size, curve) are unknown. Risk cannot be fully assessed."
+    },
+    {
+      "id": "UNK-002",
+      "version": "1.0",
+      "title": "Scanner Unavailable",
+      "severity": "UNKNOWN",
+      "result_factor": "SCANNER_UNAVAILABLE",
+      "condition_scanner_unavailable": true,
+      "explanation": "Scanner was unavailable. This is NOT evidence that the algorithm is unsupported."
+    }
+  ]
+}

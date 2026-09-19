@@ -1,0 +1,90 @@
+{
+  "benchmarks": [
+    {
+      "workload_size": 100,
+      "total_elapsed_sec": 0.1096,
+      "throughput_assets_per_sec": 912.09,
+      "comparison_time_sec": 0.0095,
+      "comparison_summary": {
+        "added_count": 8,
+        "removed_count": 7,
+        "changed_count": 13,
+        "unchanged_count": 72
+      },
+      "posture_evaluation_latency_ms": {
+        "p50": 0.9708,
+        "p95": 1.5872,
+        "p99": 2.5998,
+        "mean": 1.0223,
+        "min": 0.6171,
+        "max": 2.5998
+      },
+      "timeline_benchmark": {
+        "sample_assets_evaluated": 92,
+        "elapsed_sec": 0.0041
+      },
+      "memory_mb": {
+        "current_delta": 0.65,
+        "peak_allocated": 0.66
+      }
+    },
+    {
+      "workload_size": 1000,
+      "total_elapsed_sec": 0.1933,
+      "throughput_assets_per_sec": 5174.33,
+      "comparison_time_sec": 0.1132,
+      "comparison_summary": {
+        "added_count": 80,
+        "removed_count": 70,
+        "changed_count": 130,
+        "unchanged_count": 720
+      },
+      "posture_evaluation_latency_ms": {
+        "p50": 0.6489,
+        "p95": 0.9258,
+        "p99": 1.4041,
+        "mean": 0.6834,
+        "min": 0.6196,
+        "max": 1.4041
+      },
+      "timeline_benchmark": {
+        "sample_assets_evaluated": 100,
+        "elapsed_sec": 0.0042
+      },
+      "memory_mb": {
+        "current_delta": 2.05,
+        "peak_allocated": 2.05
+      }
+    },
+    {
+      "workload_size": 5000,
+      "total_elapsed_sec": 0.6094,
+      "throughput_assets_per_sec": 8204.94,
+      "comparison_time_sec": 0.5071,
+      "comparison_summary": {
+        "added_count": 400,
+        "removed_count": 350,
+        "changed_count": 650,
+        "unchanged_count": 3600
+      },
+      "posture_evaluation_latency_ms": {
+        "p50": 0.6407,
+        "p95": 0.7836,
+        "p99": 1.124,
+        "mean": 0.6648,
+        "min": 0.6185,
+        "max": 1.124
+      },
+      "timeline_benchmark": {
+        "sample_assets_evaluated": 100,
+        "elapsed_sec": 0.0041
+      },
+      "memory_mb": {
+        "current_delta": 8.14,
+        "peak_allocated": 9.31
+      }
+    }
+  ],
+  "timestamp": "2026-09-18T09:51:10Z",
+  "version": "M3-P5"
+}

@@ -5,9 +5,9 @@ clients' default negotiations. Failure never establishes universal non-support.
 """
 import os
 import re
-import selectors
 import shutil
 import subprocess
+import threading
 import time
 
 GROUPS = ('X25519MLKEM768', 'SecP256r1MLKEM768', 'SecP384r1MLKEM1024')
@@ -20,35 +20,45 @@ def run_bounded(argv, timeout=3.0, completed=None):
     for name in ('http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY'):
         env.pop(name, None)
     output = bytearray()
+    reason = None
+
     with subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                           stderr=subprocess.STDOUT, env=env) as proc:
-        with selectors.DefaultSelector() as selector:
-            selector.register(proc.stdout, selectors.EVENT_READ)
-            deadline = time.monotonic() + timeout
-            reason = None
-            try:
-                while True:
-                    remaining = deadline - time.monotonic()
-                    if remaining <= 0:
-                        reason = 'timeout'
-                        break
-                    if not selector.select(remaining):
-                        reason = 'timeout'
-                        break
-                    chunk = os.read(proc.stdout.fileno(), min(4096, MAX_OUTPUT + 1 - len(output)))
-                    if not chunk:
-                        break
-                    output.extend(chunk)
-                    if len(output) > MAX_OUTPUT:
-                        reason = 'output_limit'
-                        break
-                    if completed and completed(output.decode('utf-8', 'replace')):
-                        break
-            finally:
-                if proc.poll() is None:
+        def reader():
+            nonlocal reason
+            while True:
+                chunk = proc.stdout.read(min(4096, MAX_OUTPUT + 1 - len(output)))
+                if not chunk:
+                    break
+                output.extend(chunk)
+                if len(output) > MAX_OUTPUT:
+                    reason = 'output_limit'
+                    break
+                if completed and completed(output.decode('utf-8', 'replace')):
+                    break
+
+        t = threading.Thread(target=reader, daemon=True)
+        t.start()
+        t.join(timeout=timeout)
+        if t.is_alive():
+            reason = 'timeout'
+            if proc.poll() is None:
+                try:
                     proc.kill()
-                proc.wait()
+                except OSError:
+                    pass
+            t.join(timeout=0.5)
+        else:
+            if proc.poll() is None:
+                try:
+                    proc.kill()
+                except OSError:
+                    pass
+            proc.wait()
+
     return {'text': output[:MAX_OUTPUT].decode('utf-8', 'replace'), 'reason': reason}
+
+
 
 
 def handshake_evidence(text):

@@ -33,14 +33,20 @@ if [ ! -d ".venv" ]; then
     $PY_CMD -m venv .venv
 fi
 
+# Ensure pip is installed inside .venv
+if [ ! -f ".venv/bin/pip" ]; then
+    echo "[*] Bootstrapping pip in virtual environment..."
+    .venv/bin/python -m ensurepip --default-pip || true
+fi
+
 echo "[*] Installing backend dependencies..."
-.venv/bin/pip install --upgrade pip -q
-.venv/bin/pip install -r backend/requirements.txt -q
+.venv/bin/python -m pip install --upgrade pip -q
+.venv/bin/python -m pip install -r backend/requirements.txt -q
 
 # 4. Start Backend
 echo "[*] Launching FastAPI Backend on http://127.0.0.1:8000..."
 cd backend
-../.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
+PYTHONPATH=. ../.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
 BACKEND_PID=$!
 cd ..
 

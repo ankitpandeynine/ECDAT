@@ -11,6 +11,9 @@ def generate_cyclonedx_cbom(records, target_name='ECDAT Project'):
         evidence = result.get('findings', result.get('detections', []))
         if record['kind'] == 'network':
             evidence = [{'primitive': result['cipher_name'], 'category': 'TLS cipher observation', 'file': result['target'], 'issue': result['hndl_rationale']}]
+        elif record['kind'] == 'pcap':
+            evidence = [{'primitive': s.get('selected_cipher') or s.get('cipher_suite', 'TLS Session'), 'category': 'Passive PCAP TLS observation', 'file': f"{s.get('server_ip')}:{s.get('server_port', 443)}", 'issue': f"Observed TLS Handshake via PCAP (JA4: {s.get('ja4_fingerprint', 'N/A')})"} for s in result.get('sessions', [])]
+
         for i, finding in enumerate(evidence):
             primitive = finding.get('primitive', 'Unknown')
             upper = primitive.upper()
@@ -22,13 +25,16 @@ def generate_cyclonedx_cbom(records, target_name='ECDAT Project'):
                 crypto = {'assetType': 'certificate'}
             props = {
                 'ecdat:scanId': record['id'], 'ecdat:sourceType': record['kind'],
+                'ecdat:sourceSurface': finding.get('source_surface', record['kind']),
+                'ecdat:evidenceType': finding.get('evidence_type', 'static_inferred' if record['kind'] in ('code', 'binary') else 'network_observed'),
                 'ecdat:inputHash': record['input_hash'], 'ecdat:engineVersion': record['engine_version'],
                 'ecdat:observedAt': record['created_at'], 'ecdat:file': finding.get('file', ''),
                 'ecdat:line': finding.get('line', ''), 'ecdat:offset': finding.get('offset', ''),
                 'ecdat:confidence': finding.get('confidence', 'observed'),
                 'ecdat:severity': finding.get('severity', 'unassessed'),
                 'ecdat:sourceHash': finding.get('source_hash', ''),
-                'ecdat:section': finding.get('section', '')}
+                'ecdat:section': finding.get('section', ''),
+                'ecdat:quantumVulnerable': str(finding.get('quantum_vulnerable', any(k in upper for k in ('RSA', 'DES', 'MD5', 'SHA1', 'RC4'))))}
             components.append({'type': 'cryptographic-asset', 'bom-ref': f"{record['id']}:{i}",
                 'name': primitive, 'description': finding.get('issue', finding.get('description', 'Observed cryptographic indicator')),
                 'cryptoProperties': crypto,

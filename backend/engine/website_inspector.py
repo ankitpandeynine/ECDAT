@@ -1,9 +1,15 @@
 """One bounded HEAD request to the same vetted IP used for TLS collection."""
 import re
 import time
-from .network_prober import probe_tls_endpoint, _handshake, _context
 import socket
+from .network_prober import probe_tls_endpoint
+from .network.resolver import create_connection
+from .network.tls_analyzer import _tls_context as _context
 from .environment_discovery import discover_environment
+
+def _handshake(host, address, context, timeout):
+    raw = create_connection(address, timeout)
+    return context.wrap_socket(raw, server_hostname=host)
 
 MAX_HEADERS = 16 * 1024
 ALLOWED_HEADERS = {'server', 'via', 'x-powered-by', 'cf-ray', 'x-vercel-id',

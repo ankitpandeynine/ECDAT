@@ -1,0 +1,232 @@
+# ECDAT V4 Blast Radius Intelligence Rules v2024.1
+version: "2024.1"
+effective_date: "2024-01-01"
+engine_version: "4.0.0"
+
+traversal_bounds:
+  max_depth: 10
+  max_paths: 100
+  max_nodes: 500
+  max_edges: 1000
+
+relevant_relationships:
+  - USES
+  - DEPENDS_ON
+  - IMPLEMENTS
+  - PROTECTS
+  - SERVES
+  - PRESENT_ON
+  - PROVIDES
+  - CALLS
+  - CONTAINS
+  - CONFIGURED_BY
+  - BINDS_TO
+
+excluded_relationships:
+  - EVIDENCED_BY
+  - OBSERVED_BY
+  - MIGRATES_TO
+  - SCAN_TARGET
+
+states:
+  - DIRECT_ONLY
+  - TRANSITIVE
+  - MULTI_PATH
+  - CONTAINED
+  - WIDESPREAD
+  - UNKNOWN
+  - INCONCLUSIVE
+  - SCANNER_UNAVAILABLE
+  - NO_DEPENDENTS_OBSERVED
+
+impact_categories:
+  - NONE_OBSERVED
+  - LOCAL
+  - DIRECT
+  - TRANSITIVE
+  - MULTI_SERVICE
+  - CROSS_DEPLOYMENT
+  - WIDESPREAD
+  - UNKNOWN
+  - INCONCLUSIVE
+
+criticality_levels:
+  - LOW
+  - MEDIUM
+  - HIGH
+  - CRITICAL
+  - UNKNOWN
+
+rules:
+  # =========================================================================
+  # 1. RELATIONSHIP RELEVANCE (BLST-REL-*)
+  # =========================================================================
+  - rule_id: BLST-REL-001
+    version: "1.0"
+    category: RELATIONSHIP_RELEVANCE
+    title: "Direct Code-Level Consumption Edge"
+    relationship: USES
+    direction: REVERSE
+    rationale: "An asset that directly USES a target is affected if the target changes signature, algorithm, or protocol."
+
+  - rule_id: BLST-REL-002
+    version: "1.0"
+    category: RELATIONSHIP_RELEVANCE
+    title: "Package or Library Dependency Edge"
+    relationship: DEPENDS_ON
+    direction: REVERSE
+    rationale: "Downstream package or component depends on upstream cryptographic provider."
+
+  - rule_id: BLST-REL-003
+    version: "1.0"
+    category: RELATIONSHIP_RELEVANCE
+    title: "Service Provisioning or Binding Edge"
+    relationship: SERVES
+    direction: REVERSE
+    rationale: "Application component serves or exposes a network service using this cryptographic configuration."
+
+  - rule_id: BLST-REL-004
+    version: "1.0"
+    category: RELATIONSHIP_RELEVANCE
+    title: "Data Protection Boundary Edge"
+    relationship: PROTECTS
+    direction: REVERSE
+    rationale: "Cryptographic mechanism protects confidentiality or integrity of persistent data assets."
+
+  # =========================================================================
+  # 2. PATH CLASSIFICATION (BLST-PTH-*)
+  # =========================================================================
+  - rule_id: BLST-PTH-001
+    version: "1.0"
+    category: PATH_CLASSIFICATION
+    title: "Direct Single-Hop Dependent Path"
+    condition: "path_length == 1"
+    classification: DIRECT
+    rationale: "Immediate consumer directly invokes or links to target crypto asset."
+
+  - rule_id: BLST-PTH-002
+    version: "1.0"
+    category: PATH_CLASSIFICATION
+    title: "Transitive Multi-Hop Dependent Path"
+    condition: "path_length > 1"
+    classification: TRANSITIVE
+    rationale: "Indirect consumer depends on intermediate library, module, or service which consumes target."
+
+  - rule_id: BLST-PTH-003
+    version: "1.0"
+    category: PATH_CLASSIFICATION
+    title: "Multiple Independent Impact Paths"
+    condition: "distinct_path_count >= 2"
+    classification: MULTI_PATH
+    rationale: "Multiple independent paths link the consumer to the cryptographic target across different architectural facets."
+
+  # =========================================================================
+  # 3. IMPACT CATEGORIZATION (BLST-IMP-*)
+  # =========================================================================
+  - rule_id: BLST-IMP-001
+    version: "1.0"
+    category: IMPACT_CATEGORY
+    title: "No Dependents Observed in Graph Scope"
+    condition: "impacted_assets_count == 0"
+    category_output: NONE_OBSERVED
+    rationale: "No callers, dependencies, or consuming services observed within current scan graph boundary."
+    limitations: "Absence of observed dependents does not imply zero real-world risk or unused dead code."
+
+  - rule_id: BLST-IMP-002
+    version: "1.0"
+    category: IMPACT_CATEGORY
+    title: "Local Module / Component Impact"
+    condition: "same_module_only"
+    category_output: LOCAL
+    rationale: "Impact is strictly confined to internal functions or files within the same component."
+
+  - rule_id: BLST-IMP-003
+    version: "1.0"
+    category: IMPACT_CATEGORY
+    title: "Direct Immediate Dependent Impact"
+    condition: "all_direct_dependents"
+    category_output: DIRECT
+    rationale: "All impacted assets are immediate first-hop consumers."
+
+  - rule_id: BLST-IMP-004
+    version: "1.0"
+    category: IMPACT_CATEGORY
+    title: "Transitive Single-Service Impact"
+    condition: "transitive_within_single_service"
+    category_output: TRANSITIVE
+    rationale: "Impact propagates across multiple hops but remains inside a single application/service boundary."
+
+  - rule_id: BLST-IMP-005
+    version: "1.0"
+    category: IMPACT_CATEGORY
+    title: "Multi-Service Architectural Blast Radius"
+    condition: "impacted_services_count >= 2"
+    category_output: MULTI_SERVICE
+    rationale: "Cryptographic modification affects two or more distinct services across service boundaries."
+
+  - rule_id: BLST-IMP-006
+    version: "1.0"
+    category: IMPACT_CATEGORY
+    title: "Cross-Deployment Impact"
+    condition: "impacted_deployments_count >= 2"
+    category_output: CROSS_DEPLOYMENT
+    rationale: "Impact spans across multiple independent deployment targets, clusters, or containers."
+
+  - rule_id: BLST-IMP-007
+    version: "1.0"
+    category: IMPACT_CATEGORY
+    title: "Widespread Enterprise Blast Radius"
+    condition: "impacted_services_count >= 5 or total_impacted_count >= 20"
+    category_output: WIDESPREAD
+    rationale: "Widespread footprint across the enterprise graph requiring coordinated migration orchestration."
+
+  # =========================================================================
+  # 4. ARCHITECTURAL CRITICALITY (BLST-CRT-*)
+  # =========================================================================
+  - rule_id: BLST-CRT-001
+    version: "1.0"
+    category: CRITICALITY
+    title: "Production Environment Asset"
+    condition: "env == 'production' or is_production == true"
+    level: CRITICAL
+    rationale: "Asset is actively deployed in a verified production environment."
+
+  - rule_id: BLST-CRT-002
+    version: "1.0"
+    category: CRITICALITY
+    title: "Direct Protection of Regulated Data Asset"
+    condition: "protects_data_asset == true"
+    level: HIGH
+    rationale: "Cryptographic algorithm or key directly protects sensitive, regulated, or high-retention data."
+
+  - rule_id: BLST-CRT-003
+    version: "1.0"
+    category: CRITICALITY
+    title: "Externally Exposed Ingress Endpoint"
+    condition: "is_externally_exposed == true or public_ingress == true"
+    level: HIGH
+    rationale: "Cryptographic protocol secures publicly accessible ingress or perimeter boundary."
+
+  - rule_id: BLST-CRT-004
+    version: "1.0"
+    category: CRITICALITY
+    title: "Internal Microservice Communication"
+    condition: "internal_service_only == true"
+    level: MEDIUM
+    rationale: "Impact is confined to internal mesh or backend processing microservices."
+
+  - rule_id: BLST-CRT-005
+    version: "1.0"
+    category: CRITICALITY
+    title: "Development or Ephemeral Asset"
+    condition: "env == 'dev' or env == 'test' or ephemeral == true"
+    level: LOW
+    rationale: "Asset resides in development, staging, or transient testing environment."
+
+  - rule_id: BLST-CRT-006
+    version: "1.0"
+    category: CRITICALITY
+    title: "Unknown Criticality from Missing Evidence"
+    condition: "no_criticality_evidence"
+    level: UNKNOWN
+    rationale: "Insufficient evidence exists to categorize architectural criticality without speculation."

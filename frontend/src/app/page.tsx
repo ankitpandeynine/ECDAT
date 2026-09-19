@@ -90,7 +90,12 @@ export default function Home() {
               <span>·</span> Clear next steps
             </p>
           </div>
-          <div className="system-visual">
+          <div className="system-visual-wrap" aria-hidden="true">
+            <span className="visual-orb visual-orb-one" />
+            <span className="visual-orb visual-orb-two" />
+          </div>
+          <div className="system-visual" aria-label="Discovery workflow: websites and TLS, source and binaries, then a migration plan">
+            <span className="visual-sheen" aria-hidden="true" />
             <div className="visual-top">
               <Fingerprint size={18} />
               <span>YOUR SYSTEM, MADE VISIBLE</span>
@@ -101,7 +106,7 @@ export default function Home() {
               <ArrowRight size={23} />
               <span>Decision</span>
             </div>
-            <div className="discovery-node">
+            <div className="discovery-node node-one">
               <div className="node-icon">
                 <Globe2 />
               </div>
@@ -112,7 +117,7 @@ export default function Home() {
               <span className="node-number">01</span>
             </div>
             <div className="connector-line" />
-            <div className="discovery-node">
+            <div className="discovery-node node-two">
               <div className="node-icon">
                 <Layers3 />
               </div>
@@ -123,7 +128,7 @@ export default function Home() {
               <span className="node-number">02</span>
             </div>
             <div className="connector-line" />
-            <div className="discovery-node highlight">
+            <div className="discovery-node highlight node-plan">
               <div className="node-icon">
                 <Route />
               </div>

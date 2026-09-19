@@ -31,6 +31,20 @@ def crypto_migration(tls, findings):
             'Observed leaf certificate public key: ' + key,
             'Inventory CA, trust stores, client, HSM and protocol support. Use a supported PQ signature profile in a controlled environment; do not replace a public Web PKI certificate with an incompatible algorithm.',
             'Validate the whole trust chain and signatures in every required client. Hybrid TLS alone does not pass this check.', FIPS['signature'])
+    elif pq:
+        # Certificate could not be inspected (e.g. server only accepts the PQC group, blocking the Python SSL
+        # default handshake), but the certificate authentication path still requires independent migration.
+        # A hybrid KEX observation is NOT evidence that the certificate signature is PQ-safe.
+        add('Certificate public key — not inspectable in this scan', 'Certificate authentication / signatures',
+            'ML-DSA; SLH-DSA where appropriate and supported',
+            'Certificate authentication is a separate quantum-exposed dependency from key exchange. '
+            'Hybrid key exchange does not protect certificate signature trust chains.',
+            'Certificate public key could not be observed during this scan (likely due to cipher/group restrictions). '
+            'Inspect the certificate separately to determine the current signature algorithm.',
+            'Obtain the certificate separately and inspect the public key algorithm. '
+            'Inventory CA, trust stores, client, HSM and protocol support before migrating.',
+            'Validate the whole trust chain and signatures in every required client. '
+            'Hybrid TLS handshake success does not constitute a certificate signature check.', FIPS['signature'])
     for f in findings:
         primitive = str(f.get('primitive', 'Unknown'))
         p = primitive.upper()

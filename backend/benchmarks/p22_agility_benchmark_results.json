@@ -1,0 +1,36 @@
+{
+  "benchmark": "P2.2 Crypto-Agility Intelligence",
+  "date": "2026-09-18T04:39:53Z",
+  "runs": [
+    {
+      "asset_count": 100,
+      "total_time_seconds": 0.312,
+      "throughput_assets_per_sec": 320.6,
+      "latency_p50_ms": 2.825,
+      "latency_p95_ms": 4.939,
+      "latency_p99_ms": 5.257,
+      "memory_delta_mb": 0.04,
+      "peak_memory_mb": 0.05
+    },
+    {
+      "asset_count": 1000,
+      "total_time_seconds": 2.737,
+      "throughput_assets_per_sec": 365.4,
+      "latency_p50_ms": 2.5,
+      "latency_p95_ms": 4.492,
+      "latency_p99_ms": 5.563,
+      "memory_delta_mb": 0.08,
+      "peak_memory_mb": 0.09
+    },
+    {
+      "asset_count": 5000,
+      "total_time_seconds": 15.04,
+      "throughput_assets_per_sec": 332.4,
+      "latency_p50_ms": 2.709,
+      "latency_p95_ms": 4.758,
+      "latency_p99_ms": 5.571,
+      "memory_delta_mb": 0.19,
+      "peak_memory_mb": 0.2
+    }
+  ]
+}

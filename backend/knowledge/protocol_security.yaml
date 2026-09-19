@@ -1,0 +1,25 @@
+﻿# ECDAT V4 Protocol Security Knowledge Base v2024.1
+version: "2024.1"
+effective_date: "2024-01-01"
+tls_versions:
+  - {name: TLSv1,   canonical: TLSv1.0, status: PROHIBITED,  references: ["RFC 8996"]}
+  - {name: TLSv1.0, canonical: TLSv1.0, status: PROHIBITED,  references: ["RFC 8996"]}
+  - {name: TLSv1_1, canonical: TLSv1.1, status: PROHIBITED,  references: ["RFC 8996"]}
+  - {name: TLSv1.1, canonical: TLSv1.1, status: PROHIBITED,  references: ["RFC 8996"]}
+  - {name: TLSv1.2, canonical: TLSv1.2, status: ACCEPTABLE,  references: ["RFC 5246"]}
+  - {name: TLSv1_2, canonical: TLSv1.2, status: ACCEPTABLE,  references: ["RFC 5246"]}
+  - {name: TLSv1.3, canonical: TLSv1.3, status: CURRENT,     references: ["RFC 8446"]}
+  - {name: TLSv1_3, canonical: TLSv1.3, status: CURRENT,     references: ["RFC 8446"]}
+ssh_legacy_algorithms:
+  kex:
+    prohibited: [diffie-hellman-group1-sha1, diffie-hellman-group-exchange-sha1]
+    deprecated:  [diffie-hellman-group14-sha1]
+  hostkey:
+    prohibited: [ssh-dss]
+    deprecated:  [ssh-rsa]
+  mac:
+    prohibited: [hmac-md5, hmac-sha1-96]
+    deprecated:  [hmac-sha1]
+  encryption:
+    prohibited: [arcfour, arcfour128, arcfour256, 3des-cbc, blowfish-cbc]
+    deprecated:  [aes128-cbc, aes192-cbc, aes256-cbc]

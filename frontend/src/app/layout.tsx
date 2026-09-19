@@ -1,22 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const geistSans = Geist({
+const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
+const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "ECDAT | Enterprise Cryptographic Discovery & Analysis Tool",
   description:
-    "Evidence-based source, TLS, and binary cryptographic discovery with persistent scan history.",
+    "Evidence-based source, TLS, and binary cryptographic discovery with persistent scan history. NTRO / SIH26164 prototype.",
+  keywords: ["cryptography", "security", "PQC", "CBOM", "quantum risk", "migration"],
 };
 
 export default function RootLayout({
@@ -29,12 +32,12 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("ecdat-theme-v2");document.documentElement.classList.toggle("dark",t==="dark")}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem("ecdat-theme-v2");document.documentElement.classList.toggle("dark",t==null||t==="dark")}catch(e){document.documentElement.classList.add("dark")}})();`,
           }}
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
       >
         <TooltipProvider>{children}</TooltipProvider>
       </body>

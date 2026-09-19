@@ -1,0 +1,407 @@
+{
+  "version": "2024.1",
+  "effective_date": "2024-01-01",
+  "engine_version": "4.0.0",
+  "dimensions": [
+    "AGILITY_ALGORITHM",
+    "AGILITY_CONFIGURATION",
+    "AGILITY_DEPENDENCY",
+    "AGILITY_PROTOCOL",
+    "AGILITY_CERTIFICATE",
+    "AGILITY_DEPLOYMENT",
+    "AGILITY_VALIDATION"
+  ],
+  "rules": [
+    {
+      "rule_id": "AGL-ALG-001",
+      "version": "1.0",
+      "dimension": "AGILITY_ALGORITHM",
+      "title": "Cryptographic Provider Abstraction Observed",
+      "condition": "provider_abstraction_observed",
+      "state": "OBSERVED",
+      "required_evidence": [
+        "CRYPTO_ABSTRACTION",
+        "PROVIDER_INTERFACE"
+      ],
+      "rationale": "Cryptographic algorithm is selected through a provider abstraction (e.g. OpenSSL EVP, JCA/JCE, WebCrypto) with verified runtime dynamic selection.",
+      "limitations": "Provider abstraction does not guarantee that target replacement algorithm is installed or supported."
+    },
+    {
+      "rule_id": "AGL-ALG-002",
+      "version": "1.0",
+      "dimension": "AGILITY_ALGORITHM",
+      "title": "Cryptographic Abstraction Interface Supported",
+      "condition": "provider_abstraction_supported",
+      "state": "SUPPORTED",
+      "required_evidence": [
+        "CRYPTO_ABSTRACTION",
+        "CRYPTO_FACTORY",
+        "ALGORITHM_REGISTRY"
+      ],
+      "rationale": "Code uses factory or registry interface for algorithm instantiation, permitting pluggable algorithm substitution.",
+      "limitations": "Operational runtime configuration of alternative algorithm has not been directly verified."
+    },
+    {
+      "rule_id": "AGL-ALG-003",
+      "version": "1.0",
+      "dimension": "AGILITY_ALGORITHM",
+      "title": "Mixed Hardcoded and Abstracted Algorithm Usage",
+      "condition": "mixed_abstraction_and_hardcoded",
+      "state": "PARTIALLY_OBSERVED",
+      "required_evidence": [
+        "HARDCODED_ALGORITHM",
+        "CRYPTO_ABSTRACTION"
+      ],
+      "rationale": "Some cryptographic call sites utilize abstraction wrappers, while others bind directly to specific concrete algorithms.",
+      "limitations": "Full replaceability requires refactoring the hardcoded paths."
+    },
+    {
+      "rule_id": "AGL-ALG-004",
+      "version": "1.0",
+      "dimension": "AGILITY_ALGORITHM",
+      "title": "Hardcoded Cryptographic Algorithm Invocation",
+      "condition": "hardcoded_algorithm_direct_call",
+      "state": "CONSTRAINED",
+      "required_evidence": [
+        "HARDCODED_ALGORITHM",
+        "DIRECT_LIBRARY_BINDING"
+      ],
+      "rationale": "Direct API calls to concrete algorithm implementations (e.g. AES_encrypt, MD5_Init) without indirection layer.",
+      "limitations": "Constrained does not mean blocked; source code modification can achieve migration."
+    },
+    {
+      "rule_id": "AGL-ALG-005",
+      "version": "1.0",
+      "dimension": "AGILITY_ALGORITHM",
+      "title": "Immutable Binary Algorithm Lock",
+      "condition": "binary_blob_no_symbols",
+      "state": "BLOCKED",
+      "required_evidence": [
+        "BINARY_NO_SYMBOLS",
+        "PROPRIETARY_BINARY"
+      ],
+      "rationale": "Algorithm is compiled into a stripped proprietary binary or ROM with no external interface, preventing modification without binary replacement.",
+      "limitations": "Reverse engineering or complete binary substitution required."
+    },
+    {
+      "rule_id": "AGL-CFG-001",
+      "version": "1.0",
+      "dimension": "AGILITY_CONFIGURATION",
+      "title": "Runtime Dynamic Configuration Observed",
+      "condition": "runtime_config_observed",
+      "state": "OBSERVED",
+      "required_evidence": [
+        "CONFIGURABLE_ALGORITHM",
+        "RUNTIME_CONFIG_RELOAD"
+      ],
+      "rationale": "Active evidence confirms algorithm selection, key sizes, and cipher parameters are loaded dynamically from environment or configuration at runtime.",
+      "limitations": "Requires configuration management system to push updates."
+    },
+    {
+      "rule_id": "AGL-CFG-002",
+      "version": "1.0",
+      "dimension": "AGILITY_CONFIGURATION",
+      "title": "External Configuration Option Supported",
+      "condition": "config_option_declared",
+      "state": "SUPPORTED",
+      "required_evidence": [
+        "CONFIG_FILE",
+        "ENVIRONMENT_VARIABLE"
+      ],
+      "rationale": "Configuration options exist in config files or environment schemas, allowing crypto parameters to be changed without recompilation.",
+      "limitations": "Runtime modification has not been actively exercised or verified in the scan."
+    },
+    {
+      "rule_id": "AGL-CFG-003",
+      "version": "1.0",
+      "dimension": "AGILITY_CONFIGURATION",
+      "title": "Configurable with Hardcoded Fallback",
+      "condition": "config_with_hardcoded_fallback",
+      "state": "PARTIALLY_OBSERVED",
+      "required_evidence": [
+        "CONFIG_FILE",
+        "HARDCODED_FALLBACK"
+      ],
+      "rationale": "Configuration permits parameter override, but application falls back to a hardcoded algorithm when configuration is missing or invalid.",
+      "limitations": "Fallback algorithm may be selected unexpectedly in degraded environments."
+    },
+    {
+      "rule_id": "AGL-CFG-004",
+      "version": "1.0",
+      "dimension": "AGILITY_CONFIGURATION",
+      "title": "Hardcoded Configuration Constants",
+      "condition": "hardcoded_crypto_constants",
+      "state": "CONSTRAINED",
+      "required_evidence": [
+        "HARDCODED_KEY",
+        "HARDCODED_IV",
+        "HARDCODED_CIPHER_STRING"
+      ],
+      "rationale": "Cryptographic parameters, keys, IVs, or cipher names are embedded as static constants in source code or binaries.",
+      "limitations": "Code change or recompile required to modify cryptographic parameters."
+    },
+    {
+      "rule_id": "AGL-DEP-001",
+      "version": "1.0",
+      "dimension": "AGILITY_DEPENDENCY",
+      "title": "Pluggable Modular Crypto Provider",
+      "condition": "dynamic_provider_module",
+      "state": "OBSERVED",
+      "required_evidence": [
+        "DYNAMIC_LIBRARY",
+        "PROVIDER_INTERFACE"
+      ],
+      "rationale": "Cryptographic operations are serviced by dynamically linked or pluggable provider modules that can be replaced on disk without recompilation.",
+      "limitations": "ABI compatibility must be maintained across provider versions."
+    },
+    {
+      "rule_id": "AGL-DEP-002",
+      "version": "1.0",
+      "dimension": "AGILITY_DEPENDENCY",
+      "title": "Standard Managed Dependency",
+      "condition": "package_manager_dependency",
+      "state": "SUPPORTED",
+      "required_evidence": [
+        "DEPENDENCY_DECLARATION"
+      ],
+      "rationale": "Crypto library is declared via standard package managers (pip, npm, cargo, maven), enabling version upgrades.",
+      "limitations": "Upgrade requires dependency tree resolution and dependency lock regeneration."
+    },
+    {
+      "rule_id": "AGL-DEP-003",
+      "version": "1.0",
+      "dimension": "AGILITY_DEPENDENCY",
+      "title": "Strictly Pinned or Vendored Dependency",
+      "condition": "pinned_vendored_dependency",
+      "state": "CONSTRAINED",
+      "required_evidence": [
+        "DEPENDENCY_LOCK",
+        "VENDORED_SOURCE"
+      ],
+      "rationale": "Cryptographic library is pinned to an immutable hash/version or vendored directly inside the project repository.",
+      "limitations": "Pinning is a hygiene measure, not an immutability barrier, but increases update friction."
+    },
+    {
+      "rule_id": "AGL-DEP-004",
+      "version": "1.0",
+      "dimension": "AGILITY_DEPENDENCY",
+      "title": "Statically Bound Proprietary Crypto Library",
+      "condition": "static_proprietary_binding",
+      "state": "BLOCKED",
+      "required_evidence": [
+        "STATIC_BINARY_BINDING",
+        "NO_SOURCE_AVAILABLE"
+      ],
+      "rationale": "Cryptographic implementation is statically linked into an unmodifiable artifact with no replacement provider interface.",
+      "limitations": "Requires complete re-linking or recompilation from upstream supplier."
+    },
+    {
+      "rule_id": "AGL-PRT-001",
+      "version": "1.0",
+      "dimension": "AGILITY_PROTOCOL",
+      "title": "Dynamic Protocol Cipher Suite Negotiation",
+      "condition": "dynamic_protocol_negotiation",
+      "state": "OBSERVED",
+      "required_evidence": [
+        "TLS_NEGOTIATION",
+        "RUNTIME_CIPHER_SELECTION"
+      ],
+      "rationale": "Live observation shows protocol negotiating cipher suites or KEX groups dynamically based on peer capabilities and runtime preference.",
+      "limitations": "Downgrade attacks may occur if legacy protocols remain enabled."
+    },
+    {
+      "rule_id": "AGL-PRT-002",
+      "version": "1.0",
+      "dimension": "AGILITY_PROTOCOL",
+      "title": "Configurable Protocol Cipher Suites",
+      "condition": "protocol_config_supported",
+      "state": "SUPPORTED",
+      "required_evidence": [
+        "PROTOCOL_CONFIGURATION",
+        "TLS_CONFIGURATION"
+      ],
+      "rationale": "Protocol configuration allows administrators to modify accepted cipher suites, TLS versions, or SSH key exchange algorithms.",
+      "limitations": "Configuration capability does not prove that secure suites are actually selected at runtime."
+    },
+    {
+      "rule_id": "AGL-PRT-003",
+      "version": "1.0",
+      "dimension": "AGILITY_PROTOCOL",
+      "title": "Constrained Protocol Configuration",
+      "condition": "hardcoded_protocol_parameters",
+      "state": "CONSTRAINED",
+      "required_evidence": [
+        "HARDCODED_PROTOCOL",
+        "HARDCODED_CIPHER_LIST"
+      ],
+      "rationale": "Protocol version or cipher suite list is hardcoded in application source code, preventing operational updates without recompiling.",
+      "limitations": "Source code change required to update accepted ciphers."
+    },
+    {
+      "rule_id": "AGL-CRT-001",
+      "version": "1.0",
+      "dimension": "AGILITY_CERTIFICATE",
+      "title": "Automated Certificate Lifecycle Rotation",
+      "condition": "automated_cert_rotation_observed",
+      "state": "OBSERVED",
+      "required_evidence": [
+        "ROTATION_MECHANISM",
+        "ACME_INTEGRATION"
+      ],
+      "rationale": "Active evidence of automated certificate issuance and rotation (e.g. ACME protocol, cert-manager, HashiCorp Vault agent).",
+      "limitations": "Rotation failure alerting must be verified separately."
+    },
+    {
+      "rule_id": "AGL-CRT-002",
+      "version": "1.0",
+      "dimension": "AGILITY_CERTIFICATE",
+      "title": "Externalized Keystore / Certificate Path",
+      "condition": "external_cert_keystore_supported",
+      "state": "SUPPORTED",
+      "required_evidence": [
+        "CERT_EXTERNALIZATION",
+        "KEY_EXTERNALIZATION"
+      ],
+      "rationale": "Certificates and private keys are loaded from external filesystem paths or hardware/cloud keystores (PKCS#11, KMS).",
+      "limitations": "Externalization permits replacement, but manual reload or service restart may still be required."
+    },
+    {
+      "rule_id": "AGL-CRT-003",
+      "version": "1.0",
+      "dimension": "AGILITY_CERTIFICATE",
+      "title": "Static Certificate with Manual Rotation",
+      "condition": "static_cert_no_automation",
+      "state": "PARTIALLY_OBSERVED",
+      "required_evidence": [
+        "X509_CERTIFICATE",
+        "NO_ROTATION_AUTOMATION"
+      ],
+      "rationale": "Certificates are externalized but lack automated renewal or short validity management.",
+      "limitations": "Prone to outage upon expiration."
+    },
+    {
+      "rule_id": "AGL-CRT-004",
+      "version": "1.0",
+      "dimension": "AGILITY_CERTIFICATE",
+      "title": "Embedded Certificate or Private Key",
+      "condition": "embedded_cert_or_key",
+      "state": "CONSTRAINED",
+      "required_evidence": [
+        "HARDCODED_KEY",
+        "EMBEDDED_CERTIFICATE"
+      ],
+      "rationale": "Certificate or private key material is embedded directly in source files or compiled binaries.",
+      "limitations": "Key rotation requires rebuilding and redeploying the software artifact."
+    },
+    {
+      "rule_id": "AGL-DPL-001",
+      "version": "1.0",
+      "dimension": "AGILITY_DEPLOYMENT",
+      "title": "Zero-Downtime Dynamic Configuration Reload",
+      "condition": "dynamic_reload_observed",
+      "state": "OBSERVED",
+      "required_evidence": [
+        "RUNTIME_CONFIG_RELOAD",
+        "HOT_RELOAD_CAPABLE"
+      ],
+      "rationale": "Cryptographic configuration can be reloaded without service interruption or process restart.",
+      "limitations": "State synchronization across distributed instances required."
+    },
+    {
+      "rule_id": "AGL-DPL-002",
+      "version": "1.0",
+      "dimension": "AGILITY_DEPLOYMENT",
+      "title": "Containerized Modular Service",
+      "condition": "containerized_deployment_supported",
+      "state": "SUPPORTED",
+      "required_evidence": [
+        "CONTAINER_IMAGE",
+        "DEPLOYMENT_CONFIGURATION"
+      ],
+      "rationale": "Service is deployed in containerized environment with externalized volume mounts or environment-based configuration.",
+      "limitations": "Service restart may be required to apply new cryptographic configuration."
+    },
+    {
+      "rule_id": "AGL-DPL-003",
+      "version": "1.0",
+      "dimension": "AGILITY_DEPLOYMENT",
+      "title": "Recompilation Required for Crypto Change",
+      "condition": "recompile_required",
+      "state": "CONSTRAINED",
+      "required_evidence": [
+        "STATIC_BINARY",
+        "NO_EXTERNAL_CONFIG"
+      ],
+      "rationale": "Changing cryptographic behavior requires a full source build, packaging, and redeployment cycle.",
+      "limitations": "Slow deployment pipeline delays emergency cryptographic revocation."
+    },
+    {
+      "rule_id": "AGL-DPL-004",
+      "version": "1.0",
+      "dimension": "AGILITY_DEPLOYMENT",
+      "title": "Immutable Hardware / Firmware Flash Required",
+      "condition": "firmware_flash_barrier",
+      "state": "BLOCKED",
+      "required_evidence": [
+        "FIRMWARE_CONTENT",
+        "NO_RELOAD_MECHANISM"
+      ],
+      "rationale": "Cryptographic logic is burned into hardware ROM or requires physical flashing with verified anti-rollback locks.",
+      "limitations": "Field updates may be physically impossible or carry catastrophic bricking risk."
+    },
+    {
+      "rule_id": "AGL-VAL-001",
+      "version": "1.0",
+      "dimension": "AGILITY_VALIDATION",
+      "title": "Automated Cryptographic Test Harness Observed",
+      "condition": "crypto_tests_observed",
+      "state": "OBSERVED",
+      "required_evidence": [
+        "CRYPTO_TEST",
+        "TEST_VECTORS_VERIFIED"
+      ],
+      "rationale": "Dedicated cryptographic test suite (NIST CAVP, Project Wycheproof, known-answer tests) verified in repository.",
+      "limitations": "Tests validate existing algorithms; new PQC algorithm test cases must be added during migration."
+    },
+    {
+      "rule_id": "AGL-VAL-002",
+      "version": "1.0",
+      "dimension": "AGILITY_VALIDATION",
+      "title": "General Unit and Integration Testing Supported",
+      "condition": "general_test_suite_supported",
+      "state": "SUPPORTED",
+      "required_evidence": [
+        "UNIT_TEST",
+        "INTEGRATION_TEST"
+      ],
+      "rationale": "General automated tests exercise cryptographic call sites, enabling regression detection during cryptographic replacement.",
+      "limitations": "General tests may lack edge-case cryptographic boundary validation."
+    },
+    {
+      "rule_id": "AGL-VAL-003",
+      "version": "1.0",
+      "dimension": "AGILITY_VALIDATION",
+      "title": "Interoperability and Regression Testing Supported",
+      "condition": "interop_tests_supported",
+      "state": "PARTIALLY_OBSERVED",
+      "required_evidence": [
+        "INTEROPERABILITY_TEST"
+      ],
+      "rationale": "Interoperability tests verify protocol compatibility across peers, but internal primitive unit tests are absent.",
+      "limitations": "Internal algorithmic flaws may escape notice."
+    },
+    {
+      "rule_id": "AGL-VAL-004",
+      "version": "1.0",
+      "dimension": "AGILITY_VALIDATION",
+      "title": "No Cryptographic Verification Harness",
+      "condition": "no_tests_observed",
+      "state": "CONSTRAINED",
+      "required_evidence": [
+        "NO_TESTS_OBSERVED"
+      ],
+      "rationale": "No test suite or validation harness observed. Upgrading cryptographic primitives carries high risk of unverified failure.",
+      "limitations": "Manual validation required before production rollout."
+    }
+  ]
+}

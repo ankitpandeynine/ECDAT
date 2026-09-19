@@ -1,0 +1,80 @@
+{
+  "benchmarks": [
+    {
+      "workload_size": 100,
+      "total_elapsed_sec": 0.1195,
+      "throughput_assets_per_sec": 836.79,
+      "latency_ms": {
+        "p50": 1.2504,
+        "p95": 1.697,
+        "p99": 2.1807,
+        "mean": 1.1923,
+        "min": 0.6614,
+        "max": 2.1807
+      },
+      "memory_mb": {
+        "current_delta": 0.81,
+        "peak_allocated": 0.82
+      },
+      "state_distribution": {
+        "NO_DEPENDENTS_OBSERVED": 20,
+        "DIRECT_ONLY": 20,
+        "TRANSITIVE": 20,
+        "MULTI_PATH": 20,
+        "CONTAINED": 0,
+        "WIDESPREAD": 20
+      }
+    },
+    {
+      "workload_size": 1000,
+      "total_elapsed_sec": 1.1453,
+      "throughput_assets_per_sec": 873.17,
+      "latency_ms": {
+        "p50": 1.2316,
+        "p95": 1.498,
+        "p99": 1.7997,
+        "mean": 1.1428,
+        "min": 0.6494,
+        "max": 5.022
+      },
+      "memory_mb": {
+        "current_delta": 7.86,
+        "peak_allocated": 7.86
+      },
+      "state_distribution": {
+        "NO_DEPENDENTS_OBSERVED": 200,
+        "DIRECT_ONLY": 200,
+        "TRANSITIVE": 200,
+        "MULTI_PATH": 200,
+        "CONTAINED": 0,
+        "WIDESPREAD": 200
+      }
+    },
+    {
+      "workload_size": 5000,
+      "total_elapsed_sec": 6.1274,
+      "throughput_assets_per_sec": 816.0,
+      "latency_ms": {
+        "p50": 1.2487,
+        "p95": 1.8526,
+        "p99": 2.9442,
+        "mean": 1.223,
+        "min": 0.6473,
+        "max": 14.8415
+      },
+      "memory_mb": {
+        "current_delta": 39.13,
+        "peak_allocated": 39.13
+      },
+      "state_distribution": {
+        "NO_DEPENDENTS_OBSERVED": 1000,
+        "DIRECT_ONLY": 1000,
+        "TRANSITIVE": 1000,
+        "MULTI_PATH": 1000,
+        "CONTAINED": 0,
+        "WIDESPREAD": 1000
+      }
+    }
+  ],
+  "timestamp": "2026-09-18T05:45:34Z"
+}

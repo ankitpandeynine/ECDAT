@@ -1,0 +1,388 @@
+# ECDAT V4 — Comprehensive Binary Cryptographic Signature & Constant Knowledge Base
+# Standard byte signatures, initialization vectors, S-boxes, polynomial tables, and OIDs.
+
+signatures:
+  - id: SIG-AES-SBOX
+    name: "AES Rijndael S-Box"
+    family: "AES"
+    algorithm: "AES"
+    category: "SYMMETRIC"
+    bytes_hex: "637c777bf26b6fc53001672bfed7ab76ca82c97dfa5947f0add4a2af9ca472c0"
+    min_length: 32
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.85
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "AES substitution box lookup table (32-byte prefix). Confirms compiled AES support."
+
+  - id: SIG-AES-INVSBOX
+    name: "AES Rijndael Inverse S-Box"
+    family: "AES"
+    algorithm: "AES"
+    category: "SYMMETRIC"
+    bytes_hex: "52096ad53036a538bf40a39e81f3d7fb"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.85
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "AES inverse substitution box prefix for decryption routines."
+
+  - id: SIG-DES-IP
+    name: "DES Initial Permutation Table"
+    family: "DES"
+    algorithm: "DES"
+    category: "SYMMETRIC"
+    bytes_hex: "3a322a221a120a023c342c241c140c04"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "HIGH"
+    confidence: 0.90
+    pqc_status: "LEGACY_BROKEN"
+    description: "Data Encryption Standard (DES) 16-entry initial permutation table."
+
+  - id: SIG-CHACHA20-SIGMA
+    name: "ChaCha20 / Poly1305 32-byte Key Constant"
+    family: "CHACHA20"
+    algorithm: "ChaCha20"
+    category: "SYMMETRIC"
+    bytes_hex: "657870616e642033322d62797465206b"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.95
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "ChaCha20 stream cipher constant 'expand 32-byte k'."
+
+  - id: SIG-CHACHA20-TAU
+    name: "ChaCha20 16-byte Key Constant"
+    family: "CHACHA20"
+    algorithm: "ChaCha20"
+    category: "SYMMETRIC"
+    bytes_hex: "657870616e642031362d62797465206b"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "MEDIUM"
+    confidence: 0.95
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "ChaCha20 stream cipher constant 'expand 16-byte k'."
+
+  - id: SIG-SM4-SBOX
+    name: "SM4 Block Cipher S-Box"
+    family: "SM4"
+    algorithm: "SM4"
+    category: "SYMMETRIC"
+    bytes_hex: "d690e9fe0cc6e13db716b614c228fb2c"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.85
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "Chinese National Standard SM4 block cipher S-box."
+
+  - id: SIG-BLOWFISH-P
+    name: "Blowfish P-Array Subkeys"
+    family: "BLOWFISH"
+    algorithm: "Blowfish"
+    category: "SYMMETRIC"
+    bytes_hex: "243f6a8885a308d313198a2e03707344"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "MEDIUM"
+    confidence: 0.85
+    pqc_status: "LEGACY_DEPRECATED"
+    description: "Blowfish initial P-array constants derived from fractional digits of pi."
+
+  - id: SIG-MD5-IV
+    name: "MD5 State Initialization Constants"
+    family: "MD5"
+    algorithm: "MD5"
+    category: "HASH"
+    bytes_hex: "0123456789abcdef0fedcba9876543210"
+    canonical_hex: "0123456789abcdeffedcba9876543210"
+    min_length: 16
+    supports_word_reversal: true
+    severity: "HIGH"
+    confidence: 0.90
+    pqc_status: "LEGACY_BROKEN"
+    description: "MD5 hash initial chaining state words A, B, C, D in little-endian order."
+
+  - id: SIG-SHA1-IV
+    name: "SHA-1 State Initialization Constants"
+    family: "SHA1"
+    algorithm: "SHA-1"
+    category: "HASH"
+    bytes_hex: "67452301efcdab8998badcfe10325476c3d2e1f0"
+    canonical_hex: "67452301efcdab8998badcfe10325476c3d2e1f0"
+    min_length: 20
+    supports_word_reversal: true
+    severity: "HIGH"
+    confidence: 0.90
+    pqc_status: "LEGACY_BROKEN"
+    description: "NIST SHA-1 hash 160-bit initial chaining vector in big-endian order."
+
+  - id: SIG-SHA256-IV
+    name: "SHA-256 State Initialization Constants"
+    family: "SHA2"
+    algorithm: "SHA-256"
+    category: "HASH"
+    bytes_hex: "6a09e667bb67ae853c6ef372a54ff53a"
+    canonical_hex: "6a09e667bb67ae853c6ef372a54ff53a"
+    min_length: 16
+    supports_word_reversal: true
+    severity: "LOW"
+    confidence: 0.90
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "NIST SHA-256 first 4 32-bit state words (fractional cube roots of first primes)."
+
+  - id: SIG-SHA224-IV
+    name: "SHA-224 State Initialization Constants"
+    family: "SHA2"
+    algorithm: "SHA-224"
+    category: "HASH"
+    bytes_hex: "c1059ed8367cd5073070dd17f70e5939"
+    canonical_hex: "c1059ed8367cd5073070dd17f70e5939"
+    min_length: 16
+    supports_word_reversal: true
+    severity: "LOW"
+    confidence: 0.90
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "NIST SHA-224 initial chaining words."
+
+  - id: SIG-SHA512-IV
+    name: "SHA-512 State Initialization Constants"
+    family: "SHA2"
+    algorithm: "SHA-512"
+    category: "HASH"
+    bytes_hex: "6a09e667f3bcc908bb67ae8584caa73b"
+    canonical_hex: "6a09e667f3bcc908bb67ae8584caa73b"
+    min_length: 16
+    supports_word_reversal: true
+    severity: "LOW"
+    confidence: 0.90
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "NIST SHA-512 first 2 64-bit state words."
+
+  - id: SIG-SHA384-IV
+    name: "SHA-384 State Initialization Constants"
+    family: "SHA2"
+    algorithm: "SHA-384"
+    category: "HASH"
+    bytes_hex: "cbbb9d5dc1059ed8629a292a367cd507"
+    canonical_hex: "cbbb9d5dc1059ed8629a292a367cd507"
+    min_length: 16
+    supports_word_reversal: true
+    severity: "LOW"
+    confidence: 0.90
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "NIST SHA-384 initial chaining vector prefix."
+
+  - id: SIG-SHA3-KECCAK-RC
+    name: "Keccak / SHA-3 Round Constants"
+    family: "SHA3"
+    algorithm: "SHA-3"
+    category: "HASH"
+    bytes_hex: "01000000000000008280000000000000"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.90
+    pqc_status: "PQC_STANDARDIZED"
+    description: "Keccak-f[1600] permutation round constants RC[0] and RC[1]."
+
+  - id: SIG-BLAKE2B-IV
+    name: "BLAKE2b Initialization Vector"
+    family: "BLAKE2"
+    algorithm: "BLAKE2b"
+    category: "HASH"
+    bytes_hex: "6a09e667f3bcc908bb67ae8584caa73b"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.85
+    pqc_status: "QUANTUM_RESISTANT_PQC_TRANSITION_RECOMMENDED"
+    description: "BLAKE2b 64-bit IV prefix."
+
+  - id: SIG-RIPEMD160-IV
+    name: "RIPEMD-160 Initialization State"
+    family: "RIPEMD"
+    algorithm: "RIPEMD-160"
+    category: "HASH"
+    bytes_hex: "0123456789abcdeffedcba987654321032547698"
+    min_length: 20
+    supports_word_reversal: true
+    severity: "MEDIUM"
+    confidence: 0.90
+    pqc_status: "LEGACY_DEPRECATED"
+    description: "RIPEMD-160 hash state constants."
+
+  - id: SIG-CURVE25519-BASE
+    name: "Curve25519 / X25519 Generator Point"
+    family: "ECC"
+    algorithm: "X25519"
+    category: "ASYMMETRIC"
+    bytes_hex: "0900000000000000000000000000000000000000000000000000000000000000"
+    min_length: 32
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.90
+    pqc_status: "QUANTUM_VULNERABLE"
+    description: "Montgomery curve Curve25519 base point u = 9."
+
+  - id: SIG-ED25519-D
+    name: "Ed25519 Curve Parameter d"
+    family: "ECC"
+    algorithm: "Ed25519"
+    category: "ASYMMETRIC"
+    bytes_hex: "a3785913ca4deb75abd841414d0a7000"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.90
+    pqc_status: "QUANTUM_VULNERABLE"
+    description: "Edwards-curve Ed25519 d constant (-121665/121666 mod 2^255-19) prefix."
+
+  - id: SIG-MLKEM-KYBER-ZETAS
+    name: "ML-KEM / Kyber NTT Roots of Unity"
+    family: "ML-KEM"
+    algorithm: "ML-KEM"
+    category: "PQC"
+    bytes_hex: "e3085a0aa8091b09d4068a054803f002"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.98
+    pqc_status: "PQC_STANDARDIZED"
+    description: "FIPS 203 ML-KEM / CRYSTALS-Kyber Number Theoretic Transform (NTT) twiddle factors."
+
+  - id: SIG-MLDSA-DILITHIUM-ZETAS
+    name: "ML-DSA / Dilithium NTT Roots of Unity"
+    family: "ML-DSA"
+    algorithm: "ML-DSA"
+    category: "PQC"
+    bytes_hex: "00000000803f00000000803f00000000"
+    min_length: 16
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.95
+    pqc_status: "PQC_STANDARDIZED"
+    description: "FIPS 204 ML-DSA / CRYSTALS-Dilithium NTT twiddle factor table."
+
+  - id: SIG-SPHINCS-PLUS-PAD
+    name: "SLH-DSA / SPHINCS+ Hash Padding Constant"
+    family: "SLH-DSA"
+    algorithm: "SLH-DSA"
+    category: "PQC"
+    bytes_hex: "535048494e43532b"
+    min_length: 8
+    supports_word_reversal: false
+    severity: "LOW"
+    confidence: 0.95
+    pqc_status: "PQC_STANDARDIZED"
+    description: "FIPS 205 SLH-DSA / SPHINCS+ domain separator string 'SPHINCS+'."
+
+asn1_oids:
+  - id: OID-RSA-ENCRYPTION
+    oid: "1.2.840.113549.1.1.1"
+    name: "rsaEncryption"
+    algorithm: "RSA"
+    category: "ASYMMETRIC"
+    bytes_hex: "06092a864886f70d010101"
+    pqc_status: "QUANTUM_VULNERABLE"
+    severity: "HIGH"
+
+  - id: OID-EC-PUBLIC-KEY
+    oid: "1.2.840.10045.2.1"
+    name: "id-ecPublicKey"
+    algorithm: "ECDSA"
+    category: "ASYMMETRIC"
+    bytes_hex: "06072a8648ce3d0201"
+    pqc_status: "QUANTUM_VULNERABLE"
+    severity: "HIGH"
+
+  - id: OID-SECP256R1
+    oid: "1.2.840.10045.3.1.7"
+    name: "secp256r1 / prime256v1"
+    algorithm: "ECDSA"
+    category: "ASYMMETRIC"
+    bytes_hex: "06082a8648ce3d030107"
+    pqc_status: "QUANTUM_VULNERABLE"
+    severity: "HIGH"
+
+  - id: OID-ED25519
+    oid: "1.3.101.112"
+    name: "id-Ed25519"
+    algorithm: "Ed25519"
+    category: "ASYMMETRIC"
+    bytes_hex: "06032b6570"
+    pqc_status: "QUANTUM_VULNERABLE"
+    severity: "HIGH"
+
+  - id: OID-X25519
+    oid: "1.3.101.110"
+    name: "id-X25519"
+    algorithm: "X25519"
+    category: "ASYMMETRIC"
+    bytes_hex: "06032b656e"
+    pqc_status: "QUANTUM_VULNERABLE"
+    severity: "HIGH"
+
+  - id: OID-ML-KEM-768
+    oid: "2.16.840.1.101.3.4.4.2"
+    name: "ml-kem-768"
+    algorithm: "ML-KEM-768"
+    category: "PQC"
+    bytes_hex: "0609608648016503040402"
+    pqc_status: "PQC_STANDARDIZED"
+    severity: "LOW"
+
+  - id: OID-ML-DSA-65
+    oid: "2.16.840.1.101.3.4.3.18"
+    name: "ml-dsa-65"
+    algorithm: "ML-DSA-65"
+    category: "PQC"
+    bytes_hex: "0609608648016503040312"
+    pqc_status: "PQC_STANDARDIZED"
+    severity: "LOW"
+
+crypto_libraries:
+  - name: "libcrypto"
+    patterns: ["libcrypto.so", "libcrypto.dylib", "libcrypto-3.dll", "libcrypto-1_1.dll"]
+    family: "OpenSSL"
+    description: "OpenSSL core cryptographic primitives library"
+  - name: "libssl"
+    patterns: ["libssl.so", "libssl.dylib", "libssl-3.dll", "libssl-1_1.dll"]
+    family: "OpenSSL"
+    description: "OpenSSL SSL/TLS protocol library"
+  - name: "bcrypt"
+    patterns: ["bcrypt.dll"]
+    family: "Windows CNG"
+    description: "Windows Best Cryptography Next Generation core DLL"
+  - name: "crypt32"
+    patterns: ["crypt32.dll"]
+    family: "Windows CryptoAPI"
+    description: "Windows legacy Cryptographic API services"
+  - name: "ncrypt"
+    patterns: ["ncrypt.dll"]
+    family: "Windows CNG"
+    description: "Windows CNG Key Storage Provider"
+  - name: "libsodium"
+    patterns: ["libsodium.so", "libsodium.dylib", "libsodium.dll"]
+    family: "Sodium"
+    description: "Modern portable cryptographic library"
+  - name: "libgnutls"
+    patterns: ["libgnutls.so", "libgnutls.dylib"]
+    family: "GnuTLS"
+    description: "GNU Transport Layer Security Library"
+  - name: "libwolfssl"
+    patterns: ["libwolfssl.so", "libwolfssl.dylib", "wolfssl.dll"]
+    family: "wolfSSL"
+    description: "Embedded lightweight SSL/TLS library"
+  - name: "libmbedtls"
+    patterns: ["libmbedcrypto.so", "libmbedtls.so", "mbedtls.dll"]
+    family: "mbedTLS"
+    description: "ARM mbed TLS / PolarSSL embedded cryptographic engine"
+  - name: "liboqs"
+    patterns: ["liboqs.so", "liboqs.dylib", "oqs.dll"]
+    family: "Open Quantum Safe"
+    description: "Open Quantum Safe Post-Quantum Cryptography library"
