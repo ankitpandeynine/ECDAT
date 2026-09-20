@@ -47,6 +47,8 @@ class CryptoSinkDatabase:
 
         self.sinks = data.get("sinks", [])
         self.dependency_capabilities = data.get("dependency_capabilities", {})
+        self._dep_check_cache = {}
+        self._dep_caps_cache = {}
 
         # Build lookup index: (language, api_token) -> sink
         self._api_index.clear()
@@ -96,20 +98,35 @@ class CryptoSinkDatabase:
 
     def is_crypto_dependency(self, package_name: str) -> bool:
         """Returns True if the package is a known cryptographic library."""
+        if not hasattr(self, "_dep_check_cache"):
+            self._dep_check_cache = {}
+        if package_name in self._dep_check_cache:
+            return self._dep_check_cache[package_name]
+
         norm_name = package_name.lower().replace("-", "_").replace(".", "_").replace(":", "_")
         for key in self.dependency_capabilities:
             norm_key = key.lower().replace("-", "_").replace(".", "_")
             if norm_name == norm_key or norm_key in norm_name or norm_name.startswith(norm_key):
+                self._dep_check_cache[package_name] = True
                 return True
+        self._dep_check_cache[package_name] = False
         return False
 
     def get_dependency_capabilities(self, package_name: str) -> List[str]:
         """Returns list of cryptographic capabilities for the dependency without implying actual use."""
+        if not hasattr(self, "_dep_caps_cache"):
+            self._dep_caps_cache = {}
+        if package_name in self._dep_caps_cache:
+            return self._dep_caps_cache[package_name]
+
         norm_name = package_name.lower().replace("-", "_").replace(".", "_").replace(":", "_")
         for key, details in self.dependency_capabilities.items():
             norm_key = key.lower().replace("-", "_").replace(".", "_")
             if norm_name == norm_key or norm_key in norm_name or norm_name.startswith(norm_key):
-                return details.get("capabilities", [])
+                caps = details.get("capabilities", [])
+                self._dep_caps_cache[package_name] = caps
+                return caps
+        self._dep_caps_cache[package_name] = []
         return []
 
 

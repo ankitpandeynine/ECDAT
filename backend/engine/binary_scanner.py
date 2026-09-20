@@ -53,12 +53,11 @@ def calculate_shannon_entropy(data: bytes) -> float:
     """Calculates Shannon entropy (0.0 to 8.0 bits per byte)."""
     if not data:
         return 0.0
-    freq: Dict[int, int] = {}
-    for b in data:
-        freq[b] = freq.get(b, 0) + 1
+    from collections import Counter
+    counts = Counter(data).values()
     total = len(data)
     entropy = 0.0
-    for count in freq.values():
+    for count in counts:
         p = count / total
         entropy -= p * math.log2(p)
     return round(entropy, 3)

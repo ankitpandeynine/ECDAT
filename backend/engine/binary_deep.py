@@ -65,6 +65,7 @@ def sections(data):
 
 
 def scan_one(data, name):
+    data_sha256 = hashlib.sha256(data).hexdigest()
     fmt, layout = sections(data)
     result = scan_binary_data(data, name)
     result.pop('hex_preview', None)  # Never return raw key-bearing bytes.
@@ -109,7 +110,7 @@ def scan_one(data, name):
         detections.append(item)
     for item in detections:
         offset = int(item['offset'], 16)
-        item.update(file=name, section=next((s['name'] for s in layout if s['offset'] <= offset < s['offset'] + s['size']), None), source_hash=hashlib.sha256(data).hexdigest())
+        item.update(file=name, section=next((s['name'] for s in layout if s['offset'] <= offset < s['offset'] + s['size']), None), source_hash=data_sha256)
     # Cover the entire file with a bounded number of entropy windows.
     window = max(256, (len(data) + 255) // 256)
 
@@ -162,7 +163,7 @@ def scan_one(data, name):
         evidence_list.append(ev.to_dict())
 
     result.update(detections=detections, total_detections=len(detections), format=fmt, sections=layout,
-                  sha256=hashlib.sha256(data).hexdigest(),
+                  sha256=data_sha256,
                   critical_count=sum(d['severity'] == 'CRITICAL' for d in detections),
                   high_count=sum(d['severity'] == 'HIGH' for d in detections),
                   entropy_category='Byte distribution; encryption cannot be inferred',

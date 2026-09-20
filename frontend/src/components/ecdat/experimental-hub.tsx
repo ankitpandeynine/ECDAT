@@ -194,6 +194,20 @@ export function ExperimentalHub({ project, token, initialTab = "quantum", hideTa
     }
   }
 
+  async function handleRunRealTrafficPcap() {
+    setLoadingPcap(true);
+    try {
+      const res = await requestApi<any>("/experimental/pcap", project, token, {
+        mode: "real_traffic",
+      });
+      setPcapResult(res);
+    } catch (err: any) {
+      alert(err.message || "Real web traffic PCAP analysis failed");
+    } finally {
+      setLoadingPcap(false);
+    }
+  }
+
   async function handleUploadPcap(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -646,12 +660,21 @@ export function ExperimentalHub({ project, token, initialTab = "quantum", hideTa
 
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <button
+                onClick={handleRunRealTrafficPcap}
+                disabled={loadingPcap}
+                className="ec-button flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold border-none"
+              >
+                {loadingPcap ? <Loader2 className="animate-spin" size={16} /> : <Radio size={16} />}
+                Dissect Real Multi-Session Web Traffic (Live Web)
+              </button>
+
+              <button
                 onClick={() => handleRunSyntheticPcap(true)}
                 disabled={loadingPcap}
-                className="ec-button flex items-center gap-2"
+                className="ec-button secondary flex items-center gap-2"
               >
                 {loadingPcap ? <Loader2 className="animate-spin" size={16} /> : <Play size={16} />}
-                Simulate PQC Hybrid Handshake (X25519MLKEM768)
+                PQC Hybrid Handshake (X25519MLKEM768)
               </button>
 
               <button
@@ -660,7 +683,7 @@ export function ExperimentalHub({ project, token, initialTab = "quantum", hideTa
                 className="ec-button secondary flex items-center gap-2"
               >
                 {loadingPcap ? <Loader2 className="animate-spin" size={16} /> : <Play size={16} />}
-                Simulate Classical Handshake (secp256r1)
+                Classical Handshake (secp256r1)
               </button>
 
               <label className="ec-button secondary flex items-center gap-2 cursor-pointer">

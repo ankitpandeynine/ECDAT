@@ -3,38 +3,38 @@
   "dataset_version": "1.0.0",
   "dataset_hash": "c9de8400c10d28ecb2cc0b6631770fe20ae691daea7a3fcef4da3129265b9371",
   "knowledge_base_version": "2024.1",
-  "knowledge_hash": "0b6ca8945302ae0073e127a7e53d92cc092a2cf086928e15323c313da8285dfb",
+  "knowledge_hash": "7b668faaae011b8122fa127f09979bbc68d761c344f65bceff5247824c3b4c2f",
   "engine_version": "4.0.0",
   "configuration_hash": "b101eb2732e9c92f1c70f67f1689beafa5ab573eb5ea13fb63261fed8dabc0f5",
-  "timestamp": "2026-09-19T22:49:03.917814+00:00",
+  "timestamp": "2026-09-20T07:33:50.819970+00:00",
   "environment": {
     "python_version": "3.14.6",
     "platform": "darwin"
   },
-  "result_hash": "8633dd992cf1d54b584b197549459e1c4bb389c504cc89818a1b51ee27a4dc83",
+  "result_hash": "8aeed2c32044d47ae302fdfc5275c2b9b8d898ea5830ba73da57e8b7ca5c8e01",
   "overall_metrics": {
     "precision": 1.0,
-    "recall": 0.8408,
-    "f1": 0.9135,
-    "accuracy": 0.894,
-    "tp": 412,
+    "recall": 0.8694,
+    "f1": 0.9301,
+    "accuracy": 0.913,
+    "tp": 426,
     "tn": 246,
     "fp": 0,
-    "fn": 78,
+    "fn": 64,
     "total_cases": 736,
     "support": 490
   },
   "modality_metrics": {
     "SOURCE": {
       "precision": 1.0,
-      "recall": 0.8586,
-      "f1": 0.9239,
-      "accuracy": 0.8923,
+      "recall": 1.0,
+      "f1": 1.0,
+      "accuracy": 1.0,
       "modality": "SOURCE",
-      "tp": 85,
+      "tp": 99,
       "tn": 31,
       "fp": 0,
-      "fn": 14,
+      "fn": 0,
       "total": 130,
       "support": 99
     },
@@ -120,8 +120,8 @@
   "label_metrics": {
     "POSITIVE": {
       "total": 475,
-      "correct": 397,
-      "accuracy": 0.8358
+      "correct": 411,
+      "accuracy": 0.8653
     },
     "NEGATIVE": {
       "total": 221,
@@ -204,14 +204,14 @@
     },
     "ACTUAL_USE": {
       "precision": 1.0,
-      "recall": 0.8955,
-      "f1": 0.9449,
-      "accuracy": 0.9191,
+      "recall": 1.0,
+      "f1": 1.0,
+      "accuracy": 1.0,
       "category": "ACTUAL_USE",
-      "tp": 120,
+      "tp": 134,
       "tn": 39,
       "fp": 0,
-      "fn": 14,
+      "fn": 0,
       "total": 173,
       "support": 134
     },
@@ -258,8 +258,8 @@
   "confusion_matrix": {
     "matrix": {
       "POSITIVE": {
-        "POSITIVE": 397,
-        "NEGATIVE": 78
+        "POSITIVE": 411,
+        "NEGATIVE": 64
       },
       "NEGATIVE": {
         "NEGATIVE": 221
@@ -278,149 +278,9 @@
       }
     },
     "false_positive_count": 0,
-    "false_negative_count": 78,
+    "false_negative_count": 64,
     "false_positives": [],
     "false_negatives": [
-      {
-        "case_id": "SRC_POS_RUST_057",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_058",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_059",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_060",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_061",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_062",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_063",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_064",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_065",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_066",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_067",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_068",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_069",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
-      {
-        "case_id": "SRC_POS_RUST_070",
-        "modality": "SOURCE",
-        "expected": "POSITIVE",
-        "predicted": "NEGATIVE",
-        "expected_use_state": "ACTUAL_USE",
-        "predicted_use_state": "UNUSED",
-        "hard_negative_category": null,
-        "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-      },
       {
         "case_id": "DEP_JAVASCRIPT_003",
         "modality": "DEPENDENCY",
@@ -1106,171 +966,18 @@
       }
     ],
     "modality_error_distribution": {
-      "SOURCE": 14,
       "DEPENDENCY": 24,
       "BINARY": 40
     },
     "hard_negative_failures": {},
     "algorithm_error_distribution": {
-      "AES-256-GCM": 1,
-      "AES-128-CBC": 1,
-      "RSA-2048": 1,
-      "RSA-4096": 1,
-      "ECDSA-P256": 1,
-      "ECDSA-P384": 1,
-      "Ed25519": 1,
-      "ChaCha20-Poly1305": 1,
-      "3DES": 1,
-      "DES": 1,
-      "RC4": 1,
-      "MD5": 21,
-      "SHA-1": 1,
-      "SHA-256": 21,
-      "GENERIC_CRYPTO_LIB": 24
+      "GENERIC_CRYPTO_LIB": 24,
+      "SHA-256": 20,
+      "MD5": 20
     }
   },
   "false_positive_cases": [],
   "false_negative_cases": [
-    {
-      "case_id": "SRC_POS_RUST_057",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_058",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_059",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_060",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_061",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_062",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_063",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_064",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_065",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_066",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_067",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_068",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_069",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
-    {
-      "case_id": "SRC_POS_RUST_070",
-      "modality": "SOURCE",
-      "expected": "POSITIVE",
-      "predicted": "NEGATIVE",
-      "expected_use_state": "ACTUAL_USE",
-      "predicted_use_state": "UNUSED",
-      "hard_negative_category": null,
-      "reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)"
-    },
     {
       "case_id": "DEP_JAVASCRIPT_003",
       "modality": "DEPENDENCY",
@@ -1940,7 +1647,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.896289+00:00",
+            "timestamp": "2026-09-20T07:33:50.798353+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -1949,7 +1656,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "1125c2cf-38a0-440e-94dd-897ef3f0a73c",
+          "id": "128c0d00-abfc-4e6f-9f79-f0cac8ef0605",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -1964,7 +1671,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.896295+00:00",
+          "timestamp": "2026-09-20T07:33:50.798364+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2009,7 +1716,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.896941+00:00",
+            "timestamp": "2026-09-20T07:33:50.799047+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2018,7 +1725,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "b35d0104-a890-4da7-bbe6-77effaa097bc",
+          "id": "538a5b17-fe55-419e-999f-243b3487a858",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -2033,7 +1740,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.896946+00:00",
+          "timestamp": "2026-09-20T07:33:50.799053+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2078,7 +1785,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.897180+00:00",
+            "timestamp": "2026-09-20T07:33:50.799287+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2087,7 +1794,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "6cf33e87-b7be-4534-99c4-65b4ed9271e8",
+          "id": "651b3acd-24ff-4344-b453-b4fdbf58af80",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2102,7 +1809,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.897185+00:00",
+          "timestamp": "2026-09-20T07:33:50.799291+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2147,7 +1854,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.897376+00:00",
+            "timestamp": "2026-09-20T07:33:50.799473+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2156,7 +1863,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "73a538b5-0d1a-4ed7-bf76-06bb330e9e6c",
+          "id": "678a9c68-d8ac-44e1-9ab1-a8da7aab23b8",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2171,7 +1878,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.897380+00:00",
+          "timestamp": "2026-09-20T07:33:50.799477+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2216,7 +1923,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.897565+00:00",
+            "timestamp": "2026-09-20T07:33:50.799656+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2225,7 +1932,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "511ce3fc-6ffb-40fa-996c-cb51731da645",
+          "id": "fd33b222-0f8b-44b7-a1f5-9d4ceb41edd0",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2240,7 +1947,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.897569+00:00",
+          "timestamp": "2026-09-20T07:33:50.799660+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2285,7 +1992,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.897753+00:00",
+            "timestamp": "2026-09-20T07:33:50.799834+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2294,7 +2001,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "34df2929-400e-4f59-98f5-b5fd2803e43a",
+          "id": "f3301c43-4501-4240-9f6a-92a2c3184674",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2309,7 +2016,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.897757+00:00",
+          "timestamp": "2026-09-20T07:33:50.799838+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2354,7 +2061,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.897937+00:00",
+            "timestamp": "2026-09-20T07:33:50.800010+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2363,7 +2070,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "72ac300d-4be0-4009-a4c9-73ed9ceb137b",
+          "id": "98373156-a968-48d7-b22b-fa0d28204868",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2378,7 +2085,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.897942+00:00",
+          "timestamp": "2026-09-20T07:33:50.800014+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2423,7 +2130,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.898125+00:00",
+            "timestamp": "2026-09-20T07:33:50.800181+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2432,7 +2139,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "0a4fa28d-662f-431b-8b46-2ee222e6ad2f",
+          "id": "ec0eae71-a74b-4d56-a16c-c2bc52dda28a",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2447,7 +2154,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.898129+00:00",
+          "timestamp": "2026-09-20T07:33:50.800185+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2492,7 +2199,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.898308+00:00",
+            "timestamp": "2026-09-20T07:33:50.800352+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2501,7 +2208,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "411b6848-0bf4-431f-8cb9-f721f7ced0e1",
+          "id": "e2efe52b-95ca-4977-916c-a800c87144e0",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2516,7 +2223,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.898311+00:00",
+          "timestamp": "2026-09-20T07:33:50.800355+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2561,7 +2268,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.898489+00:00",
+            "timestamp": "2026-09-20T07:33:50.800525+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2570,7 +2277,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "48a69b99-8d33-4cc4-b257-0110edc422be",
+          "id": "ac0f5d39-bff9-4469-8cf7-e9977dc67a1a",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2585,7 +2292,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.898492+00:00",
+          "timestamp": "2026-09-20T07:33:50.800528+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2630,7 +2337,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.898671+00:00",
+            "timestamp": "2026-09-20T07:33:50.800696+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2639,7 +2346,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "a64c1c94-5997-420a-8c9d-09bef00ebf0c",
+          "id": "135dc3fe-14a5-4668-8446-823212682df7",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2654,7 +2361,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.898675+00:00",
+          "timestamp": "2026-09-20T07:33:50.800699+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2699,7 +2406,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.898850+00:00",
+            "timestamp": "2026-09-20T07:33:50.800865+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2708,7 +2415,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "b535c0cc-1063-4600-bac6-d8b59179ef6e",
+          "id": "9939a92a-b03f-460c-bc21-544d6134e3b1",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2723,7 +2430,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.898854+00:00",
+          "timestamp": "2026-09-20T07:33:50.800869+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2768,7 +2475,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.899034+00:00",
+            "timestamp": "2026-09-20T07:33:50.801039+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2777,7 +2484,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "ee8e51ac-54f3-41e1-9cf0-a758c49241da",
+          "id": "6eba549f-7940-4008-9521-74c953d034dd",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2792,7 +2499,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.899038+00:00",
+          "timestamp": "2026-09-20T07:33:50.801042+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2837,7 +2544,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.899217+00:00",
+            "timestamp": "2026-09-20T07:33:50.801208+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2846,7 +2553,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "0fb3e150-5090-43e1-b3bf-4697f48393b9",
+          "id": "1e37c440-2684-4237-9b4d-bf93109df6c2",
           "engine_version": "4.0.0",
           "rule_id": "RSA-2048",
           "rule_version": "4.0.0",
@@ -2861,7 +2568,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.899221+00:00",
+          "timestamp": "2026-09-20T07:33:50.801211+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2906,7 +2613,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.899640+00:00",
+            "timestamp": "2026-09-20T07:33:50.801391+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2915,7 +2622,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "b37bbb99-746c-441a-892c-c4d110f46d4e",
+          "id": "8c89831c-d718-46c3-9634-53040fafa479",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -2930,7 +2637,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.899645+00:00",
+          "timestamp": "2026-09-20T07:33:50.801395+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -2975,7 +2682,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.899785+00:00",
+            "timestamp": "2026-09-20T07:33:50.801516+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -2984,7 +2691,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "4bb7c214-3899-4656-b04d-60e56d928c46",
+          "id": "5e78919d-6d72-4cd6-8bb8-eaaa14af14e6",
           "engine_version": "4.0.0",
           "rule_id": "AES-CBC",
           "rule_version": "4.0.0",
@@ -2999,7 +2706,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.899789+00:00",
+          "timestamp": "2026-09-20T07:33:50.801520+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3044,7 +2751,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.899915+00:00",
+            "timestamp": "2026-09-20T07:33:50.801635+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3053,7 +2760,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "de75ebf6-4b0d-4c99-aa84-66af8bfb1883",
+          "id": "1fe1ac8f-1a68-4c2d-8fee-6152f148467e",
           "engine_version": "4.0.0",
           "rule_id": "RSA",
           "rule_version": "4.0.0",
@@ -3068,7 +2775,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.899919+00:00",
+          "timestamp": "2026-09-20T07:33:50.801639+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3113,7 +2820,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900038+00:00",
+            "timestamp": "2026-09-20T07:33:50.801751+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3122,7 +2829,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "c2ed7db7-fdaa-45e3-8b52-30d3717e3c1d",
+          "id": "783994e6-36b1-4b83-8793-d2dbcd5d8f7e",
           "engine_version": "4.0.0",
           "rule_id": "RSA",
           "rule_version": "4.0.0",
@@ -3137,7 +2844,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900042+00:00",
+          "timestamp": "2026-09-20T07:33:50.801754+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3182,7 +2889,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900159+00:00",
+            "timestamp": "2026-09-20T07:33:50.801865+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3191,7 +2898,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "3abc7800-f46c-488f-b2f8-f0bfb3f7ecc8",
+          "id": "716e9899-bbe2-40d8-9995-d57d887547a1",
           "engine_version": "4.0.0",
           "rule_id": "ECDSA",
           "rule_version": "4.0.0",
@@ -3206,7 +2913,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900163+00:00",
+          "timestamp": "2026-09-20T07:33:50.801869+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3251,7 +2958,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900281+00:00",
+            "timestamp": "2026-09-20T07:33:50.801978+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3260,7 +2967,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "b3f1bf91-190e-4943-9bee-efcd21eb5f9e",
+          "id": "734777c6-6c58-4f07-9cc2-20f7caeaeff2",
           "engine_version": "4.0.0",
           "rule_id": "ECDSA",
           "rule_version": "4.0.0",
@@ -3275,7 +2982,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900285+00:00",
+          "timestamp": "2026-09-20T07:33:50.801981+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3320,7 +3027,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900402+00:00",
+            "timestamp": "2026-09-20T07:33:50.802091+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3329,7 +3036,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "b6058c30-9fc2-49a0-b1f9-bd13ee5ea908",
+          "id": "e71860e2-3f6a-410e-a68f-c15a1a3164f2",
           "engine_version": "4.0.0",
           "rule_id": "Cipher",
           "rule_version": "4.0.0",
@@ -3344,7 +3051,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900405+00:00",
+          "timestamp": "2026-09-20T07:33:50.802094+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3389,7 +3096,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900522+00:00",
+            "timestamp": "2026-09-20T07:33:50.802204+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3398,7 +3105,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "2f16d091-3ffd-4328-81eb-c15ccf77224e",
+          "id": "84e557df-ee06-462b-933a-521af59cdc5f",
           "engine_version": "4.0.0",
           "rule_id": "Cipher",
           "rule_version": "4.0.0",
@@ -3413,7 +3120,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900525+00:00",
+          "timestamp": "2026-09-20T07:33:50.802207+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3458,7 +3165,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900643+00:00",
+            "timestamp": "2026-09-20T07:33:50.802313+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3467,7 +3174,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "984a7a9d-15d8-4e0a-ab63-ff13a176e2cf",
+          "id": "de3375b9-4ef2-4f74-b4d0-2a18120ff462",
           "engine_version": "4.0.0",
           "rule_id": "DES",
           "rule_version": "4.0.0",
@@ -3482,7 +3189,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900646+00:00",
+          "timestamp": "2026-09-20T07:33:50.802317+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3521,13 +3228,13 @@
           "source_engine": "regex-heuristic",
           "observation_type": "SOURCE_PATTERN",
           "artifact_type": "source",
-          "description": "DES key space (56-bit) is easily cracked via modern brute-force hardware.",
+          "description": "Java Cipher DES instantiation detected. Obsolete 56-bit key length.",
           "provenance": {
             "input_hash": "04a2c67fd796403f6b1b0cbb96acff66976de862ab789aa4c04d6aef01928bbc",
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900770+00:00",
+            "timestamp": "2026-09-20T07:33:50.802431+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3536,7 +3243,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "db891b30-b9db-4db6-b98a-e9a820b3b634",
+          "id": "3acfb60b-1749-4c9b-8a07-5db1126eb245",
           "engine_version": "4.0.0",
           "rule_id": "DES",
           "rule_version": "4.0.0",
@@ -3551,7 +3258,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900774+00:00",
+          "timestamp": "2026-09-20T07:33:50.802434+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3590,13 +3297,13 @@
           "source_engine": "regex-heuristic",
           "observation_type": "SOURCE_PATTERN",
           "artifact_type": "source",
-          "description": "RC4 prohibited by RFC 7465 due to keystream statistical biases.",
+          "description": "Java RC4/ARCFOUR Cipher detected (RFC 7465 violation).",
           "provenance": {
             "input_hash": "e00fecb421cde3928290c0d37f80cbedaf7170b1adaa074505e4bccda5b01b68",
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900897+00:00",
+            "timestamp": "2026-09-20T07:33:50.802546+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3605,7 +3312,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "3c8a1b39-215e-484b-ab1e-6aa2f9eaa758",
+          "id": "e2402ba1-b830-4d40-8b40-dde3348d7197",
           "engine_version": "4.0.0",
           "rule_id": "RC4",
           "rule_version": "4.0.0",
@@ -3620,7 +3327,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900901+00:00",
+          "timestamp": "2026-09-20T07:33:50.802549+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3644,7 +3351,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.900911+00:00",
+            "timestamp": "2026-09-20T07:33:50.802559+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3653,7 +3360,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "80e4e60a-e28a-4b38-853f-eb77bfd36fc0",
+          "id": "68e94b12-3dba-4c55-983e-437d0f6cdb24",
           "engine_version": "4.0.0",
           "rule_id": "Cipher",
           "rule_version": "4.0.0",
@@ -3668,7 +3375,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.900914+00:00",
+          "timestamp": "2026-09-20T07:33:50.802562+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3713,7 +3420,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.901030+00:00",
+            "timestamp": "2026-09-20T07:33:50.802672+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3722,7 +3429,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "93720ebe-6c0c-4db7-bb39-4c29e5431859",
+          "id": "fc193b40-57d4-42b1-8edf-e7be3e188940",
           "engine_version": "4.0.0",
           "rule_id": "MD5",
           "rule_version": "4.0.0",
@@ -3737,7 +3444,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.901034+00:00",
+          "timestamp": "2026-09-20T07:33:50.802676+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3782,7 +3489,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.901149+00:00",
+            "timestamp": "2026-09-20T07:33:50.802783+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3791,7 +3498,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "ed7fe6df-54d3-4f9e-ad5a-1e0f60dd0c07",
+          "id": "921e0a1b-b9d1-42b3-ae8d-d5b53ccd8494",
           "engine_version": "4.0.0",
           "rule_id": "SHA-1",
           "rule_version": "4.0.0",
@@ -3806,7 +3513,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.901152+00:00",
+          "timestamp": "2026-09-20T07:33:50.802786+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3851,7 +3558,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.901266+00:00",
+            "timestamp": "2026-09-20T07:33:50.802894+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3860,7 +3567,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "7a7c44d4-0885-4a50-b1c0-a0be9b6ffe62",
+          "id": "21026a4c-b151-4143-938c-505f4e28eb05",
           "engine_version": "4.0.0",
           "rule_id": "SHA-256",
           "rule_version": "4.0.0",
@@ -3875,7 +3582,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.901269+00:00",
+          "timestamp": "2026-09-20T07:33:50.802897+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3920,7 +3627,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.901536+00:00",
+            "timestamp": "2026-09-20T07:33:50.803136+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3929,7 +3636,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "2849dcb1-9ff5-47d0-b696-51e3a1b06095",
+          "id": "0b23e1ee-8d9a-4f72-b19d-d4884f23ddaf",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -3944,7 +3651,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.901540+00:00",
+          "timestamp": "2026-09-20T07:33:50.803140+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -3968,7 +3675,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.901551+00:00",
+            "timestamp": "2026-09-20T07:33:50.803150+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -3977,7 +3684,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "28de6d41-59f0-4bdd-ab57-a38f098c22e6",
+          "id": "1250ac4f-8a19-4436-a2ef-ca2ff9344f4c",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -3992,7 +3699,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.901554+00:00",
+          "timestamp": "2026-09-20T07:33:50.803153+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4037,7 +3744,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.901774+00:00",
+            "timestamp": "2026-09-20T07:33:50.803358+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4046,7 +3753,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "c7e23655-1a7c-4cd9-8a5c-e4c27e6ab6b4",
+          "id": "12444c25-f230-4381-8175-c1e4e1a8f4b8",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4061,7 +3768,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.901777+00:00",
+          "timestamp": "2026-09-20T07:33:50.803361+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4085,7 +3792,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.901787+00:00",
+            "timestamp": "2026-09-20T07:33:50.803370+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4094,7 +3801,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "2657d141-805a-49d5-8c8b-cbcde5dc9ee2",
+          "id": "35b5e46c-900a-4ffb-9cce-91d450f14552",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -4109,7 +3816,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.901790+00:00",
+          "timestamp": "2026-09-20T07:33:50.803373+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4154,7 +3861,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902002+00:00",
+            "timestamp": "2026-09-20T07:33:50.803572+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4163,7 +3870,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "e0ca38df-2fad-4ffd-971d-7fe7f2623007",
+          "id": "b6a933c5-0871-4141-93bc-505508b9101d",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4178,7 +3885,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902006+00:00",
+          "timestamp": "2026-09-20T07:33:50.803575+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4202,7 +3909,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902016+00:00",
+            "timestamp": "2026-09-20T07:33:50.803585+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4211,7 +3918,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "ad783fc2-121a-46a1-9932-398fb4369489",
+          "id": "f5042f6e-979a-4c60-bb8c-1a6ac167781a",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -4226,7 +3933,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902019+00:00",
+          "timestamp": "2026-09-20T07:33:50.803588+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4271,7 +3978,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902232+00:00",
+            "timestamp": "2026-09-20T07:33:50.803788+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4280,7 +3987,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "32e1da50-1c1f-481d-a613-ace25b33e6ac",
+          "id": "e5f7afa2-afc0-4049-8e10-9a235cfee8d9",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4295,7 +4002,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902235+00:00",
+          "timestamp": "2026-09-20T07:33:50.803792+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4319,7 +4026,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902245+00:00",
+            "timestamp": "2026-09-20T07:33:50.803802+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4328,7 +4035,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "a89f6e03-72de-4bd1-89c5-f2f6df6a5d52",
+          "id": "a68c14f2-2587-4520-89bd-0ecc6a94c70c",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -4343,7 +4050,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902248+00:00",
+          "timestamp": "2026-09-20T07:33:50.803805+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4388,7 +4095,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902453+00:00",
+            "timestamp": "2026-09-20T07:33:50.804002+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4397,7 +4104,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "9ba0c4d0-4a6e-4ebc-80c0-0f4fc334618f",
+          "id": "60ddd53f-5865-4f8a-b676-2f1d907a4c90",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4412,7 +4119,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902456+00:00",
+          "timestamp": "2026-09-20T07:33:50.804006+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4436,7 +4143,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902466+00:00",
+            "timestamp": "2026-09-20T07:33:50.804018+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4445,7 +4152,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "9a8c6fe7-b04b-4100-b28a-1e102e5eb130",
+          "id": "3b3b6a72-b1bc-41c8-a19b-36659c60477b",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -4460,7 +4167,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902469+00:00",
+          "timestamp": "2026-09-20T07:33:50.804021+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4505,7 +4212,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902680+00:00",
+            "timestamp": "2026-09-20T07:33:50.804218+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4514,7 +4221,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "473f7da6-4426-472b-b36d-c6b652935651",
+          "id": "0e2fc203-2bfc-4a83-a1e3-1e549f02a848",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4529,7 +4236,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902684+00:00",
+          "timestamp": "2026-09-20T07:33:50.804221+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4553,7 +4260,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902701+00:00",
+            "timestamp": "2026-09-20T07:33:50.804232+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4562,7 +4269,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "e2806c78-1345-4ff4-9493-34aaca0df57c",
+          "id": "125c71ef-2b64-4686-8b57-a95a9b4846ee",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -4577,7 +4284,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902705+00:00",
+          "timestamp": "2026-09-20T07:33:50.804235+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4622,7 +4329,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902921+00:00",
+            "timestamp": "2026-09-20T07:33:50.804434+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4631,7 +4338,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "7f9761b7-48a4-4ed1-9e19-94afa495d11f",
+          "id": "6a4ee064-7d08-45f1-9490-8bcf8df009e9",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4646,7 +4353,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902924+00:00",
+          "timestamp": "2026-09-20T07:33:50.804437+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4670,7 +4377,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.902934+00:00",
+            "timestamp": "2026-09-20T07:33:50.804447+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4679,7 +4386,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "f97efd7e-9e5a-4fa1-b929-6d58cb35a9c6",
+          "id": "27d19ad4-882c-42c0-a978-986c9fe946d8",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -4694,7 +4401,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.902937+00:00",
+          "timestamp": "2026-09-20T07:33:50.804450+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4739,7 +4446,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.903148+00:00",
+            "timestamp": "2026-09-20T07:33:50.804651+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4748,7 +4455,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "a4831688-3064-4b04-9c15-a0dfc3ef2a0c",
+          "id": "6626d1cd-4b7f-408e-9808-a1bf0a2e0c1a",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4763,7 +4470,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.903152+00:00",
+          "timestamp": "2026-09-20T07:33:50.804655+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4787,7 +4494,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.903162+00:00",
+            "timestamp": "2026-09-20T07:33:50.804665+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4796,7 +4503,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "a847278c-03e1-4361-b095-eb87e1ef450c",
+          "id": "db30097d-5ded-4670-95cc-72654a4ed753",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -4811,7 +4518,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.903165+00:00",
+          "timestamp": "2026-09-20T07:33:50.804668+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4856,7 +4563,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.903374+00:00",
+            "timestamp": "2026-09-20T07:33:50.804866+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4865,7 +4572,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "2d298aa0-abb2-4a4d-93af-d01dc87a24a6",
+          "id": "102ae321-b410-452f-9337-932c686a0051",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4880,7 +4587,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.903377+00:00",
+          "timestamp": "2026-09-20T07:33:50.804869+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4904,7 +4611,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.903387+00:00",
+            "timestamp": "2026-09-20T07:33:50.804879+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4913,7 +4620,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "8c15e80e-d86a-4614-bb93-375670ded793",
+          "id": "31c26015-1eef-43d5-bc85-39f6ff7ce501",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -4928,7 +4635,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.903390+00:00",
+          "timestamp": "2026-09-20T07:33:50.804882+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -4973,7 +4680,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.903599+00:00",
+            "timestamp": "2026-09-20T07:33:50.805076+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -4982,7 +4689,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "30e55318-e7b2-4518-b112-59d78b7ea6a8",
+          "id": "8cac10de-73ff-4ec4-a8ae-957ab6821af9",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -4997,7 +4704,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.903602+00:00",
+          "timestamp": "2026-09-20T07:33:50.805079+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5021,7 +4728,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.903613+00:00",
+            "timestamp": "2026-09-20T07:33:50.805089+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5030,7 +4737,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "90b013f5-8939-4a06-99a3-0d8b35d8a553",
+          "id": "86763426-565c-41e8-ad0b-f79be52715df",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -5045,7 +4752,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.903616+00:00",
+          "timestamp": "2026-09-20T07:33:50.805092+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5090,7 +4797,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.903824+00:00",
+            "timestamp": "2026-09-20T07:33:50.805290+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5099,7 +4806,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "288618dd-5917-41c3-a2ad-6fc678744d31",
+          "id": "0f729ce7-847f-46d7-beaf-1c9dfecf8dba",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -5114,7 +4821,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.903827+00:00",
+          "timestamp": "2026-09-20T07:33:50.805293+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5138,7 +4845,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.903837+00:00",
+            "timestamp": "2026-09-20T07:33:50.805302+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5147,7 +4854,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "0ad8be3d-c9a8-4456-91c3-dfb4303bb330",
+          "id": "7991cb57-d87f-4678-b22d-1eae82b8bcf0",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -5162,7 +4869,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.903840+00:00",
+          "timestamp": "2026-09-20T07:33:50.805305+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5207,7 +4914,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.904047+00:00",
+            "timestamp": "2026-09-20T07:33:50.805501+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5216,7 +4923,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "c9a8585f-207a-47e3-a31c-c92e3481017c",
+          "id": "9509e4c7-d66d-43a6-9236-23a51705163f",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -5231,7 +4938,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.904051+00:00",
+          "timestamp": "2026-09-20T07:33:50.805505+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5255,7 +4962,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.904061+00:00",
+            "timestamp": "2026-09-20T07:33:50.805515+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5264,7 +4971,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "f8352400-2eac-49f0-8cd8-b4defdf4af56",
+          "id": "2b3a5474-95ae-4f6c-ba88-08c7df1f37f9",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -5279,7 +4986,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.904064+00:00",
+          "timestamp": "2026-09-20T07:33:50.805518+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5324,7 +5031,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.904272+00:00",
+            "timestamp": "2026-09-20T07:33:50.805713+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5333,7 +5040,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "782574c2-9adf-46df-9ab1-ad1716f4144d",
+          "id": "1912bf89-e0b8-4af5-85a8-2499b0235565",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -5348,7 +5055,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.904276+00:00",
+          "timestamp": "2026-09-20T07:33:50.805716+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5372,7 +5079,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.904285+00:00",
+            "timestamp": "2026-09-20T07:33:50.805725+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5381,7 +5088,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "11e608e3-0504-478b-acc3-32cbf6702d23",
+          "id": "92a7ec36-4017-4ffe-a15e-c54505312ab5",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -5396,7 +5103,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.904289+00:00",
+          "timestamp": "2026-09-20T07:33:50.805728+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5441,7 +5148,7 @@
             "source_engine": "regex-heuristic",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.904496+00:00",
+            "timestamp": "2026-09-20T07:33:50.805924+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5450,7 +5157,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "091d4e71-7739-4e1e-9040-73e0a2ac6b25",
+          "id": "6e22e813-8a80-4f3e-95f8-5ea6a702080a",
           "engine_version": "4.0.0",
           "rule_id": "AES-256-GCM",
           "rule_version": "4.0.0",
@@ -5465,7 +5172,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.904499+00:00",
+          "timestamp": "2026-09-20T07:33:50.805928+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5489,7 +5196,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.904510+00:00",
+            "timestamp": "2026-09-20T07:33:50.805938+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5498,7 +5205,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "76303cb6-88a5-48f4-8757-6e0653352cb3",
+          "id": "20e2d2a4-af69-447a-8ddf-e929f5c6411b",
           "engine_version": "4.0.0",
           "rule_id": "EVP_Cipher",
           "rule_version": "4.0.0",
@@ -5513,7 +5220,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.904513+00:00",
+          "timestamp": "2026-09-20T07:33:50.805940+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5558,7 +5265,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.904761+00:00",
+            "timestamp": "2026-09-20T07:33:50.806078+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5567,7 +5274,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "1b4bc664-ac99-4f5d-97e0-14fbc2aa6dc8",
+          "id": "98c7365c-c2bb-47c7-a76f-4d32e37b3f07",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -5582,7 +5289,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.904766+00:00",
+          "timestamp": "2026-09-20T07:33:50.806081+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5627,7 +5334,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.904891+00:00",
+            "timestamp": "2026-09-20T07:33:50.806192+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5636,7 +5343,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "6c39e27e-d947-4ce5-83c0-0ed1e84fb36b",
+          "id": "647e0d1d-39ff-4002-bbf0-a47587a83ca7",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -5651,7 +5358,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.904895+00:00",
+          "timestamp": "2026-09-20T07:33:50.806195+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5696,7 +5403,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905012+00:00",
+            "timestamp": "2026-09-20T07:33:50.806301+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5705,7 +5412,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "21cb7a9d-0110-482f-8f00-92410184becf",
+          "id": "5c19b08b-6631-46c2-820f-210405bf8aae",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -5720,7 +5427,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905015+00:00",
+          "timestamp": "2026-09-20T07:33:50.806304+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5765,7 +5472,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905131+00:00",
+            "timestamp": "2026-09-20T07:33:50.806409+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5774,7 +5481,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "2b5e0001-96d3-4c0a-bb1f-2c5fccac9dfc",
+          "id": "2161ad4c-d863-4389-820d-2308ecdbed3a",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -5789,7 +5496,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905134+00:00",
+          "timestamp": "2026-09-20T07:33:50.806413+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5834,7 +5541,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905246+00:00",
+            "timestamp": "2026-09-20T07:33:50.806515+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5843,7 +5550,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "5a56a5ea-5a32-404a-a616-2007ff66449c",
+          "id": "539f8f02-f71f-4ab3-ba63-1385fca3860f",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -5858,7 +5565,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905250+00:00",
+          "timestamp": "2026-09-20T07:33:50.806518+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5903,7 +5610,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905362+00:00",
+            "timestamp": "2026-09-20T07:33:50.806624+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5912,7 +5619,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "f9396280-b980-4291-bd83-4482f4409f1d",
+          "id": "e4e92c02-a0b2-4df1-8852-a496b3292354",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -5927,7 +5634,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905366+00:00",
+          "timestamp": "2026-09-20T07:33:50.806628+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -5972,7 +5679,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905474+00:00",
+            "timestamp": "2026-09-20T07:33:50.806732+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -5981,7 +5688,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "4d8a6944-4c7e-4f3b-83db-cb0ef9a323a1",
+          "id": "6f342996-a5b7-4170-8f29-91942958e418",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -5996,7 +5703,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905478+00:00",
+          "timestamp": "2026-09-20T07:33:50.806736+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6041,7 +5748,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905585+00:00",
+            "timestamp": "2026-09-20T07:33:50.806838+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6050,7 +5757,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "99f875d4-1477-4537-a4b7-b048f65de4ee",
+          "id": "13d194b1-d9f2-45f5-82b2-09bc76ff65b1",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -6065,7 +5772,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905588+00:00",
+          "timestamp": "2026-09-20T07:33:50.806841+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6110,7 +5817,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905694+00:00",
+            "timestamp": "2026-09-20T07:33:50.806944+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6119,7 +5826,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "3b4ac306-5b1d-4021-b2ff-91f9acea2802",
+          "id": "94769051-9ce8-43fd-b270-358ceb7c88d4",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -6134,7 +5841,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905697+00:00",
+          "timestamp": "2026-09-20T07:33:50.806948+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6179,7 +5886,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905803+00:00",
+            "timestamp": "2026-09-20T07:33:50.807050+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6188,7 +5895,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "880a070f-14a7-4c4f-940c-6790d4bd9a8d",
+          "id": "5728e5bc-0db3-4a51-8f95-099889658b17",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -6203,7 +5910,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905806+00:00",
+          "timestamp": "2026-09-20T07:33:50.807054+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6248,7 +5955,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.905911+00:00",
+            "timestamp": "2026-09-20T07:33:50.807156+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6257,7 +5964,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "e958f7f1-baf0-4320-9226-52ac94c08460",
+          "id": "ee34c05b-760e-4f74-b099-29963203e786",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -6272,7 +5979,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.905915+00:00",
+          "timestamp": "2026-09-20T07:33:50.807160+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6317,7 +6024,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.906019+00:00",
+            "timestamp": "2026-09-20T07:33:50.807261+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6326,7 +6033,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "5653ee86-6658-4d50-8d64-bc754f4e09a2",
+          "id": "76ce6e03-29c2-499d-b429-e87391e7bd75",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -6341,7 +6048,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.906022+00:00",
+          "timestamp": "2026-09-20T07:33:50.807264+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6386,7 +6093,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.906128+00:00",
+            "timestamp": "2026-09-20T07:33:50.807365+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6395,7 +6102,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "6b3d721d-c35c-40a6-b8a3-a013edc6fe1a",
+          "id": "ea6e0098-51c4-4ba3-8812-b6b5d027b416",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -6410,7 +6117,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.906132+00:00",
+          "timestamp": "2026-09-20T07:33:50.807369+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6455,7 +6162,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.906237+00:00",
+            "timestamp": "2026-09-20T07:33:50.807469+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6464,7 +6171,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "4f02d2fe-7cd7-46a7-a90d-32d2da6aa00d",
+          "id": "f62455e2-c2f1-4fd3-b89d-fc176f2970ab",
           "engine_version": "4.0.0",
           "rule_id": "AES",
           "rule_version": "4.0.0",
@@ -6479,7 +6186,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.906240+00:00",
+          "timestamp": "2026-09-20T07:33:50.807473+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6503,18 +6210,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
+      "predicted_label": "POSITIVE",
       "predicted_algorithm": "AES-256-GCM",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "AES-256-GCM",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.807673+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_57.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "76729a3b-3789-4e96-8c0a-a4fcbefec8f7",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_57.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.807676+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6523,18 +6279,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "AES-128-CBC",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "AES-128-CBC",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.807830+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_58.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "51860912-696c-475b-8b8d-e8346858ba67",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_58.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.807833+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6543,18 +6348,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "RSA-2048",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "RSA-2048",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.807983+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_59.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "fd052f84-143f-4ed6-8191-e83206e29c37",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_59.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.807986+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6563,18 +6417,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "RSA-4096",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "RSA-4096",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.808134+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_60.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "621f0eec-8ce6-46ac-9e27-bdd148bd3538",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_60.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.808137+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6583,18 +6486,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "ECDSA-P256",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "ECDSA-P256",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.808289+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_61.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "64e7e4bd-ee1d-4433-9d96-4f2930acbdc5",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_61.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.808292+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6603,18 +6555,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "ECDSA-P384",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "ECDSA-P384",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.808439+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_62.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "28860e66-cedf-4b06-88b7-295f95fdb7c4",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_62.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.808442+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6623,18 +6624,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "Ed25519",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "Ed25519",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.808588+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_63.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "4fe97fbe-dac5-4381-89d8-a987e982717a",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_63.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.808591+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6643,18 +6693,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "ChaCha20-Poly1305",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "ChaCha20-Poly1305",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.808742+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_64.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "c517b160-73b5-4c90-9873-236d4debcdde",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_64.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.808746+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6663,18 +6762,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "3DES",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "3DES",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.808895+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_65.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "4c401f52-aedf-4ba2-9012-155b48dc0803",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_65.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.808899+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6683,18 +6831,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "DES",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "DES",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.809047+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_66.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "1358e9ab-b183-420b-a165-2934c54566b6",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_66.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.809050+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6703,18 +6900,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "RC4",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "RC4",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.809199+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_67.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "9429082a-3e26-485d-b85d-e348d640bdd8",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_67.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.809202+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6723,18 +6969,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "MD5",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "MD5",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.809350+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_68.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "4d44172d-1ec0-407d-869e-026054bfc70e",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_68.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.809353+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6743,18 +7038,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "SHA-1",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "SHA-1",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.809501+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_69.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "53a70d5b-6e2f-45b7-9e5c-a39562328599",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_69.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.809505+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6763,18 +7107,67 @@
       "pipeline_used": "ecdat-source-pipeline",
       "scanner_version": "4.0.0",
       "knowledge_version": "2024.1",
-      "predicted_label": "NEGATIVE",
-      "predicted_algorithm": "SHA-256",
-      "predicted_role": "UNKNOWN",
-      "predicted_use_state": "UNUSED",
+      "predicted_label": "POSITIVE",
+      "predicted_algorithm": "AES-256-GCM",
+      "predicted_role": "Symmetric Cipher",
+      "predicted_use_state": "ACTUAL_USE",
       "ground_truth_label": "POSITIVE",
       "expected_algorithm": "SHA-256",
       "expected_use_state": "ACTUAL_USE",
-      "evidence_observed": [],
+      "evidence_observed": [
+        {
+          "state": "MEASURED",
+          "level": "E1",
+          "confidence": 0.75,
+          "source_engine": "tree-sitter",
+          "observation_type": "SOURCE_PATTERN",
+          "artifact_type": "source",
+          "description": "Cryptographic API use: Aes256Gcm::new (classical_secure)",
+          "provenance": {
+            "input_hash": "0c9cd88d7b93fd346a2ad2738ed0d779c056bca7a865c048898519fad78c4137",
+            "source_engine": "tree-sitter",
+            "engine_version": "4.0.0",
+            "scan_id": "",
+            "timestamp": "2026-09-20T07:33:50.809652+00:00",
+            "scanner_version": "4.0.0",
+            "artifact_hash": null,
+            "rule_id": null,
+            "rule_version": null,
+            "location": "src/crypto_70.rs:4",
+            "environment": {},
+            "parameters": {}
+          },
+          "id": "b0bc14ee-33de-46c4-80bd-f689197009b0",
+          "engine_version": "4.0.0",
+          "rule_id": "AES-256-GCM",
+          "rule_version": "4.0.0",
+          "artifact_id": null,
+          "location": null,
+          "file_path": "src/crypto_70.rs",
+          "line_start": 4,
+          "line_end": 4,
+          "byte_offset": null,
+          "function_name": null,
+          "symbol": "AES-256-GCM",
+          "limitations": [
+            "Regex heuristic observation."
+          ],
+          "timestamp": "2026-09-20T07:33:50.809655+00:00",
+          "supporting": [],
+          "contradicting": [],
+          "metadata": {},
+          "raw_details": {
+            "code": "let cipher = Aes256Gcm::new(&key.into());",
+            "category": "Symmetric Cipher",
+            "severity": "LOW"
+          },
+          "level_label": "E1 \u2014 Pattern or heuristic candidate detected"
+        }
+      ],
       "evidence_state": "MEASURED",
       "confidence_class": "HIGH",
-      "is_correct": false,
-      "mismatch_reason": "Predicted 'NEGATIVE' (UNUSED) vs Expected 'POSITIVE' (ACTUAL_USE)",
+      "is_correct": true,
+      "mismatch_reason": null,
       "hard_negative_category": null
     },
     {
@@ -6804,7 +7197,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.908591+00:00",
+            "timestamp": "2026-09-20T07:33:50.809818+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6813,7 +7206,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "c49fb56d-8593-473c-829c-beb3a4756561",
+          "id": "075ce72d-6103-49c3-8c16-0808b8df6696",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -6828,7 +7221,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.908596+00:00",
+          "timestamp": "2026-09-20T07:33:50.809822+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6873,7 +7266,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.908767+00:00",
+            "timestamp": "2026-09-20T07:33:50.809962+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6882,7 +7275,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "c62041ca-0755-4fcb-a15b-2ba929c8cb9b",
+          "id": "01b7ab07-2973-40e1-99be-d12aeab522b8",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -6897,7 +7290,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.908771+00:00",
+          "timestamp": "2026-09-20T07:33:50.809965+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -6942,7 +7335,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.908923+00:00",
+            "timestamp": "2026-09-20T07:33:50.810105+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -6951,7 +7344,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "f560fe3a-8e33-464d-8797-cd8f0b7e7ad1",
+          "id": "1e792674-4a37-4083-bebe-7ce091951f8c",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -6966,7 +7359,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.908927+00:00",
+          "timestamp": "2026-09-20T07:33:50.810108+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7011,7 +7404,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.909075+00:00",
+            "timestamp": "2026-09-20T07:33:50.810245+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7020,7 +7413,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "1888db59-e86c-4b68-b15a-d88cc66027a2",
+          "id": "e44adf3a-45f9-4f1e-b6bd-a7f0d9f6527f",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7035,7 +7428,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.909079+00:00",
+          "timestamp": "2026-09-20T07:33:50.810248+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7080,7 +7473,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.909225+00:00",
+            "timestamp": "2026-09-20T07:33:50.810386+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7089,7 +7482,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "e5132c10-dd19-4488-b26e-dc25eca53104",
+          "id": "96d3d993-1d67-4b50-a5ec-0f943821fb26",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7104,7 +7497,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.909229+00:00",
+          "timestamp": "2026-09-20T07:33:50.810389+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7149,7 +7542,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.909374+00:00",
+            "timestamp": "2026-09-20T07:33:50.810525+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7158,7 +7551,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "0e9fdd3c-e758-4835-a8f0-74210e4bce1e",
+          "id": "f66eceda-dc12-451f-ab75-aad7f3d7272c",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7173,7 +7566,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.909378+00:00",
+          "timestamp": "2026-09-20T07:33:50.810528+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7218,7 +7611,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.909525+00:00",
+            "timestamp": "2026-09-20T07:33:50.810663+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7227,7 +7620,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "86294283-0555-4c5e-8e9a-66817476876e",
+          "id": "3e15b674-e23e-47cd-a79d-b4a409bf9a92",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7242,7 +7635,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.909529+00:00",
+          "timestamp": "2026-09-20T07:33:50.810666+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7287,7 +7680,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.909674+00:00",
+            "timestamp": "2026-09-20T07:33:50.810801+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7296,7 +7689,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "3a06414a-e155-44e8-989d-2f6c187c34f6",
+          "id": "fb74e498-f8fa-43c4-877a-1fa52bffebff",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7311,7 +7704,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.909678+00:00",
+          "timestamp": "2026-09-20T07:33:50.810804+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7356,7 +7749,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.909825+00:00",
+            "timestamp": "2026-09-20T07:33:50.810939+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7365,7 +7758,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "69e771ae-2595-4009-b400-16d5fd8a2858",
+          "id": "0504cb0f-c933-4bb3-bcd5-4c86072f6975",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7380,7 +7773,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.909829+00:00",
+          "timestamp": "2026-09-20T07:33:50.810942+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7425,7 +7818,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.909973+00:00",
+            "timestamp": "2026-09-20T07:33:50.811076+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7434,7 +7827,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "fcba6562-ec7f-4b65-8379-48d523ba9d9e",
+          "id": "b3132b82-31ca-4781-a310-1fc3682c179c",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7449,7 +7842,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.909976+00:00",
+          "timestamp": "2026-09-20T07:33:50.811080+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7494,7 +7887,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.910121+00:00",
+            "timestamp": "2026-09-20T07:33:50.811215+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7503,7 +7896,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "e1f8a434-ceb7-4996-b5c5-c0e0016824ee",
+          "id": "3bed42af-4e3b-4927-ba43-d352bd7d65bf",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7518,7 +7911,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.910125+00:00",
+          "timestamp": "2026-09-20T07:33:50.811218+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7563,7 +7956,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.910272+00:00",
+            "timestamp": "2026-09-20T07:33:50.811354+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7572,7 +7965,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "b5c13c2d-496b-4575-9199-a37d8fa7d9c7",
+          "id": "e7353220-feb0-43dd-8a71-99de6b7e052f",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7587,7 +7980,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.910275+00:00",
+          "timestamp": "2026-09-20T07:33:50.811357+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7632,7 +8025,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.910422+00:00",
+            "timestamp": "2026-09-20T07:33:50.811493+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7641,7 +8034,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "21751844-3f91-4278-8743-ec1341b81eab",
+          "id": "c7f5c9ec-8925-43eb-bc0f-34cc26d56de5",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7656,7 +8049,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.910425+00:00",
+          "timestamp": "2026-09-20T07:33:50.811496+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -7701,7 +8094,7 @@
             "source_engine": "tree-sitter",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.910571+00:00",
+            "timestamp": "2026-09-20T07:33:50.811632+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -7710,7 +8103,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "0bacb846-2db5-4fba-8125-4ca529fba4c1",
+          "id": "aea439f8-5b75-40a9-8c1c-05f0a4810912",
           "engine_version": "4.0.0",
           "rule_id": "AES-GCM",
           "rule_version": "4.0.0",
@@ -7725,7 +8118,7 @@
           "limitations": [
             "Regex heuristic observation."
           ],
-          "timestamp": "2026-09-19T22:49:03.910575+00:00",
+          "timestamp": "2026-09-20T07:33:50.811636+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -8090,7 +8483,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.912816+00:00",
+            "timestamp": "2026-09-20T07:33:50.815260+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -8099,7 +8492,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "8d25009b-1007-4087-adff-fe5d8684c35c",
+          "id": "601711f7-dee1-4c9c-80eb-c0f0dbebdfc2",
           "engine_version": "4.0.0",
           "rule_id": "RSA-65537",
           "rule_version": "4.0.0",
@@ -8114,7 +8507,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.912820+00:00",
+          "timestamp": "2026-09-20T07:33:50.815264+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -8159,7 +8552,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.913076+00:00",
+            "timestamp": "2026-09-20T07:33:50.815499+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -8168,7 +8561,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "d83c9213-4447-4ded-ad71-9e0e09c70402",
+          "id": "3801fe03-702e-4c9c-9a45-f3a8e15b0297",
           "engine_version": "4.0.0",
           "rule_id": "RSA-65537",
           "rule_version": "4.0.0",
@@ -8183,7 +8576,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.913081+00:00",
+          "timestamp": "2026-09-20T07:33:50.815504+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -8228,7 +8621,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.913322+00:00",
+            "timestamp": "2026-09-20T07:33:50.815732+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -8237,7 +8630,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "24c71dca-f1b5-4ad0-9689-801a353737ef",
+          "id": "3fdcda28-da5e-44ff-a74d-b62e67999425",
           "engine_version": "4.0.0",
           "rule_id": "RSA-65537",
           "rule_version": "4.0.0",
@@ -8252,7 +8645,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.913326+00:00",
+          "timestamp": "2026-09-20T07:33:50.815736+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -8297,7 +8690,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.913566+00:00",
+            "timestamp": "2026-09-20T07:33:50.815959+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -8306,7 +8699,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "4e0c2cf4-ba95-441a-8155-4067df8c5df5",
+          "id": "f05932bf-1121-4dc2-9070-300d17eb4665",
           "engine_version": "4.0.0",
           "rule_id": "RSA-65537",
           "rule_version": "4.0.0",
@@ -8321,7 +8714,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.913571+00:00",
+          "timestamp": "2026-09-20T07:33:50.815963+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -8366,7 +8759,7 @@
             "source_engine": "python-ast",
             "engine_version": "4.0.0",
             "scan_id": "",
-            "timestamp": "2026-09-19T22:49:03.913810+00:00",
+            "timestamp": "2026-09-20T07:33:50.816186+00:00",
             "scanner_version": "4.0.0",
             "artifact_hash": null,
             "rule_id": null,
@@ -8375,7 +8768,7 @@
             "environment": {},
             "parameters": {}
           },
-          "id": "0c9bfc18-348e-4cb5-8628-c074183707a0",
+          "id": "34236483-49db-4dc3-bdee-6bdda40ccf97",
           "engine_version": "4.0.0",
           "rule_id": "RSA-65537",
           "rule_version": "4.0.0",
@@ -8390,7 +8783,7 @@
           "limitations": [
             "Static AST observation; dynamic dataflow not fully traced."
           ],
-          "timestamp": "2026-09-19T22:49:03.913814+00:00",
+          "timestamp": "2026-09-20T07:33:50.816189+00:00",
           "supporting": [],
           "contradicting": [],
           "metadata": {},
@@ -22499,7 +22892,7 @@
     "version": "2024.1",
     "schema_version": "1.0.0",
     "engine_version": "4.0.0",
-    "knowledge_hash": "0b6ca8945302ae0073e127a7e53d92cc092a2cf086928e15323c313da8285dfb",
+    "knowledge_hash": "7b668faaae011b8122fa127f09979bbc68d761c344f65bceff5247824c3b4c2f",
     "rule_count": 131,
     "algorithm_count": 32,
     "migration_mapping_count": 6,
@@ -22510,9 +22903,9 @@
         "description": "Algorithm classification, aliases, quantum impact, PQC status, security strength",
         "version": "2024.1",
         "content_type": "algorithms",
-        "expected_sha256": "d78dd6970536dc2e9b5b14556ec251fad6133f731f5f5f6449f64bc51d886096",
-        "actual_sha256": "d78dd6970536dc2e9b5b14556ec251fad6133f731f5f5f6449f64bc51d886096",
-        "sha256": "d78dd6970536dc2e9b5b14556ec251fad6133f731f5f5f6449f64bc51d886096",
+        "expected_sha256": "45e598ab90a96818c60c257007b20ee70ad659aab8d17527ef077612846dcb72",
+        "actual_sha256": "45e598ab90a96818c60c257007b20ee70ad659aab8d17527ef077612846dcb72",
+        "sha256": "45e598ab90a96818c60c257007b20ee70ad659aab8d17527ef077612846dcb72",
         "verified": true,
         "items_count": 32
       },
@@ -22642,7 +23035,7 @@
       ]
     },
     "knowledge_base_version": "2024.1",
-    "checksum": "0b6ca8945302ae0073e127a7e53d92cc092a2cf086928e15323c313da8285dfb"
+    "checksum": "7b668faaae011b8122fa127f09979bbc68d761c344f65bceff5247824c3b4c2f"
   },
   "reproducibility_metadata": {
     "benchmark_version": "1.0.0",
@@ -22651,9 +23044,9 @@
     "engine_version": "4.0.0",
     "configuration_hash": "b101eb2732e9c92f1c70f67f1689beafa5ab573eb5ea13fb63261fed8dabc0f5",
     "dataset_hash": "c9de8400c10d28ecb2cc0b6631770fe20ae691daea7a3fcef4da3129265b9371",
-    "knowledge_hash": "0b6ca8945302ae0073e127a7e53d92cc092a2cf086928e15323c313da8285dfb",
-    "result_hash": "8633dd992cf1d54b584b197549459e1c4bb389c504cc89818a1b51ee27a4dc83",
-    "timestamp": "2026-09-19T22:49:03.917814+00:00",
+    "knowledge_hash": "7b668faaae011b8122fa127f09979bbc68d761c344f65bceff5247824c3b4c2f",
+    "result_hash": "8aeed2c32044d47ae302fdfc5275c2b9b8d898ea5830ba73da57e8b7ca5c8e01",
+    "timestamp": "2026-09-20T07:33:50.819970+00:00",
     "environment": {
       "python_version": "3.14.6",
       "platform": "darwin"

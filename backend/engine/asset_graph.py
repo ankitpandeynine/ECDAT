@@ -369,15 +369,17 @@ class AssetGraphService:
         which upstream callers, endpoints, services, and applications are exposed?
         Traverses reverse graph edges (who depends on / uses / is protected by this asset).
         """
+        from collections import deque
         target_id_str = target_node_id.id if hasattr(target_node_id, "id") else str(target_node_id)
         visited: Set[str] = set()
-        queue: List[str] = [target_id_str]
+        queue = deque([target_id_str])
         impacted_nodes: List[Dict[str, Any]] = []
         impacted_edges: List[Dict[str, Any]] = []
+        asset_cache: Dict[str, Dict[str, Any]] = {}
 
         with self.connect() as db:
             while queue:
-                current = queue.pop(0)
+                current = queue.popleft()
                 if current in visited:
                     continue
                 visited.add(current)
@@ -394,12 +396,10 @@ class AssetGraphService:
                     impacted_edges.append(dict(edge))
                     if source_id not in visited:
                         queue.append(source_id)
-                        # Fetch source asset details
-                        asset_row = db.execute("SELECT * FROM crypto_assets WHERE id = ?", (source_id,)).fetchone()
-                        if asset_row:
-                            impacted_nodes.append(dict(asset_row))
-                        else:
-                            impacted_nodes.append({"id": source_id, "name": source_id, "asset_type": edge["source_type"]})
+                        if source_id not in asset_cache:
+                            asset_row = db.execute("SELECT * FROM crypto_assets WHERE id = ?", (source_id,)).fetchone()
+                            asset_cache[source_id] = dict(asset_row) if asset_row else {"id": source_id, "name": source_id, "asset_type": edge["source_type"]}
+                        impacted_nodes.append(asset_cache[source_id])
 
         return {
             "target_node_id": target_id_str,

@@ -33,6 +33,12 @@ except ImportError:
 from .evidence_model import Evidence, EvidenceLevel, EvidenceState, ObservationType, Provenance
 from .sink_database import get_sink_database
 
+_REQ_LINE_RE = re.compile(r"^([a-zA-Z0-9_\-\.]+)\s*(?:([><=~!^]+)\s*([a-zA-Z0-9_\-\.\*]+))?")
+_PYPROJECT_DEP_RE = re.compile(r"^([a-zA-Z0-9_\-\.]+)\s*(.*)")
+_YARN_HEADER_RE = re.compile(r"^\"?(@?[a-zA-Z0-9_\-\.\/]+)@")
+_XML_NS_RE = re.compile(r' xmlns="[^"]+"')
+_GRADLE_DEP_RE = re.compile(r"(?:implementation|api|compileOnly|testImplementation)\s*[\(\'\"]([a-zA-Z0-9_\-\.\:]+)[\'\"]\)")
+
 
 class DependencyScanner:
     def __init__(self):
@@ -136,7 +142,7 @@ class DependencyScanner:
             if not line or line.startswith(("#", "-", "@", "http")):
                 continue
             # match package and version specifier
-            m = re.match(r"^([a-zA-Z0-9_\-\.]+)\s*(?:([><=~!^]+)\s*([a-zA-Z0-9_\-\.\*]+))?", line)
+            m = _REQ_LINE_RE.match(line)
             if m:
                 name = m.group(1).lower()
                 version = f"{m.group(2) or ''}{m.group(3) or ''}".strip()
@@ -159,7 +165,7 @@ class DependencyScanner:
             # Standard PEP 621 [project.dependencies]
             project_deps = data.get("project", {}).get("dependencies", [])
             for dep_str in project_deps:
-                m = re.match(r"^([a-zA-Z0-9_\-\.]+)\s*(.*)", dep_str)
+                m = _PYPROJECT_DEP_RE.match(dep_str)
                 if m:
                     deps.append({
                         "name": m.group(1).lower(),
@@ -270,7 +276,7 @@ class DependencyScanner:
             header = lines[0]
             if header.startswith("#"):
                 continue
-            m = re.match(r"^\"?(@?[a-zA-Z0-9_\-\.\/]+)@", header)
+            m = _YARN_HEADER_RE.match(header)
             if m:
                 name = m.group(1).lower()
                 ver = ""
@@ -294,7 +300,7 @@ class DependencyScanner:
         deps = []
         try:
             # Strip namespaces for simple parsing
-            clean_xml = re.sub(r' xmlns="[^"]+"', '', content, count=1)
+            clean_xml = _XML_NS_RE.sub('', content, count=1)
             root = ET.fromstring(clean_xml)
             for dep in root.findall(".//dependency"):
                 group_id = dep.findtext("groupId", "").strip()
@@ -317,8 +323,7 @@ class DependencyScanner:
     def _parse_build_gradle(self, file_path: str, content: str) -> List[Dict[str, Any]]:
         deps = []
         # regex for implementation 'group:artifact:version' or implementation("group:artifact:version")
-        pattern = r"(?:implementation|api|compileOnly|testImplementation)\s*[\(\'\"]([a-zA-Z0-9_\-\.\:]+)[\'\"]\)"
-        for m in re.finditer(pattern, content):
+        for m in _GRADLE_DEP_RE.finditer(content):
             full_str = m.group(1)
             parts = full_str.split(":")
             if len(parts) >= 2:

@@ -197,6 +197,10 @@ class CustomLoopResult(BaseModel):
     # CBOM Data
     cbom_summary: Dict[str, Any]
 
+    # Target Solution and Multi-file Patches
+    target_solution: str = "NIST_PQC_HYBRID"
+    file_patches: List[Dict[str, Any]] = Field(default_factory=list)
+
 
 class CustomLoopRunner:
     """Orchestrates the 1-click Custom Loop pipeline."""
@@ -212,19 +216,33 @@ class CustomLoopRunner:
         preset_name: Optional[str] = None,
         shelf_life: int = 10,
         migration_time: int = 4,
-        crqc_horizon: int = 7
+        crqc_horizon: int = 7,
+        files: Optional[List[Dict[str, Any]]] = None,
+        target_solution: str = "NIST_PQC_HYBRID",
     ) -> CustomLoopResult:
         start_time = time.time()
         run_id = f"loop-{int(start_time * 1000)}"
         steps: List[LoopStep] = []
+        file_patches: List[Dict[str, Any]] = []
 
-        # Resolve inputs and presets. Presets exist solely as demo conveniences;
-        # user-supplied source always takes precedence over demo content.
-        if preset_name == "c_openssl" or (not source_code and language.lower() in ("c", "c_cpp", "cpp")):
+        # If files list is provided, normalize it
+        input_files: List[Dict[str, Any]] = []
+        if files and len(files) > 0:
+            target_type = "source"
+            for f in files:
+                f_path = f.get("path") or f.get("name") or "file.py"
+                f_content = f.get("content", "")
+                f_lang = f.get("language") or "python"
+                input_files.append({"path": f_path, "content": f_content, "language": f_lang})
+            code_before = input_files[0]["content"] if not source_code else source_code
+            file_name = input_files[0]["path"] if file_name == "payment_processor.py" else file_name
+            language = input_files[0]["language"]
+        elif preset_name == "c_openssl" or (not source_code and language.lower() in ("c", "c_cpp", "cpp")):
             code_before = source_code if source_code and source_code.strip() else PRESET_C_BEFORE
             file_name = file_name or "src/payment.c"
             language = "c_cpp"
             target_type = "source"
+            input_files = [{"path": file_name, "content": code_before, "language": language}]
         elif preset_name == "binary" or target_type == "binary":
             target_type = "binary"
             file_name = file_name if file_name.endswith((".bin", ".elf", ".exe")) else "payment_gateway.elf"
@@ -234,13 +252,14 @@ class CustomLoopRunner:
             code_before = source_code if source_code and source_code.strip() else PRESET_PYTHON_BEFORE
             file_name = file_name or "payment_processor.py"
             language = "python" if not language else language.lower()
+            input_files = [{"path": file_name, "content": code_before, "language": language}]
 
         # =====================================================================
         # Step 1: SCAN TARGET (Source code or Binary)
         # =====================================================================
         s1_start = time.time()
         if target_type == "source":
-            scan_raw = scan_sources([{"path": file_name, "content": code_before, "language": language}])
+            scan_raw = scan_sources(input_files)
             findings_before = scan_raw.get("findings", [])
             evidence_before = [normalize_source_finding(f, input_hash=f"hash_{run_id}_v1") for f in findings_before]
             scan_summary = {
@@ -335,20 +354,37 @@ class CustomLoopRunner:
         if target_type == "source":
             # Apply the full deterministic template set for the detected language to
             # the user's actual code. No preset substitution, no fictional diffs.
-            batch = AutoPatchEngine.batch_patch_code(
-                source_code=code_before,
-                file_path=file_name,
-                language=language,
-                run_tests=True
-            )
-            code_after = batch["patched_code"]
-            diff_text = batch["unified_diff"]
-            applied_descriptions = [p["description"] for p in batch["applied_patches"]]
+            combined_diff_parts = []
+            applied_descriptions = []
+            test_results = []
+            for f in input_files:
+                batch = AutoPatchEngine.batch_patch_code(
+                    source_code=f["content"],
+                    file_path=f["path"],
+                    language=f["language"],
+                    run_tests=True
+                )
+                file_patches.append({
+                    "path": f["path"],
+                    "language": f["language"],
+                    "original_code": f["content"],
+                    "patched_code": batch["patched_code"],
+                    "unified_diff": batch["unified_diff"],
+                    "applied_patches": batch["applied_patches"],
+                    "changed": batch.get("changed", batch["patched_code"] != f["content"]),
+                    "test_results": batch.get("test_results", [])
+                })
+                applied_descriptions.extend([p["description"] for p in batch["applied_patches"]])
+                test_results.extend(batch.get("test_results", []))
+                if batch["unified_diff"]:
+                    combined_diff_parts.append(f"--- a/{f['path']}\n+++ b/{f['path']}\n" + batch["unified_diff"])
+
+            code_after = file_patches[0]["patched_code"] if file_patches else code_before
+            diff_text = "\n\n".join(combined_diff_parts) if combined_diff_parts else (file_patches[0]["unified_diff"] if file_patches else "")
             patch_desc = "; ".join(applied_descriptions) if applied_descriptions else (
                 "No deterministic template matched the detected patterns; "
                 "manual migration guidance is listed in the verification report."
             )
-            test_results = batch.get("test_results", [])
             statuses = {t.get("status") for t in test_results} or {"not_executed"}
             if test_results and statuses == {"passed"}:
                 test_status = "passed"
@@ -358,7 +394,8 @@ class CustomLoopRunner:
                 test_status = "not_executed"
             test_code = "\n\n# ---- ----\n\n".join(
                 PATCH_TEMPLATES[p["pattern_id"]]["test_template"]
-                for p in batch["applied_patches"]
+                for fp in file_patches
+                for p in fp["applied_patches"]
                 if p["pattern_id"] in PATCH_TEMPLATES and PATCH_TEMPLATES[p["pattern_id"]].get("test_template")
             ) or "// No executable regression test for this language; verified by post-patch re-scan."
             test_output = "\n".join(
@@ -400,7 +437,8 @@ class CustomLoopRunner:
         # =====================================================================
         s4_start = time.time()
         if target_type == "source":
-            scan_after_raw = scan_sources([{"path": file_name, "content": code_after, "language": language}])
+            patched_sources = [{"path": fp["path"], "content": fp["patched_code"], "language": fp["language"]} for fp in file_patches]
+            scan_after_raw = scan_sources(patched_sources)
             findings_after = scan_after_raw.get("findings", [])
             evidence_after = [normalize_source_finding(f, input_hash=f"hash_{run_id}_v2") for f in findings_after]
             verification_report = ClosedLoopVerifier.verify(
@@ -536,5 +574,7 @@ class CustomLoopRunner:
                 "components_count": len(cbom.get("components", [])),
                 "spec_version": cbom.get("specVersion", "1.6"),
                 "bom_format": "CycloneDX"
-            }
+            },
+            target_solution=target_solution,
+            file_patches=file_patches
         )

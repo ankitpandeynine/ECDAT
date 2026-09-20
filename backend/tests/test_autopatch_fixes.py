@@ -202,3 +202,41 @@ def test_scan_store_list_performance():
             assert "engine_version" in item
             # Full raw payload must not be leaked or needlessly transferred in scan list
             assert "payload" not in item
+
+
+def test_polyglot_and_knowledge_graph_optimizations():
+    """Verify that polyglot scanning, sink caching, and graph node synchronization run quickly and accurately."""
+    from engine.polyglot_scanner import scan_polyglot_code
+    from engine.sink_database import get_sink_database
+    from engine.mosca import normalize_algo_and_keysize
+    from engine.knowledge_graph import sync_knowledge_graph_tables
+    from engine.scan_store import ScanStore
+
+    # 1. Polyglot scan line calculation and performance
+    java_code = "package test;\n" + ("// padding line\n" * 5000) + 'MessageDigest md = MessageDigest.getInstance("MD5");\n'
+    t0 = time.time()
+    res = scan_polyglot_code(java_code, "java")
+    elapsed = time.time() - t0
+    assert elapsed < 1.0, f"Polyglot scan took {elapsed:.2f}s"
+    assert res["total_findings"] >= 1
+    assert res["findings"][0]["line"] == 5002
+    assert res["findings"][0]["primitive"] == "MD5"
+
+    # 2. Sink database memoization
+    sink_db = get_sink_database()
+    assert sink_db.is_crypto_dependency("cryptography") is True
+    assert sink_db.is_crypto_dependency("nonexistent-random-pkg-1234") is False
+    assert len(sink_db.get_dependency_capabilities("cryptography")) > 0
+
+    # 3. Mosca normalization cache
+    norm1 = normalize_algo_and_keysize("RSA-2048")
+    norm2 = normalize_algo_and_keysize("RSA-2048")
+    assert norm1 == norm2 == ("RSA", 2048)
+
+    # 4. Sync knowledge graph tables batch execution
+    store = ScanStore()
+    try:
+        sync_res = sync_knowledge_graph_tables(store, "test-opt-project")
+        assert "nodes" in sync_res
+    finally:
+        store.close()

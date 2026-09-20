@@ -61,13 +61,22 @@ def run_bounded(argv, timeout=3.0, completed=None):
 
 
 
+_RE_CONN_ESTABLISHED = re.compile(r'^CONNECTION ESTABLISHED\s*$', re.M)
+_RE_PROTO_VERSION = re.compile(r'^Protocol version: TLSv1\.3\s*$', re.M)
+_RE_CIPHERSUITE = re.compile(r'^Ciphersuite: TLS_[A-Z0-9_]+\s*$', re.M)
+_RE_TEMP_KEY = re.compile(r'^(?:Negotiated TLS1\.3 group|Server Temp Key|Peer Temp Key): [^\r\n]+\r?\n', re.M)
+_RE_SELECTED_GROUP = re.compile(r'^(?:Negotiated TLS1\.3 group|Server Temp Key|Peer Temp Key): ([^,\r\n]+)', re.M)
+_RE_CIPHER_LINE = re.compile(r'^Ciphersuite: (\S+)', re.M)
+_RE_ALERT = re.compile(r'(alert handshake failure|alert protocol version|no suitable key share)', re.I)
+
+
 def handshake_evidence(text):
     # Only a full TLS 1.3 handshake summary is accepted, never merely an offered
     # group name in an error message. -brief prints this after SSL_connect.
-    return bool(re.search(r'^CONNECTION ESTABLISHED\s*$', text, re.M)
-                and re.search(r'^Protocol version: TLSv1\.3\s*$', text, re.M)
-                and re.search(r'^Ciphersuite: TLS_[A-Z0-9_]+\s*$', text, re.M)
-                and re.search(r'^(?:Negotiated TLS1\.3 group|Server Temp Key|Peer Temp Key): [^\r\n]+\r?\n', text, re.M))
+    return bool(_RE_CONN_ESTABLISHED.search(text)
+                and _RE_PROTO_VERSION.search(text)
+                and _RE_CIPHERSUITE.search(text)
+                and _RE_TEMP_KEY.search(text))
 
 
 def probe_group(binary, host, ip, port, group, timeout=3.0):
@@ -82,18 +91,21 @@ def probe_group(binary, host, ip, port, group, timeout=3.0):
     if response['reason'] == 'output_limit':
         return {'group': group, 'status': 'inconclusive', 'reason': 'Diagnostic output limit exceeded'}
     if handshake_evidence(text):
-        selected = re.search(r'^(?:Negotiated TLS1\.3 group|Server Temp Key|Peer Temp Key): ([^,\r\n]+)', text, re.M).group(1).strip()
+        m_group = _RE_SELECTED_GROUP.search(text)
+        selected = m_group.group(1).strip() if m_group else ''
         aliases = {'prime256v1': 'P-256', 'secp256r1': 'P-256', 'X25519': 'X25519'}
         if aliases.get(selected, selected) != aliases.get(group, group):
             return {'group': group, 'status': 'inconclusive', 'reason': 'Unexpected negotiated group in diagnostic output'}
+        m_cipher = _RE_CIPHER_LINE.search(text)
+        cipher_val = m_cipher.group(1) if m_cipher else 'Unknown'
         return {'group': group, 'status': 'negotiated', 'negotiated_group': selected,
-                'protocol': 'TLSv1.3', 'cipher': re.search(r'^Ciphersuite: (\S+)', text, re.M).group(1),
+                'protocol': 'TLSv1.3', 'cipher': cipher_val,
                 'evidence': f'TLS 1.3 handshake completed with only {group} offered; negotiated group reported by OpenSSL.'}
     if any(x in text for x in ('group cannot be set', 'passed invalid argument', 'SSL_CONF_cmd', 'unknown option')):
         return {'group': group, 'status': 'scanner_unavailable', 'reason': 'This OpenSSL build/provider cannot probe this group. Use the supplied Docker runtime (OpenSSL 3.5+).'}
     if response['reason']:
         return {'group': group, 'status': 'inconclusive', 'reason': response['reason']}
-    if re.search(r'(alert handshake failure|alert protocol version|no suitable key share)', text, re.I):
+    if _RE_ALERT.search(text):
         return {'group': group, 'status': 'not_negotiated', 'reason': 'TLS peer rejected this single-group attempt; other PQ groups/clients were not ruled out.'}
     return {'group': group, 'status': 'inconclusive', 'reason': 'Connection failed or no complete negotiated-group evidence was returned.'}
 

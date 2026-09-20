@@ -93,6 +93,10 @@ export function AssetInventory({
   const [surfaceFilter, setSurfaceFilter] = useState<string>("All");
   const [familyFilter, setFamilyFilter] = useState<string>("All");
 
+  // Sorting state
+  const [sortBy, setSortBy] = useState<"mosca" | "risk" | "name" | "key_size" | "confidence">("mosca");
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
+
   // Pagination state
   const [page, setPage] = useState<number>(1);
   const perPage = 50;
@@ -101,6 +105,32 @@ export function AssetInventory({
   // Selected asset for detail drawer
   const [selectedAsset, setSelectedAsset] = useState<AssetRecord | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const sortedAssets = React.useMemo(() => {
+    const riskWeight: Record<string, number> = {
+      CRITICAL: 4,
+      AT_RISK: 3,
+      UNKNOWN: 2,
+      SAFE: 1
+    };
+
+    return [...assets].sort((a, b) => {
+      let cmp = 0;
+      if (sortBy === "mosca") {
+        cmp = (b.mosca_score || 0) - (a.mosca_score || 0);
+      } else if (sortBy === "risk") {
+        cmp = (riskWeight[b.risk_level] || 0) - (riskWeight[a.risk_level] || 0);
+      } else if (sortBy === "name") {
+        cmp = (a.name || a.algorithm || "").localeCompare(b.name || b.algorithm || "");
+      } else if (sortBy === "key_size") {
+        cmp = (b.key_size || 0) - (a.key_size || 0);
+      } else if (sortBy === "confidence") {
+        cmp = (b.confidence || 0) - (a.confidence || 0);
+      }
+      return sortOrder === "asc" ? -cmp : cmp;
+    });
+  }, [assets, sortBy, sortOrder]);
+
 
   const fetchAssets = async () => {
     setLoading(true);
@@ -253,73 +283,132 @@ export function AssetInventory({
         </div>
       </div>
 
-      {/* Filter Bar (Dropdowns, not search) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-xl border border-subtle bg-surface/70 backdrop-blur-sm">
-        {/* Risk Level Filter */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-medium text-quiet uppercase tracking-wider">
-            Risk Level
-          </label>
-          <select
-            value={riskFilter}
-            onChange={(e) => {
-              setRiskFilter(e.target.value);
-              setPage(1);
-            }}
-            className="w-full text-xs font-mono bg-canvas border border-subtle rounded-lg px-3 py-2 text-foreground focus:outline-none focus:border-cyan-500 transition-colors"
-          >
-            <option value="All">All Risk Levels</option>
-            <option value="CRITICAL">CRITICAL</option>
-            <option value="AT_RISK">AT_RISK</option>
-            <option value="SAFE">SAFE</option>
-            <option value="UNKNOWN">UNKNOWN</option>
-          </select>
+      {/* Filter & Sort Bar */}
+      <div className="space-y-2.5 p-3.5 rounded-xl border border-subtle bg-surface/70 backdrop-blur-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Risk Level Filter */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-medium text-quiet uppercase tracking-wider">
+              Risk Level
+            </label>
+            <select
+              value={riskFilter}
+              onChange={(e) => {
+                setRiskFilter(e.target.value);
+                setPage(1);
+              }}
+              className="w-full text-xs font-mono bg-canvas border border-subtle rounded-lg px-3 py-2 text-foreground focus:outline-none focus:border-cyan-500 transition-colors"
+            >
+              <option value="All">All Risk Levels</option>
+              <option value="CRITICAL">CRITICAL</option>
+              <option value="AT_RISK">AT_RISK</option>
+              <option value="SAFE">SAFE</option>
+              <option value="UNKNOWN">UNKNOWN</option>
+            </select>
+          </div>
+
+          {/* Surface Filter */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-medium text-quiet uppercase tracking-wider">
+              Discovery Surface
+            </label>
+            <select
+              value={surfaceFilter}
+              onChange={(e) => {
+                setSurfaceFilter(e.target.value);
+                setPage(1);
+              }}
+              className="w-full text-xs font-mono bg-canvas border border-subtle rounded-lg px-3 py-2 text-foreground focus:outline-none focus:border-cyan-500 transition-colors"
+            >
+              <option value="All">All Surfaces</option>
+              <option value="source">source (Code)</option>
+              <option value="binary">binary (Compiled)</option>
+              <option value="network">network (TLS/Protocol)</option>
+              <option value="certificate">certificate (X.509)</option>
+              <option value="archive">archive (Storage)</option>
+            </select>
+          </div>
+
+          {/* Algorithm Family Filter */}
+          <div className="space-y-1">
+            <label className="text-[11px] font-medium text-quiet uppercase tracking-wider">
+              Algorithm Family
+            </label>
+            <select
+              value={familyFilter}
+              onChange={(e) => {
+                setFamilyFilter(e.target.value);
+                setPage(1);
+              }}
+              className="w-full text-xs font-mono bg-canvas border border-subtle rounded-lg px-3 py-2 text-foreground focus:outline-none focus:border-cyan-500 transition-colors"
+            >
+              <option value="All">All Algorithm Families</option>
+              <option value="RSA">RSA (Asymmetric)</option>
+              <option value="ECC">ECC (Elliptic Curve)</option>
+              <option value="AES">AES (Symmetric)</option>
+              <option value="SHA">SHA (Hash)</option>
+              <option value="Other">Other / Post-Quantum</option>
+            </select>
+          </div>
+
+          {/* Sort By Dropdown */}
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-medium text-quiet uppercase tracking-wider">
+                Sort Assets By
+              </label>
+              <button
+                type="button"
+                onClick={() => setSortOrder((o) => (o === "desc" ? "asc" : "desc"))}
+                className="text-[10px] font-mono text-cyan-400 hover:underline"
+              >
+                {sortOrder === "desc" ? "▼ High→Low" : "▲ Low→High"}
+              </button>
+            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="w-full text-xs font-mono bg-canvas border border-subtle rounded-lg px-3 py-2 text-foreground focus:outline-none focus:border-cyan-500 transition-colors"
+            >
+              <option value="mosca">Mosca Score (Quantum Deficit)</option>
+              <option value="risk">Priority / Risk Level</option>
+              <option value="name">Algorithm Name (A-Z)</option>
+              <option value="key_size">Key Size / Bit Margin</option>
+              <option value="confidence">Confidence Level</option>
+            </select>
+          </div>
         </div>
 
-        {/* Surface Filter */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-medium text-quiet uppercase tracking-wider">
-            Discovery Surface
-          </label>
-          <select
-            value={surfaceFilter}
-            onChange={(e) => {
-              setSurfaceFilter(e.target.value);
-              setPage(1);
-            }}
-            className="w-full text-xs font-mono bg-canvas border border-subtle rounded-lg px-3 py-2 text-foreground focus:outline-none focus:border-cyan-500 transition-colors"
-          >
-            <option value="All">All Surfaces</option>
-            <option value="source">source (Code)</option>
-            <option value="binary">binary (Compiled)</option>
-            <option value="network">network (TLS/Protocol)</option>
-            <option value="certificate">certificate (X.509)</option>
-            <option value="archive">archive (Storage)</option>
-          </select>
-        </div>
-
-        {/* Algorithm Family Filter */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-medium text-quiet uppercase tracking-wider">
-            Algorithm Family
-          </label>
-          <select
-            value={familyFilter}
-            onChange={(e) => {
-              setFamilyFilter(e.target.value);
-              setPage(1);
-            }}
-            className="w-full text-xs font-mono bg-canvas border border-subtle rounded-lg px-3 py-2 text-foreground focus:outline-none focus:border-cyan-500 transition-colors"
-          >
-            <option value="All">All Algorithm Families</option>
-            <option value="RSA">RSA (Asymmetric)</option>
-            <option value="ECC">ECC (Elliptic Curve)</option>
-            <option value="AES">AES (Symmetric)</option>
-            <option value="SHA">SHA (Hash)</option>
-            <option value="Other">Other / Post-Quantum</option>
-          </select>
+        {/* Quick Filter Chips */}
+        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-subtle text-[11px] font-mono">
+          <span className="text-quiet mr-1">Quick Filters:</span>
+          {[
+            { label: "All Assets", risk: "All", surface: "All" },
+            { label: "Critical Weaknesses", risk: "CRITICAL", surface: "All" },
+            { label: "At Risk Primitives", risk: "AT_RISK", surface: "All" },
+            { label: "Source Code", risk: "All", surface: "source" },
+            { label: "TLS Endpoints", risk: "All", surface: "network" },
+            { label: "X.509 Certificates", risk: "All", surface: "certificate" }
+          ].map((chip, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setRiskFilter(chip.risk);
+                setSurfaceFilter(chip.surface);
+                setPage(1);
+              }}
+              className={`px-2 py-0.5 rounded-full border transition-all ${
+                riskFilter === chip.risk && surfaceFilter === chip.surface
+                  ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-semibold"
+                  : "bg-canvas text-quiet hover:text-foreground border-subtle"
+              }`}
+            >
+              {chip.label}
+            </button>
+          ))}
         </div>
       </div>
+
 
       {/* Asset Table */}
       {loading && assets.length === 0 ? (
@@ -365,7 +454,7 @@ export function AssetInventory({
                 </tr>
               </thead>
               <tbody className="divide-y divide-subtle font-mono text-[11px]">
-                {assets.map((a) => {
+                {sortedAssets.map((a) => {
                   const algoLabel = a.algorithm || a.name || "UNKNOWN";
                   const keySizeLabel = a.key_size ? `-${a.key_size}` : "";
                   const pillText = `${algoLabel}${!algoLabel.includes(String(a.key_size || "")) ? keySizeLabel : ""}`;

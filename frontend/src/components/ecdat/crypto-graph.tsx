@@ -54,6 +54,7 @@ export function CryptoGraph({
   const [selectedGraphNode, setSelectedGraphNode] = useState<GraphNode | null>(null);
   const [graphZoom, setGraphZoom] = useState<number>(1);
   const [graphFilter, setGraphFilter] = useState<string>("ALL");
+  const [graphSort, setGraphSort] = useState<"priority" | "usage" | "blast" | "name">("priority");
 
   const fetchGraph = useCallback(async () => {
     if (!projectId) return;
@@ -113,15 +114,44 @@ export function CryptoGraph({
     return edges.filter((e) => nodeIds.has(e.source) && nodeIds.has(e.target));
   }, [nodes, edges]);
 
-  // Filtered nodes based on selected toolbar filter
+  // Filtered and Sorted nodes based on selected toolbar filter and sort mode
   const filteredGraphNodes = useMemo(() => {
-    if (graphFilter === "ALL") return nodes;
-    return nodes.filter(
-      (n) =>
-        (n.group && n.group.toUpperCase() === graphFilter) ||
-        (n.type && n.type.toUpperCase() === graphFilter)
-    );
-  }, [nodes, graphFilter]);
+    let list = nodes;
+    if (graphFilter !== "ALL") {
+      list = list.filter(
+        (n) =>
+          (n.group && n.group.toUpperCase() === graphFilter) ||
+          (n.type && n.type.toUpperCase() === graphFilter)
+      );
+    }
+
+    const priorityWeight: Record<string, number> = {
+      critical: 4,
+      high: 3,
+      medium: 2,
+      low: 1
+    };
+
+    return [...list].sort((a, b) => {
+      if (graphSort === "priority") {
+        const pA = priorityWeight[String(a.risk_level).toLowerCase()] || 0;
+        const pB = priorityWeight[String(b.risk_level).toLowerCase()] || 0;
+        if (pB !== pA) return pB - pA;
+        return (b.blast_radius_count || 0) - (a.blast_radius_count || 0);
+      }
+      if (graphSort === "usage") {
+        return (b.evidence_count || 0) - (a.evidence_count || 0);
+      }
+      if (graphSort === "blast") {
+        return (b.blast_radius_count || 0) - (a.blast_radius_count || 0);
+      }
+      if (graphSort === "name") {
+        return a.label.localeCompare(b.label);
+      }
+      return 0;
+    });
+  }, [nodes, graphFilter, graphSort]);
+
 
   return (
     <div className="space-y-6">
@@ -215,22 +245,46 @@ export function CryptoGraph({
           {/* Interactive SVG / Canvas Graph */}
           <div className="lg:col-span-2 rounded-xl border border-subtle bg-canvas p-4 min-h-[460px] flex flex-col justify-between relative overflow-hidden">
             {/* Graph Controls Toolbar */}
-            <div className="flex items-center justify-between text-xs border-b border-subtle pb-3 z-10">
-              <div className="flex items-center gap-2">
-                <span className="text-quiet text-[11px] font-mono">Filter:</span>
-                {["ALL", "SERVICE", "ALGORITHM", "PROTOCOL"].map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => setGraphFilter(f)}
-                    className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
-                      graphFilter === f
-                        ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
-                        : "bg-subtle text-quiet hover:text-foreground"
-                    }`}
-                  >
-                    {f}
-                  </button>
-                ))}
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs border-b border-subtle pb-3 z-10">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-quiet text-[11px] font-mono">Filter:</span>
+                  {["ALL", "SERVICE", "ALGORITHM", "PROTOCOL"].map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => setGraphFilter(f)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
+                        graphFilter === f
+                          ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
+                          : "bg-subtle text-quiet hover:text-foreground"
+                      }`}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-1.5 pl-2 border-l border-subtle">
+                  <span className="text-quiet text-[11px] font-mono">Sort:</span>
+                  {[
+                    { id: "priority", label: "Priority" },
+                    { id: "usage", label: "Usage" },
+                    { id: "blast", label: "Blast" },
+                    { id: "name", label: "A-Z" }
+                  ].map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => setGraphSort(s.id as any)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
+                        graphSort === s.id
+                          ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold"
+                          : "bg-subtle text-quiet hover:text-foreground"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="flex items-center gap-1.5">

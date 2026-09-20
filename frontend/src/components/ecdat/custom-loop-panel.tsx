@@ -1,7 +1,6 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import JSZip from "jszip";
 import {
   Play,
   RotateCcw,
@@ -22,12 +21,44 @@ import {
   Download,
   Flame,
   Layers,
-  FileText
+  FileText,
+  Upload,
+  FolderArchive,
+  Check,
+  Copy,
+  X
 } from "lucide-react";
 
 interface CustomLoopPanelProps {
   projectId: string;
 }
+
+const TARGET_SOLUTIONS = [
+  {
+    id: "NIST_PQC_HYBRID",
+    name: "NIST FIPS 203/204 Hybrid (ML-KEM-768 + ML-DSA-65)",
+    badge: "Recommended Standard",
+    desc: "Lattice-based Post-Quantum KEM and Signatures combined with classical ECC/RSA protection."
+  },
+  {
+    id: "FIPS_203_204",
+    name: "Pure Quantum-Native Standard (ML-KEM-1024 / ML-DSA-87)",
+    badge: "Category 5 Security",
+    desc: "Maximum security lattice standard for high-assurance national security workloads."
+  },
+  {
+    id: "TRANSITIONAL_AES_SHA",
+    name: "Transitional Classical Hardening (AES-256-GCM + SHA-384 + RSA-3072)",
+    badge: "Immediate Drop-in",
+    desc: "Eliminates all classically broken algorithms (MD5/DES/RC4) and raises minimum RSA margin to 3072 bits."
+  },
+  {
+    id: "CNSA_2_0",
+    name: "NSA CNSA 2.0 Modernization Suite",
+    badge: "DoD / NSA Standard",
+    desc: "Complies with NSA Commercial National Security Algorithm Suite 2.0 for quantum-resistant migration by 2030."
+  }
+];
 
 const PRESET_OPTIONS = [
   {
@@ -85,6 +116,45 @@ int process_payment_telemetry(const unsigned char *payload, size_t len) {
 }`
   },
   {
+    id: "rust_iot",
+    type: "source",
+    label: "Embedded IoT Firmware (Rust)",
+    desc: "Deprecated md5 crate + 1024-bit RSA private key",
+    file_name: "src/telemetry.rs",
+    language: "rust",
+    code: `// Rust Embedded IoT Firmware
+use md5;
+use des::Des;
+use rsa::RsaPrivateKey;
+
+fn process_telemetry(data: &[u8]) -> Vec<u8> {
+    let digest = md5::compute(data);
+    let cipher = Des::new_from_slice(b"12345678").unwrap();
+    let mut rng = rand::thread_rng();
+    let priv_key = RsaPrivateKey::new(&mut rng, 1024).unwrap();
+    digest.to_vec()
+}`
+  },
+  {
+    id: "csharp_api",
+    type: "source",
+    label: "Banking Payment API (C# .NET)",
+    desc: "MD5.Create() + DESCryptoServiceProvider + RSA-1024",
+    file_name: "PaymentProcessor.cs",
+    language: "csharp",
+    code: `// C# .NET Banking API
+using System.Security.Cryptography;
+
+public class PaymentProcessor {
+    public byte[] ProcessTransaction(byte[] payload) {
+        using var md5 = MD5.Create();
+        using var des = DESCryptoServiceProvider.Create();
+        using var rsa = new RSACryptoServiceProvider(1024);
+        return md5.ComputeHash(payload);
+    }
+}`
+  },
+  {
     id: "binary",
     type: "binary",
     label: "Legacy Crypto Binary Executable (ELF x86_64)",
@@ -100,17 +170,29 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
 
   const [targetType, setTargetType] = useState<"source" | "binary">("source");
   const [selectedPreset, setSelectedPreset] = useState("python");
+  const [targetSolution, setTargetSolution] = useState("NIST_PQC_HYBRID");
   const [codeContent, setCodeContent] = useState(PRESET_OPTIONS[0].code);
   const [fileName, setFileName] = useState(PRESET_OPTIONS[0].file_name);
   const [language, setLanguage] = useState(PRESET_OPTIONS[0].language);
+
+  // Uploaded Files State
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; path: string; content: string; language: string; size: number }>>([]);
+  const [selectedFileIdx, setSelectedFileIdx] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
 
   const [isRunning, setIsRunning] = useState(false);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loopResult, setLoopResult] = useState<any | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [activeDiffFileIdx, setActiveDiffFileIdx] = useState<number>(0);
+  const [copiedDiff, setCopiedDiff] = useState(false);
+  const [downloadingZip, setDownloadingZip] = useState(false);
 
   const handleSelectPreset = (id: string) => {
     setSelectedPreset(id);
+    setUploadedFiles([]);
     const p = PRESET_OPTIONS.find((opt) => opt.id === id);
     if (p) {
       setTargetType(p.type as any);
@@ -120,13 +202,70 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
     }
   };
 
+  const handleFileUpload = (files: FileList | File[]) => {
+    const fileArr = Array.from(files);
+    if (fileArr.length === 0) return;
+
+    const EXT_MAP: Record<string, string> = {
+      py: "python",
+      java: "java",
+      c: "c_cpp",
+      cpp: "c_cpp",
+      h: "c_cpp",
+      hpp: "c_cpp",
+      go: "golang",
+      js: "javascript",
+      ts: "javascript",
+      jsx: "javascript",
+      tsx: "javascript",
+      rs: "rust",
+      cs: "csharp",
+      php: "php",
+      rb: "ruby",
+      swift: "swift",
+      kt: "kotlin",
+      kts: "kotlin",
+      json: "json",
+      txt: "universal"
+    };
+
+    const readers = fileArr.map((f) => {
+      return new Promise<{ name: string; path: string; content: string; language: string; size: number }>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = (e.target?.result as string) || "";
+          const ext = f.name.split(".").pop()?.toLowerCase() || "";
+          const lang = EXT_MAP[ext] || "universal";
+          resolve({
+            name: f.name,
+            path: (f as any).webkitRelativePath || f.name,
+            content: text,
+            language: lang,
+            size: f.size
+          });
+        };
+        reader.readAsText(f);
+      });
+    });
+
+    Promise.all(readers).then((loaded) => {
+      setUploadedFiles(loaded);
+      setSelectedFileIdx(0);
+      if (loaded.length > 0) {
+        setTargetType("source");
+        setFileName(loaded[0].path);
+        setLanguage(loaded[0].language);
+        setCodeContent(loaded[0].content);
+      }
+    });
+  };
+
   const handleRunLoop = async () => {
     setIsRunning(true);
     setErrorMsg("");
     setLoopResult(null);
     setActiveStep(1);
 
-    // Simulated visual step progression while executing
     const stepTimer1 = setTimeout(() => setActiveStep(2), 500);
     const stepTimer2 = setTimeout(() => setActiveStep(3), 1100);
     const stepTimer3 = setTimeout(() => setActiveStep(4), 1800);
@@ -136,10 +275,17 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
         target_type: targetType,
         file_name: fileName,
         language: language,
-        preset_name: selectedPreset,
+        preset_name: uploadedFiles.length > 0 ? undefined : selectedPreset,
+        target_solution: targetSolution,
       };
 
-      if (targetType === "source") {
+      if (uploadedFiles.length > 0) {
+        payload.files = uploadedFiles.map((f) => ({
+          path: f.path,
+          content: f.content,
+          language: f.language,
+        }));
+      } else if (targetType === "source") {
         payload.source_code = codeContent;
       } else {
         payload.binary_hex = codeContent;
@@ -157,9 +303,8 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
 
       const data = await res.json();
       setLoopResult(data);
-      setActiveStep(5); // all completed
+      setActiveStep(5);
 
-      // Save to localStorage so dedicated changes page can pick it up immediately
       try {
         localStorage.setItem("ecdat_latest_loop_result", JSON.stringify(data));
       } catch (e) {
@@ -172,6 +317,57 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
       clearTimeout(stepTimer2);
       clearTimeout(stepTimer3);
       setIsRunning(false);
+    }
+  };
+
+  const handleDownloadPatchedZip = async () => {
+    if (!loopResult) return;
+    setDownloadingZip(true);
+    try {
+      const zip = new JSZip();
+
+      if (loopResult.file_patches && loopResult.file_patches.length > 0) {
+        for (const fp of loopResult.file_patches) {
+          zip.file(fp.path, fp.patched_code);
+        }
+      } else if (loopResult.after_state?.code) {
+        zip.file(fileName, loopResult.after_state.code);
+      }
+
+      const reportMd = `# ECDAT Autonomous Remediation Report
+Target Project: ${projectId}
+Target File: ${fileName}
+Verdict: ${loopResult.verdict}
+Target Migration Standard: ${loopResult.target_solution || targetSolution}
+Generated At: ${loopResult.timestamp}
+
+## Executive Summary
+- Total Cryptographic Primitives: ${loopResult.before_state?.findings_count || 0} -> ${loopResult.after_state?.findings_count || 0}
+- Critical / Weak Primitives: ${loopResult.before_state?.critical_vulnerabilities || 0} -> ${loopResult.after_state?.critical_vulnerabilities || 0}
+- Security Posture Score: ${loopResult.before_state?.security_score || 0}/100 -> ${loopResult.after_state?.security_score || 0}/100
+- Quantum Readiness: ${loopResult.after_state?.pqc_readiness_pct || 100}%
+
+## Applied Transformations
+${loopResult.transformation_description || "AST-safe deterministic migration"}
+
+## Unified Migration Diff
+\`\`\`diff
+${loopResult.unified_diff || "No diff generated"}
+\`\`\`
+`;
+      zip.file("ECDAT_MIGRATION_REPORT.md", reportMd);
+
+      const blob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${projectId}_autonomous_remediated.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("Failed to generate zip", e);
+    } finally {
+      setDownloadingZip(false);
     }
   };
 
@@ -243,7 +439,14 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
             </h3>
             <div className="flex bg-canvas border border-subtle rounded-md p-0.5">
               <button
-                onClick={() => setTargetType("source")}
+                onClick={() => {
+                  setTargetType("source");
+                  if (uploadedFiles.length > 0) {
+                    setFileName(uploadedFiles[0].path);
+                    setLanguage(uploadedFiles[0].language);
+                    setCodeContent(uploadedFiles[0].content);
+                  }
+                }}
                 className={`px-2.5 py-1 text-xs rounded font-medium transition-colors ${
                   targetType === "source"
                     ? "bg-cyan-600 text-white"
@@ -268,15 +471,144 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground">Select Preset Scenario</label>
+          {/* Target Migration Solution Selector */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+              <span>Target Solution Architecture</span>
+              <span className="text-[10px] text-cyan-400 font-mono">PQC Agile</span>
+            </label>
+            <select
+              value={targetSolution}
+              onChange={(e) => setTargetSolution(e.target.value)}
+              className="w-full text-xs p-2.5 rounded-lg border border-subtle bg-canvas text-foreground font-mono focus:border-cyan-500 outline-none"
+            >
+              {TARGET_SOLUTIONS.map((ts) => (
+                <option key={ts.id} value={ts.id}>
+                  {ts.name}
+                </option>
+              ))}
+            </select>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              {TARGET_SOLUTIONS.find((ts) => ts.id === targetSolution)?.desc}
+            </p>
+          </div>
+
+          {/* Upload Files or Folder Zone */}
+          <div className="space-y-2 pt-2 border-t border-subtle">
+            <label className="text-xs font-medium text-muted-foreground flex items-center justify-between">
+              <span>Upload Custom Files / Folder</span>
+              {uploadedFiles.length > 0 && (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                  {uploadedFiles.length} file{uploadedFiles.length > 1 ? "s" : ""} loaded
+                </span>
+              )}
+            </label>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              className="hidden"
+              onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+            />
+            <input
+              ref={folderInputRef}
+              type="file"
+              multiple
+              // @ts-ignore
+              webkitdirectory=""
+              className="hidden"
+              onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+            />
+
+            <div
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                if (e.dataTransfer.files) handleFileUpload(e.dataTransfer.files);
+              }}
+              className={`p-3.5 rounded-lg border-2 border-dashed text-center transition-all cursor-pointer ${
+                isDragging
+                  ? "border-cyan-500 bg-cyan-500/10"
+                  : "border-subtle bg-canvas/60 hover:border-cyan-500/40"
+              }`}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="h-5 w-5 mx-auto text-cyan-400 mb-1" />
+              <div className="text-xs font-semibold text-foreground">
+                Drag &amp; drop files or click to upload
+              </div>
+              <div className="text-[10px] text-muted-foreground mt-0.5">
+                Accepts .py, .java, .c, .cpp, .go, .js, .rs, .cs, .php, .rb, .swift, .kt
+              </div>
+              <div className="mt-2 flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    fileInputRef.current?.click();
+                  }}
+                  className="px-2.5 py-1 rounded text-[10px] font-mono bg-surface border border-subtle hover:border-cyan-500 text-foreground"
+                >
+                  Browse Files
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    folderInputRef.current?.click();
+                  }}
+                  className="px-2.5 py-1 rounded text-[10px] font-mono bg-surface border border-subtle hover:border-cyan-500 text-foreground"
+                >
+                  Upload Folder
+                </button>
+              </div>
+            </div>
+
+            {/* Uploaded File Pills */}
+            {uploadedFiles.length > 0 && (
+              <div className="space-y-1 max-h-32 overflow-y-auto pr-1">
+                {uploadedFiles.map((f, i) => (
+                  <div
+                    key={i}
+                    onClick={() => {
+                      setSelectedFileIdx(i);
+                      setFileName(f.path);
+                      setLanguage(f.language);
+                      setCodeContent(f.content);
+                    }}
+                    className={`px-2 py-1 rounded text-[11px] font-mono flex items-center justify-between cursor-pointer border ${
+                      selectedFileIdx === i
+                        ? "border-cyan-500 bg-cyan-500/15 text-cyan-300"
+                        : "border-subtle bg-canvas text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <span className="truncate max-w-[170px]" title={f.path}>
+                      {f.name}
+                    </span>
+                    <span className="text-[9px] uppercase px-1 rounded bg-surface border border-subtle">
+                      {f.language}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-2 pt-2 border-t border-subtle">
+            <label className="text-xs font-medium text-muted-foreground">Or Select Demo Preset</label>
             <div className="space-y-2">
               {PRESET_OPTIONS.map((opt) => (
                 <button
                   key={opt.id}
                   onClick={() => handleSelectPreset(opt.id)}
                   className={`w-full text-left p-3 rounded-lg border text-xs transition-all cursor-pointer ${
-                    selectedPreset === opt.id
+                    selectedPreset === opt.id && uploadedFiles.length === 0
                       ? "border-cyan-500 bg-cyan-500/10 text-foreground"
                       : "border-subtle bg-canvas hover:border-muted-foreground/30 text-muted-foreground"
                   }`}
@@ -295,12 +627,14 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
 
           <div className="pt-2 border-t border-subtle space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Target File</span>
-              <span className="font-mono text-foreground">{fileName}</span>
+              <span className="text-muted-foreground">Active Target</span>
+              <span className="font-mono text-foreground truncate max-w-[150px]" title={fileName}>
+                {fileName}
+              </span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Analysis Mode</span>
-              <span className="font-mono text-cyan-700 dark:text-cyan-400">Strict Deterministic AST</span>
+              <span className="text-muted-foreground">Language / Runtime</span>
+              <span className="font-mono text-cyan-400 uppercase">{language}</span>
             </div>
           </div>
         </div>
@@ -481,13 +815,27 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
               </div>
             </div>
 
-            <button
-              onClick={navigateToChangesPage}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-all shadow-md cursor-pointer"
-            >
-              <span>Inspect Full Before & After Changes</span>
-              <ArrowRight size={16} />
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={handleDownloadPatchedZip}
+                disabled={downloadingZip}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm transition-all shadow-md cursor-pointer disabled:opacity-50"
+              >
+                {downloadingZip ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <Download size={16} />
+                )}
+                <span>Download Remediated Code (.zip)</span>
+              </button>
+              <button
+                onClick={navigateToChangesPage}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-all shadow-md cursor-pointer"
+              >
+                <span>Inspect Full Before & After Changes</span>
+                <ArrowRight size={16} />
+              </button>
+            </div>
           </div>
 
           {/* KPI Comparison Cards */}
@@ -569,6 +917,59 @@ export function CustomLoopPanel({ projectId }: CustomLoopPanelProps) {
               <ChevronRight size={14} />
             </button>
           </div>
+
+          {/* Multi-file Patch Inspector */}
+          {loopResult.file_patches && loopResult.file_patches.length > 0 && (
+            <div className="rounded-lg border border-subtle bg-canvas overflow-hidden">
+              <div className="flex flex-wrap items-center justify-between px-4 py-2.5 bg-surface/80 border-b border-subtle gap-2">
+                <div className="flex items-center gap-2 overflow-x-auto py-1">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2">Patched Files:</span>
+                  {loopResult.file_patches.map((fp: any, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveDiffFileIdx(idx)}
+                      className={`px-2.5 py-1 rounded text-xs font-mono transition-colors ${
+                        activeDiffFileIdx === idx
+                          ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/40"
+                          : "bg-surface text-muted-foreground hover:text-foreground border border-subtle"
+                      }`}
+                    >
+                      {fp.path}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => {
+                    const diffText = loopResult.file_patches[activeDiffFileIdx]?.diff || loopResult.unified_diff || "";
+                    navigator.clipboard.writeText(diffText);
+                    setCopiedDiff(true);
+                    setTimeout(() => setCopiedDiff(false), 2000);
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded bg-surface border border-subtle hover:border-cyan-500 text-foreground transition-colors shrink-0"
+                >
+                  {copiedDiff ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                  <span>{copiedDiff ? "Copied Diff" : "Copy Diff"}</span>
+                </button>
+              </div>
+              <div className="p-4 font-mono text-xs overflow-x-auto max-h-80 bg-black/40">
+                <pre className="text-foreground">
+                  {(loopResult.file_patches[activeDiffFileIdx]?.diff || loopResult.unified_diff || "No diff generated.")
+                    .split("\n")
+                    .map((line: string, i: number) => {
+                      let color = "text-muted-foreground";
+                      if (line.startsWith("+")) color = "text-emerald-400 bg-emerald-500/10";
+                      else if (line.startsWith("-")) color = "text-rose-400 bg-rose-500/10";
+                      else if (line.startsWith("@")) color = "text-cyan-400";
+                      return (
+                        <div key={i} className={`px-1 py-0.5 rounded-sm ${color}`}>
+                          {line}
+                        </div>
+                      );
+                    })}
+                </pre>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

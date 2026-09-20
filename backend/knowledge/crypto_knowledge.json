@@ -44,7 +44,7 @@
       "description": "Algorithm classification, aliases, quantum impact, PQC status, security strength",
       "version": "2024.1",
       "content_type": "algorithms",
-      "sha256": "d78dd6970536dc2e9b5b14556ec251fad6133f731f5f5f6449f64bc51d886096"
+      "sha256": "45e598ab90a96818c60c257007b20ee70ad659aab8d17527ef077612846dcb72"
     },
     {
       "id": "pqc_migration_knowledge",

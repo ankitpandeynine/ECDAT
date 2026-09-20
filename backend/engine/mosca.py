@@ -26,8 +26,12 @@ Literature Citations:
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
+import functools
 from typing import Any, Dict, List, Optional, Tuple
 import re
+
+_CLEAN_RE = re.compile(r"[^A-Z0-9-]")
+_SIZE_RE = re.compile(r"\b(512|768|1024|2048|3072|4096|256|384|521|128|192|56|168|44|65|87)\b")
 
 
 # Published literature: Gidney & Ekerå 2021 + NIST IR 8547 (2024)
@@ -100,15 +104,16 @@ class MoscaResult:
         return asdict(self)
 
 
+@functools.lru_cache(maxsize=2048)
 def normalize_algo_and_keysize(algorithm: str, key_size: Optional[int] = None) -> Tuple[str, Optional[int]]:
     """Normalizes raw algorithm strings into canonical algorithm families and key lengths."""
     raw = (algorithm or "UNKNOWN").upper().strip()
-    clean = re.sub(r"[^A-Z0-9-]", " ", raw)
+    clean = _CLEAN_RE.sub(" ", raw)
     detected_size = key_size
 
     # Extract embedded key lengths if key_size is not provided
     if detected_size is None:
-        size_match = re.search(r"\b(512|768|1024|2048|3072|4096|256|384|521|128|192|56|168|44|65|87)\b", clean)
+        size_match = _SIZE_RE.search(clean)
         if size_match:
             detected_size = int(size_match.group(1))
 
@@ -264,6 +269,40 @@ def mosca_assess(
     )
 
 
+NPM_NOISE_PATTERNS = (
+    "zod", "colors", "spinner", "eslint", "prettier", "lodash",
+    "axios", "react", "next", "webpack", "babel", "typescript",
+    "tailwind", "postcss", "lucide", "jest", "vite", "rollup", "turbo"
+)
+
+KNOWN_CRYPTO_PATTERNS = (
+    "RSA", "AES", "ECDSA", "ECDH", "ED25519", "X25519", "SHA", "MD5",
+    "RC4", "DES", "3DES", "TRIPLE-DES", "DSA", "DIFFIE", "CHACHA",
+    "ML-KEM", "ML-DSA", "SLH-DSA", "KYBER", "DILITHIUM", "SPHINCS",
+    "BLAKE", "HMAC", "PBKDF2", "BCRYPT", "ARGON2", "SCRYPT"
+)
+
+
+def is_noise_dependency_asset(algorithm: str, asset_type: str = "") -> bool:
+    """Filters out non-cryptographic dependency packages (e.g. zod, yoctocolors, eslint) from crypto risk metrics."""
+    algo_str = (algorithm or "").strip()
+    algo_lower = algo_str.lower()
+    algo_upper = algo_str.upper()
+    type_upper = (asset_type or "").upper()
+
+    # If algorithm name contains any npm package name substrings
+    if any(pat in algo_lower for pat in NPM_NOISE_PATTERNS):
+        return True
+
+    # If primary_role / asset_type is DEPENDENCY, PACKAGE, or LIBRARY
+    # and algorithm doesn't match known crypto algorithm patterns
+    if type_upper in ("DEPENDENCY", "PACKAGE", "LIBRARY", "NPM"):
+        if not any(k in algo_upper for k in KNOWN_CRYPTO_PATTERNS):
+            return True
+
+    return False
+
+
 def assess_project_assets(
     db: Any,
     project_id: str,
@@ -274,9 +313,10 @@ def assess_project_assets(
     """
     Queries all unique (algorithm, key_size) pairs from crypto_assets for the project,
     evaluates Mosca's Theorem for each, and returns results sorted by risk_score descending.
+    Filters out non-cryptographic dependency noise (npm runtime packages).
     """
     rows = db.execute(
-        """SELECT algorithm, key_size, name, COUNT(*) as asset_count
+        """SELECT algorithm, key_size, MAX(name) as name, MAX(asset_type) as asset_type, COUNT(*) as asset_count
            FROM crypto_assets
            WHERE project = ?
            GROUP BY algorithm, key_size""",
@@ -289,6 +329,9 @@ def assess_project_assets(
     results: List[MoscaResult] = []
     for r in rows:
         algo = r["algorithm"] or r["name"] or "UNKNOWN"
+        asset_type = r["asset_type"] or ""
+        if is_noise_dependency_asset(algo, asset_type):
+            continue
         key_size = r["key_size"]
         count = int(r["asset_count"] or 1)
         res = mosca_assess(
@@ -308,7 +351,7 @@ def assess_project_assets(
 def get_timeline_summary(db: Any, project_id: str) -> List[Dict[str, Any]]:
     """
     Returns per-algorithm quantum break timelines for dashboard visualization:
-    [{algorithm: "RSA-2048", z_years: 9, risk_level: "AT_RISK", asset_count: 3}]
+    [{algorithm: "RSA-2048", z_years: 9, mosca_verdict: "AT_RISK", risk_level: "AT_RISK", asset_count: 3}]
     """
     assessments = assess_project_assets(db, project_id)
     summary: List[Dict[str, Any]] = []
@@ -316,7 +359,119 @@ def get_timeline_summary(db: Any, project_id: str) -> List[Dict[str, Any]]:
         summary.append({
             "algorithm": a.algorithm,
             "z_years": a.z_threat_horizon_years,
+            "mosca_verdict": a.risk_level,
             "risk_level": a.risk_level,
             "asset_count": a.asset_count,
         })
     return summary
+
+
+def get_quantum_risk_summary(
+    db: Any,
+    project_id: str,
+    data_sensitivity_years: float = 10.0,
+    migration_time_years: float = 3.0,
+) -> Dict[str, Any]:
+    """
+    Computes high-level quantum risk metrics for the 4 metric cards:
+    1. Broken NOW (classically broken without quantum computer: MD5, SHA-1, RC4, DES, 3DES, RSA-512)
+    2. Quantum Critical (Shor vulnerable public key: RSA >= 1024, ECDSA, ECDH, DSA, Diffie-Hellman, Ed25519)
+    3. Mosca At Risk (where X + Y > Z)
+    4. Quantum Safe (NIST PQC primitives and >=128-bit Grover resistant: ML-KEM, ML-DSA, SLH-DSA, AES-256, SHA-256/384/512, ChaCha20, etc.)
+    """
+    rows = db.execute(
+        """SELECT id, algorithm, key_size, name, asset_type
+           FROM crypto_assets
+           WHERE project = ?""",
+        (project_id,)
+    ).fetchall()
+
+    if not rows:
+        return {
+            "project": project_id,
+            "broken_now": 0,
+            "quantum_critical": 0,
+            "mosca_at_risk": 0,
+            "quantum_safe": 0,
+            "total_assets": 0,
+            "broken_now_count": 0,
+            "quantum_critical_count": 0,
+            "mosca_at_risk_count": 0,
+            "quantum_safe_count": 0,
+        }
+
+    broken_now_count = 0
+    quantum_critical_count = 0
+    mosca_at_risk_count = 0
+    quantum_safe_count = 0
+    valid_assets_count = 0
+
+    x = float(data_sensitivity_years)
+    y = float(migration_time_years)
+
+    for r in rows:
+        algo = r["algorithm"] or r["name"] or "UNKNOWN"
+        asset_type = r["asset_type"] or ""
+        if is_noise_dependency_asset(algo, asset_type):
+            continue
+
+        valid_assets_count += 1
+        key_size = r["key_size"]
+        family, size = normalize_algo_and_keysize(algo, key_size)
+        f_upper = family.upper()
+        a_upper = algo.upper()
+
+        # 1. Broken NOW (Classically broken without quantum computer)
+        is_classically_broken = (
+            f_upper in ("MD5", "SHA-1", "RC4", "DES", "3DES")
+            or "MD5" in a_upper
+            or "SHA-1" in a_upper
+            or "SHA1" in a_upper
+            or "RC4" in a_upper
+            or "DES" in a_upper
+            or (f_upper == "RSA" and size is not None and size <= 512)
+            or "RSA-512" in a_upper
+        )
+        if is_classically_broken:
+            broken_now_count += 1
+
+        # 2. Quantum Critical (Shor vulnerable public-key)
+        is_shor_vulnerable = (
+            (f_upper == "RSA" and (size is None or size > 512))
+            or f_upper in ("ECDSA", "ECDH", "ED25519", "X25519", "DSA", "DIFFIE-HELLMAN")
+            or any(k in a_upper for k in ("RSA-1024", "RSA-2048", "RSA-3072", "RSA-4096", "ECDSA", "ECDH", "SECP", "CURVE25519"))
+        )
+        if is_shor_vulnerable:
+            quantum_critical_count += 1
+
+        # 3. Mosca At Risk (X + Y > Z)
+        m_res = mosca_assess(algo, key_size, data_sensitivity_years=x, migration_time_years=y)
+        if m_res.quantum_deficit_years > 0 and m_res.risk_level != "SAFE":
+            mosca_at_risk_count += 1
+
+        # 4. Quantum Safe (NIST PQC or Grover resistant >= 128-bit)
+        is_quantum_safe = (
+            f_upper in ("ML-KEM", "ML-DSA", "SLH-DSA", "CHACHA20")
+            or any(k in a_upper for k in ("ML-KEM", "MLKEM", "KYBER", "ML-DSA", "MLDSA", "DILITHIUM", "SLH-DSA", "SPHINCS"))
+            or (f_upper == "AES" and size is not None and size >= 256)
+            or "AES-256" in a_upper
+            or f_upper in ("SHA-256", "SHA-384", "SHA-512", "SHA-3")
+            or any(k in a_upper for k in ("SHA-256", "SHA256", "SHA-384", "SHA384", "SHA-512", "SHA512", "SHA3", "SHAKE"))
+            or "BCRYPT" in a_upper
+            or "ARGON2" in a_upper
+        )
+        if is_quantum_safe:
+            quantum_safe_count += 1
+
+    return {
+        "project": project_id,
+        "broken_now": broken_now_count,
+        "quantum_critical": quantum_critical_count,
+        "mosca_at_risk": mosca_at_risk_count,
+        "quantum_safe": quantum_safe_count,
+        "broken_now_count": broken_now_count,
+        "quantum_critical_count": quantum_critical_count,
+        "mosca_at_risk_count": mosca_at_risk_count,
+        "quantum_safe_count": quantum_safe_count,
+        "total_assets": valid_assets_count,
+    }

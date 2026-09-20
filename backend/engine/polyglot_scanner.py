@@ -113,6 +113,153 @@ function processCredentials(password, secretKey) {
 
     return { hash, cipher, publicKey };
 }
+""",
+    "rust": """// Rust Embedded IoT Firmware
+use md5;
+use des::Des;
+use rsa::{RsaPrivateKey, pkcs1v15};
+use sha1::Sha1;
+
+fn process_telemetry(data: &[u8]) -> Vec<u8> {
+    // CWE-327: Broken MD5 hash
+    let digest = md5::compute(data);
+
+    // CWE-327: Deprecated SHA-1
+    let mut hasher = Sha1::new();
+
+    // CWE-326: Obsolete DES cipher
+    let cipher = Des::new_from_slice(b"12345678").unwrap();
+
+    // Quantum-vulnerable RSA-1024
+    let mut rng = rand::thread_rng();
+    let priv_key = RsaPrivateKey::new(&mut rng, 1024).unwrap();
+
+    digest.to_vec()
+}
+""",
+    "csharp": """// C# .NET Banking API
+using System.Security.Cryptography;
+
+public class PaymentProcessor {
+    public byte[] ProcessTransaction(byte[] payload) {
+        // CWE-327: Broken MD5 hash
+        using var md5 = MD5.Create();
+        byte[] hash = md5.ComputeHash(payload);
+
+        // CWE-327: Deprecated SHA-1
+        using var sha1 = SHA1.Create();
+        byte[] sigHash = sha1.ComputeHash(payload);
+
+        // CWE-326: Obsolete DES cipher
+        using var des = DESCryptoServiceProvider.Create();
+
+        // CWE-326: Weak 3DES
+        using var tdes = TripleDESCryptoServiceProvider.Create();
+
+        // Quantum-vulnerable RSA-1024
+        using var rsa = new RSACryptoServiceProvider(1024);
+
+        return hash;
+    }
+}
+""",
+    "php": """<?php
+// PHP E-Commerce Payment Module
+function processPayment($cardNumber, $amount) {
+    // CWE-327: Broken MD5 hash
+    $token = md5($cardNumber . $amount);
+
+    // CWE-327: Deprecated SHA-1
+    $signature = sha1($cardNumber);
+
+    // CWE-326: Obsolete DES cipher
+    $encrypted = openssl_encrypt($cardNumber, 'des-ecb', 'secretkey');
+
+    // CWE-326: Weak RC4 stream cipher
+    $rc4_data = openssl_encrypt($cardNumber, 'rc4', 'secretkey');
+
+    // Quantum-vulnerable RSA-1024
+    $config = array("private_key_bits" => 1024, "private_key_type" => OPENSSL_KEYTYPE_RSA);
+    $key = openssl_pkey_new($config);
+
+    return $token;
+}
+""",
+    "ruby": """# Ruby on Rails Banking Controller
+require 'openssl'
+require 'digest'
+
+class PaymentController < ApplicationController
+  def process_transaction
+    # CWE-327: Broken MD5 hash
+    token = Digest::MD5.hexdigest(params[:card_number])
+
+    # CWE-327: Deprecated SHA-1
+    sig = Digest::SHA1.hexdigest(params[:payload])
+
+    # CWE-326: Obsolete DES cipher
+    cipher = OpenSSL::Cipher::DES.new('CBC')
+
+    # CWE-326: Weak RC4
+    rc4 = OpenSSL::Cipher::RC4.new
+
+    # Quantum-vulnerable RSA-1024
+    key = OpenSSL::PKey::RSA.generate(1024)
+
+    render json: { token: token }
+  end
+end
+""",
+    "swift": """// Swift iOS Banking App
+import CommonCrypto
+import Security
+
+func processTransaction(data: Data) -> Data? {
+    // CWE-327: Broken MD5 hash
+    var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
+    CC_MD5((data as NSData).bytes, CC_LONG(data.count), &digest)
+
+    // CWE-327: Deprecated SHA-1
+    var sha1Digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
+    CC_SHA1((data as NSData).bytes, CC_LONG(data.count), &sha1Digest)
+
+    // Quantum-vulnerable RSA-1024
+    let attributes: [String: Any] = [
+        kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
+        kSecAttrKeySizeInBits as String: 1024
+    ]
+    var error: Unmanaged<CFError>?
+    let privateKey = SecKeyCreateRandomKey(attributes as CFDictionary, &error)
+
+    return Data(digest)
+}
+""",
+    "kotlin": """// Kotlin Android Banking App
+import java.security.MessageDigest
+import java.security.KeyPairGenerator
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
+
+class PaymentService {
+    fun processPayment(payload: ByteArray): ByteArray {
+        // CWE-327: Broken MD5 hash
+        val md = MessageDigest.getInstance("MD5")
+        val hash = md.digest(payload)
+
+        // CWE-327: Deprecated SHA-1
+        val sha1 = MessageDigest.getInstance("SHA-1")
+
+        // CWE-326: Obsolete DES cipher
+        val cipher = Cipher.getInstance("DES/ECB/PKCS5Padding")
+        val key = SecretKeySpec(ByteArray(8), "DES")
+
+        // Quantum-vulnerable RSA-1024
+        val kpg = KeyPairGenerator.getInstance("RSA")
+        kpg.initialize(1024)
+
+        return hash
+    }
+}
 """
 }
 
@@ -284,6 +431,164 @@ function processCredentialsSecure(password, plaintext) {
 
     return { hash, encrypted, authTag, iv: iv.toString('hex'), publicKey };
 }
+""",
+    "rust": """// ==============================================================================
+// ECDAT REMEDIATED CODE (Rust): Post-Quantum Ready AEAD & SHA-256
+// ==============================================================================
+use sha2::{Sha256, Digest};
+use aes_gcm::{Aes256Gcm, Key, Nonce};
+use aes_gcm::aead::{Aead, KeyInit};
+use rsa::{RsaPrivateKey, pkcs1v15};
+
+pub fn process_telemetry_secure(data: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    // REMEDIATED: SHA-256
+    let mut hasher = Sha256::new();
+    hasher.update(data);
+    let _hash = hasher.finalize();
+
+    // REMEDIATED: AES-256-GCM AEAD
+    let key = Aes256Gcm::generate_key(&mut rand::thread_rng());
+    let cipher = Aes256Gcm::new(&key);
+    let nonce = Nonce::from_slice(b"unique_nonce_12b");
+    let ciphertext = cipher.encrypt(nonce, data)?;
+
+    // REMEDIATED: 3072-bit RSA or ML-KEM-768
+    let mut rng = rand::thread_rng();
+    let _priv_key = RsaPrivateKey::new(&mut rng, 3072)?;
+
+    Ok(ciphertext)
+}
+""",
+    "csharp": """// ==============================================================================
+// ECDAT REMEDIATED CODE (C# .NET): AES-256-GCM & SHA-256 Baseline
+// ==============================================================================
+using System;
+using System.Security.Cryptography;
+
+public class SecurePaymentProcessor {
+    public byte[] ProcessTransactionSecure(byte[] payload) {
+        // REMEDIATED: SHA-256
+        using var sha256 = SHA256.Create();
+        byte[] hash = sha256.ComputeHash(payload);
+
+        // REMEDIATED: AES-256-GCM
+        byte[] key = new byte[32];
+        RandomNumberGenerator.Fill(key);
+        byte[] nonce = new byte[12];
+        RandomNumberGenerator.Fill(nonce);
+        byte[] tag = new byte[16];
+        byte[] ciphertext = new byte[payload.Length];
+        using var aesGcm = new AesGcm(key, 16);
+        aesGcm.Encrypt(nonce, payload, ciphertext, tag);
+
+        // REMEDIATED: Minimum 3072-bit RSA
+        using var rsa = new RSACryptoServiceProvider(3072);
+
+        return ciphertext;
+    }
+}
+""",
+    "php": """<?php
+// ==============================================================================
+// ECDAT REMEDIATED CODE (PHP): AES-256-GCM & SHA-256
+// ==============================================================================
+function processPaymentSecure($cardNumber, $amount) {
+    // REMEDIATED: SHA-256
+    $token = hash('sha256', $cardNumber . $amount);
+
+    // REMEDIATED: AES-256-GCM
+    $key = openssl_random_pseudo_bytes(32);
+    $iv = openssl_random_pseudo_bytes(12);
+    $tag = "";
+    $encrypted = openssl_encrypt($cardNumber, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+
+    // REMEDIATED: 3072-bit RSA
+    $config = array("private_key_bits" => 3072, "private_key_type" => OPENSSL_KEYTYPE_RSA);
+    $keyPair = openssl_pkey_new($config);
+
+    return ['token' => $token, 'encrypted' => base64_encode($encrypted), 'tag' => base64_encode($tag)];
+}
+""",
+    "ruby": """# ==============================================================================
+# ECDAT REMEDIATED CODE (Ruby): AES-256-GCM & SHA-256
+# ==============================================================================
+require 'openssl'
+require 'digest'
+
+class SecurePaymentController
+  def process_transaction_secure(payload)
+    # REMEDIATED: SHA-256
+    digest = Digest::SHA256.hexdigest(payload)
+
+    # REMEDIATED: AES-256-GCM
+    cipher = OpenSSL::Cipher.new('aes-256-gcm')
+    cipher.encrypt
+    key = cipher.random_key
+    iv = cipher.random_iv
+    cipher.auth_data = 'ECDAT-AUTH'
+    encrypted = cipher.update(payload) + cipher.final
+    tag = cipher.auth_tag
+
+    # REMEDIATED: Minimum 3072-bit RSA
+    rsa_key = OpenSSL::PKey::RSA.generate(3072)
+
+    { digest: digest, encrypted: encrypted, tag: tag }
+  end
+end
+""",
+    "swift": """// ==============================================================================
+// ECDAT REMEDIATED CODE (Swift / CryptoKit): Modern AEAD & SHA-256
+// ==============================================================================
+import CryptoKit
+import Foundation
+
+func processTransactionSecure(data: Data) throws -> Data {
+    // REMEDIATED: SHA-256
+    let hash = SHA256.hash(data: data)
+    _ = hash
+
+    // REMEDIATED: AES-GCM 256-bit
+    let symmetricKey = SymmetricKey(size: .bits256)
+    let sealedBox = try AES.GCM.seal(data, using: symmetricKey)
+
+    // REMEDIATED: Curve25519 or 3072-bit RSA
+    let privateKey = Curve25519.Signing.PrivateKey()
+    _ = privateKey
+
+    return sealedBox.combined ?? Data()
+}
+""",
+    "kotlin": """// ==============================================================================
+// ECDAT REMEDIATED CODE (Kotlin): AES-256-GCM & SHA-256 Baseline
+// ==============================================================================
+import java.security.MessageDigest
+import java.security.KeyPairGenerator
+import java.security.SecureRandom
+import javax.crypto.Cipher
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
+
+class SecurePaymentService {
+    fun processPaymentSecure(payload: ByteArray): ByteArray {
+        // REMEDIATED: SHA-256
+        val md = MessageDigest.getInstance("SHA-256")
+        val hash = md.digest(payload)
+
+        // REMEDIATED: AES-256-GCM
+        val keyBytes = ByteArray(32).also { SecureRandom().nextBytes(it) }
+        val iv = ByteArray(12).also { SecureRandom().nextBytes(it) }
+        val key = SecretKeySpec(keyBytes, "AES")
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, key, GCMParameterSpec(128, iv))
+        val ciphertext = cipher.doFinal(payload)
+
+        // REMEDIATED: Minimum 3072-bit RSA or Post-Quantum BouncyCastle
+        val kpg = KeyPairGenerator.getInstance("RSA")
+        kpg.initialize(3072)
+
+        return ciphertext
+    }
+}
 """
 }
 
@@ -311,45 +616,61 @@ LANGUAGE_RULES = {
          "Replace with AES-256-GCM or ChaCha20-Poly1305.",
          "Broken classically."),
         (r"modes\.ECB\(|Crypto\.Cipher\..*\.MODE_ECB|\bMODE_ECB\b", "ECB Mode", "Cipher Mode", "CRITICAL",
-         "Electronic Codebook (ECB) leaks plaintext patterns because identical blocks produce identical ciphertexts.",
-         "Use Authenticated Encryption (AEAD) such as AES-256-GCM (NIST SP 800-38D).",
-         "Insecure cipher mode."),
-        (r"key_size\s*=\s*(?:512|1024)\b|RSA\.generate\((?:512|1024)\)", "RSA-1024", "Asymmetric Key", "CRITICAL",
-         "RSA key size < 2048 bits is cryptographically broken and disallowed by NIST.",
-         "Immediate upgrade: RSA >= 3072 bits. Long term: ML-KEM (FIPS 203) / ML-DSA (FIPS 204).",
-         "Shor's algorithm factors RSA keys in polynomial time."),
-        (r"key_size\s*=\s*2048\b|RSA\.generate\(2048\)", "RSA-2048", "Asymmetric Key", "HIGH",
-         "RSA-2048 offers ~112 bits of classical security and zero resistance to Shor's algorithm.",
-         "Transition to NIST Post-Quantum Cryptography standards: ML-KEM (FIPS 203).",
-         "Shor's algorithm compromises RSA once CRQC is available.")
+         "Electronic Codebook (ECB) mode lacks cryptographic diffusion and reveals plaintext patterns.",
+         "Switch to Authenticated Encryption: AES-256-GCM or ChaCha20-Poly1305.",
+         "Exposes structured data under quantum side-channel and chosen-ciphertext attacks."),
+        (r"rsa\.generate_private_key\([^)]*key_size\s*=\s*(?:512|1024)\b|RSA\.generate\(\s*(?:512|1024)\b", "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "RSA-1024 is vulnerable to classical factorisation attacks and broken in minutes by Shor's algorithm.",
+         "Deploy Post-Quantum ML-KEM (FIPS 203) or upgrade to RSA-3072 as a transitional baseline.",
+         "Critical vulnerability: factored in polynomial time via Shor's algorithm (O((log N)^3))."),
+        (r"rsa\.generate_private_key\([^)]*key_size\s*=\s*2048\b|RSA\.generate\(\s*2048\b", "RSA-2048", "Asymmetric Key", "HIGH",
+         "RSA-2048 has ~112 bits of classical security margin. Deprecated for use beyond 2030 by NIST SP 800-131A.",
+         "Adopt ML-KEM (FIPS 203) Key Encapsulation or minimum RSA-3072 transitional baseline.",
+         "Subject to Harvest Now, Decrypt Later (HNDL). Vulnerable to Shor's algorithm."),
+        (r"ec\.generate_private_key\([^)]*(?:SECP256R1|SECP384R1|SECP521R1|SECP256K1)\(\)|ECC\.generate\([^)]*curve=['\"](?:p-256|p-384|p-521)['\"]\)", "ECC", "Asymmetric Key", "HIGH",
+         "Elliptic Curve Cryptography (ECDSA/ECDH) will be broken by Shor's algorithm on a Cryptanalytically Relevant Quantum Computer.",
+         "Migrate to ML-DSA (FIPS 204) for digital signatures and ML-KEM (FIPS 203) for key agreement.",
+         "Shor's algorithm computes discrete logarithms on elliptic curves in O((log N)^3) operations."),
+        (r"algorithms\.AES\(.*modes\.GCM\(", "AES-256-GCM", "Symmetric Cipher", "LOW",
+         "AES-256-GCM is the gold standard for symmetric authenticated encryption (NIST SP 800-38D).",
+         "Compliant with current NIST guidance. Maintain 256-bit key sizes.",
+         "Grover's algorithm halves effective symmetric key length; 256-bit keys maintain 128-bit quantum security."),
+        (r"hashes\.SHA256\(\)|hashes\.SHA384\(\)|hashes\.SHA512\(\)|hashes\.SHA3_256\(\)", "SHA-256 / SHA-3", "Hash Function", "LOW",
+         "NIST FIPS 180-4 and FIPS 202 approved secure cryptographic hash functions.",
+         "Standard compliant for collision resistance.",
+         "Grover's algorithm reduces collision security margin to N/3; SHA-256 retains >= 128-bit collision resistance."),
+        (r"oqs\.KeyEncapsulation\(['\"](?:ML-KEM|Kyber)['\"]\)|pqc\.MLKEM\b|fips203\.MLKEM\b", "ML-KEM", "Asymmetric Key", "LOW",
+         "NIST FIPS 203 Module-Lattice-Based Key-Encapsulation Mechanism.",
+         "Production post-quantum standard. Retain and monitor NIST guidance.",
+         "Quantum-secure: based on hardness of Learning With Errors (MLWE).")
     ],
     "java": [
         (r'MessageDigest\.getInstance\(\s*["\']MD5["\']\s*\)', "MD5", "Hash Function", "CRITICAL",
-         "MessageDigest MD5 has proven collision vulnerabilities (CWE-327).",
-         "Migrate to MessageDigest.getInstance(\"SHA-256\") or SHA-3.",
-         "Broken classically; Grover speedup applies."),
+         "Java MessageDigest MD5 algorithm detected (CWE-327). Broken collision resistance.",
+         "Upgrade to MessageDigest.getInstance(\"SHA-256\").",
+         "Broken classically; vulnerable to Grover search."),
         (r'MessageDigest\.getInstance\(\s*["\']SHA-?1["\']\s*\)', "SHA-1", "Hash Function", "HIGH",
-         "SHA-1 disallowed for digital signatures and integrity verification per NIST SP 800-131A.",
-         "Migrate to SHA-256 or SHA-512.",
-         "Vulnerable to collision attacks."),
-        (r'Cipher\.getInstance\(\s*["\']DES(?:\/|\b)', "DES", "Symmetric Cipher", "CRITICAL",
-         "DES key space (56-bit) is easily cracked via modern brute-force hardware.",
-         "Use Cipher.getInstance(\"AES/GCM/NoPadding\") with a 256-bit key.",
-         "Trivially breakable classically."),
-        (r'Cipher\.getInstance\(\s*["\']DESede(?:\/|\b)', "3DES (Triple-DES)", "Symmetric Cipher", "HIGH",
-         "DESede 64-bit block size suffers from Sweet32 collision vulnerabilities.",
-         "Migrate to AES-256-GCM.",
-         "Grover search weakens effective key strength to ~56 bits."),
-        (r'Cipher\.getInstance\(\s*["\'](?:ARCFOUR|RC4)(?:\/|\b)', "RC4", "Stream Cipher", "CRITICAL",
-         "RC4 prohibited by RFC 7465 due to keystream statistical biases.",
-         "Replace with AES-256-GCM.",
+         "Java MessageDigest SHA-1 algorithm detected. Deprecated per NIST SP 800-131A.",
+         "Upgrade to MessageDigest.getInstance(\"SHA-256\") or SHA-512.",
+         "Broken classically; vulnerable to collision attacks."),
+        (r'Cipher\.getInstance\(\s*["\']DES(?:\b|/)', "DES", "Symmetric Cipher", "CRITICAL",
+         "Java Cipher DES instantiation detected. Obsolete 56-bit key length.",
+         "Upgrade to Cipher.getInstance(\"AES/GCM/NoPadding\") with 256-bit keys.",
+         "Trivially broken classically; zero quantum resistance."),
+        (r'Cipher\.getInstance\(\s*["\']DESede(?:\b|/)', "3DES", "Symmetric Cipher", "HIGH",
+         "Triple-DES instantiation detected in Java (Sweet32 vulnerability).",
+         "Upgrade to Cipher.getInstance(\"AES/GCM/NoPadding\").",
+         "Vulnerable to Sweet32 collision attacks."),
+        (r'Cipher\.getInstance\(\s*["\'](?:ARCFOUR|RC4)(?:\b|/)', "RC4", "Stream Cipher", "CRITICAL",
+         "Java RC4/ARCFOUR Cipher detected (RFC 7465 violation).",
+         "Replace with AES-GCM or ChaCha20-Poly1305.",
          "Broken classically."),
-        (r'Cipher\.getInstance\([^)]*\/ECB\/[^)]*\)', "ECB Mode", "Cipher Mode", "CRITICAL",
-         "ECB cipher mode does not provide pattern confidentiality (Tux penguin leakage).",
-         "Switch to GCM or CCM authenticated modes.",
-         "Insecure cipher mode."),
-        (r'kpg\.initialize\(\s*(?:512|1024)\s*\)', "RSA-1024", "Asymmetric Key", "CRITICAL",
-         "KeyPairGenerator initialized with 1024-bit RSA key. Prohibited by NIST SP 800-131A.",
+        (r'Cipher\.getInstance\(\s*["\'][^"\']+/ECB/[^"\']*["\']\)', "ECB Mode", "Cipher Mode", "CRITICAL",
+         "Java Cipher with ECB mode detected. Lacks cryptographic diffusion.",
+         "Migrate to AES/GCM/NoPadding.",
+         "Exposes ciphertext block patterns."),
+        (r'KeyPairGenerator\.getInstance\(\s*["\']RSA["\']\s*\).*(?:initialize\(\s*(?:512|1024)|1024)', "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "Java RSA KeyPairGenerator initialized with < 2048 bits.",
          "Initialize with at least 3072 bits or adopt BouncyCastle PQC ML-KEM.",
          "Shor's algorithm breaks this in polynomial time.")
     ],
@@ -442,33 +763,267 @@ LANGUAGE_RULES = {
          "RSA key pair generated with modulusLength < 2048.",
          "Set modulusLength to at least 3072 or use Ed25519.",
          "Vulnerable to Shor's algorithm.")
+    ],
+    "rust": [
+        (r'\bmd5::compute\(|use\s+md5\b', "MD5", "Hash Function", "CRITICAL",
+         "Rust md5 crate usage detected (CWE-327). Broken collision resistance.",
+         "Migrate to sha2::Sha256 or sha3::Sha3_256.",
+         "Broken classically."),
+        (r'\bsha1::Sha1\b|use\s+sha1\b', "SHA-1", "Hash Function", "HIGH",
+         "Rust sha1 crate usage detected. Disallowed by NIST SP 800-131A.",
+         "Migrate to sha2::Sha256 or sha3::Sha3_256.",
+         "Collision attacks."),
+        (r'\bdes::Des\b|use\s+des\b', "DES", "Symmetric Cipher", "CRITICAL",
+         "Rust des crate usage detected. Obsolete 56-bit key length.",
+         "Replace with aes_gcm::Aes256Gcm.",
+         "Trivially broken classically."),
+        (r'\brc4::Rc4\b|use\s+rc4\b', "RC4", "Stream Cipher", "CRITICAL",
+         "Rust rc4 crate usage detected (prohibited by RFC 7465).",
+         "Migrate to aes_gcm or chacha20poly1305.",
+         "Broken classically."),
+        (r'RsaPrivateKey::new\([^,]+,\s*(?:512|1024)\b|Rsa::generate\((?:512|1024)\)', "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "Rust RSA key generated with < 2048 bit size.",
+         "Upgrade key size to 3072 bits or adopt Post-Quantum hybrid KEM (ML-KEM-768).",
+         "Vulnerable to Shor's algorithm.")
+    ],
+    "csharp": [
+        (r'MD5\.Create\(\)|MD5CryptoServiceProvider\b', "MD5", "Hash Function", "CRITICAL",
+         "C# .NET MD5 algorithm detected (CWE-327).",
+         "Upgrade to SHA256.Create() or SHA512.Create().",
+         "Broken classically."),
+        (r'SHA1\.Create\(\)|SHA1CryptoServiceProvider\b', "SHA-1", "Hash Function", "HIGH",
+         "C# .NET SHA-1 algorithm detected (NIST SP 800-131A disallowed).",
+         "Migrate to SHA256.Create().",
+         "Collision attacks."),
+        (r'DESCryptoServiceProvider\b|DES\.Create\(\)', "DES", "Symmetric Cipher", "CRITICAL",
+         "C# .NET DES cipher detected. 56-bit key size is insecure.",
+         "Migrate to Aes.Create() with GCM mode.",
+         "Broken classically."),
+        (r'TripleDESCryptoServiceProvider\b|TripleDES\.Create\(\)', "3DES", "Symmetric Cipher", "HIGH",
+         "C# .NET 3DES cipher detected (Sweet32 vulnerability).",
+         "Migrate to Aes.Create() with GCM mode.",
+         "Vulnerable to Sweet32 and Grover's algorithm."),
+        (r'RC4CryptoServiceProvider\b|\bRC4\b', "RC4", "Stream Cipher", "CRITICAL",
+         "C# .NET RC4 stream cipher detected (RFC 7465).",
+         "Migrate to AES-GCM or ChaCha20-Poly1305.",
+         "Broken classically."),
+        (r'new\s+RSACryptoServiceProvider\(\s*(?:512|1024)\s*\)', "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "C# .NET RSA key created with < 2048 bit length.",
+         "Use minimum 3072 bits: new RSACryptoServiceProvider(3072).",
+         "Vulnerable to Shor's algorithm.")
+    ],
+    "php": [
+        (r'\bmd5\s*\(', "MD5", "Hash Function", "CRITICAL",
+         "PHP md5() call detected (CWE-327).",
+         "Upgrade to hash('sha256', ...) or password_hash().",
+         "Broken classically."),
+        (r'\bsha1\s*\(', "SHA-1", "Hash Function", "HIGH",
+         "PHP sha1() call detected.",
+         "Migrate to hash('sha256', ...).",
+         "Collision attacks."),
+        (r'openssl_encrypt\([^,]+,\s*[\'"](?:des|des-ecb|des-cbc|3des)[\'"]', "DES", "Symmetric Cipher", "CRITICAL",
+         "PHP OpenSSL DES/3DES cipher detected.",
+         "Upgrade to openssl_encrypt(..., 'aes-256-gcm', ...).",
+         "Broken classically."),
+        (r'openssl_encrypt\([^,]+,\s*[\'"]rc4[\'"]', "RC4", "Stream Cipher", "CRITICAL",
+         "PHP OpenSSL RC4 cipher detected.",
+         "Migrate to aes-256-gcm or chacha20-poly1305.",
+         "Broken classically."),
+        (r'[\'"]private_key_bits[\'"]\s*=>\s*(?:512|1024)\b', "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "PHP RSA key configuration with < 2048 bit size.",
+         "Set 'private_key_bits' => 3072.",
+         "Vulnerable to Shor's algorithm.")
+    ],
+    "ruby": [
+        (r'Digest::MD5\b', "MD5", "Hash Function", "CRITICAL",
+         "Ruby Digest::MD5 detected (CWE-327).",
+         "Upgrade to Digest::SHA256.",
+         "Broken classically."),
+        (r'Digest::SHA1\b', "SHA-1", "Hash Function", "HIGH",
+         "Ruby Digest::SHA1 detected.",
+         "Migrate to Digest::SHA256.",
+         "Collision attacks."),
+        (r'OpenSSL::Cipher::DES\b|OpenSSL::Cipher(?:\.new)?\(\s*[\'"]des', "DES", "Symmetric Cipher", "CRITICAL",
+         "Ruby OpenSSL DES cipher detected.",
+         "Upgrade to OpenSSL::Cipher.new('aes-256-gcm').",
+         "Broken classically."),
+        (r'OpenSSL::Cipher::RC4\b|OpenSSL::Cipher(?:\.new)?\(\s*[\'"]rc4', "RC4", "Stream Cipher", "CRITICAL",
+         "Ruby OpenSSL RC4 cipher detected.",
+         "Upgrade to aes-256-gcm.",
+         "Broken classically."),
+        (r'OpenSSL::PKey::RSA(?:\.new|\.generate)\(\s*(?:512|1024)\s*\)', "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "Ruby OpenSSL RSA key generated with < 2048 bits.",
+         "Generate at least 3072 bits: OpenSSL::PKey::RSA.generate(3072).",
+         "Vulnerable to Shor's algorithm.")
+    ],
+    "swift": [
+        (r'CC_MD5\b', "MD5", "Hash Function", "CRITICAL",
+         "Apple CommonCrypto CC_MD5 detected (CWE-327).",
+         "Migrate to CryptoKit SHA256.hash(data:).",
+         "Broken classically."),
+        (r'CC_SHA1\b', "SHA-1", "Hash Function", "HIGH",
+         "Apple CommonCrypto CC_SHA1 detected.",
+         "Migrate to CryptoKit SHA256.hash(data:).",
+         "Collision attacks."),
+        (r'kCCAlgorithmDES\b|kCCAlgorithm3DES\b', "DES", "Symmetric Cipher", "CRITICAL",
+         "Apple CommonCrypto DES/3DES cipher detected.",
+         "Migrate to CryptoKit AES.GCM.",
+         "Broken classically."),
+        (r'kCCAlgorithmRC4\b', "RC4", "Stream Cipher", "CRITICAL",
+         "Apple CommonCrypto RC4 cipher detected.",
+         "Migrate to CryptoKit ChaChaPoly or AES.GCM.",
+         "Broken classically."),
+        (r'kSecAttrKeyTypeRSA\b.*?(?:512|1024)|kSecAttrKeySizeInBits\s*as\s*String:\s*(?:512|1024)', "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "Apple Security framework RSA key generated with < 2048 bits.",
+         "Set kSecAttrKeySizeInBits to 3072 or use Curve25519.",
+         "Vulnerable to Shor's algorithm.")
+    ],
+    "kotlin": [
+        (r'MessageDigest\.getInstance\(\s*["\']MD5["\']\s*\)', "MD5", "Hash Function", "CRITICAL",
+         "Kotlin/Java MessageDigest MD5 detected (CWE-327).",
+         "Upgrade to MessageDigest.getInstance(\"SHA-256\").",
+         "Broken classically."),
+        (r'MessageDigest\.getInstance\(\s*["\']SHA-?1["\']\s*\)', "SHA-1", "Hash Function", "HIGH",
+         "Kotlin/Java MessageDigest SHA-1 detected.",
+         "Upgrade to MessageDigest.getInstance(\"SHA-256\").",
+         "Collision attacks."),
+        (r'Cipher\.getInstance\(\s*["\']DES(?:\b|/)', "DES", "Symmetric Cipher", "CRITICAL",
+         "Kotlin/Java DES Cipher detected.",
+         "Upgrade to Cipher.getInstance(\"AES/GCM/NoPadding\").",
+         "Broken classically."),
+        (r'Cipher\.getInstance\(\s*["\']DESede(?:\b|/)', "3DES", "Symmetric Cipher", "HIGH",
+         "Kotlin/Java Triple-DES Cipher detected.",
+         "Upgrade to AES/GCM/NoPadding.",
+         "Sweet32 collision vulnerability."),
+        (r'Cipher\.getInstance\(\s*["\']RC4(?:\b|/)|\bARC4\b', "RC4", "Stream Cipher", "CRITICAL",
+         "Kotlin/Java RC4 Cipher detected.",
+         "Upgrade to AES-GCM or ChaCha20-Poly1305.",
+         "Broken classically."),
+        (r'kpg\.initialize\(\s*(?:512|1024)\s*\)|KeyPairGenerator\.getInstance\(\s*["\']RSA["\']\s*\).*(?:512|1024)', "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "Kotlin/Java RSA key initialized with < 2048 bits.",
+         "Initialize with at least 3072 bits or adopt BouncyCastle PQC ML-KEM.",
+         "Vulnerable to Shor's algorithm.")
+    ],
+    "universal": [
+        (r'\bmd5\b', "MD5", "Hash Function", "CRITICAL",
+         "MD5 algorithm reference detected (CWE-327).",
+         "Upgrade to SHA-256 or SHA-3.",
+         "Broken classically."),
+        (r'\bsha-?1\b', "SHA-1", "Hash Function", "HIGH",
+         "SHA-1 algorithm reference detected.",
+         "Migrate to SHA-256 or SHA-512.",
+         "Collision attacks."),
+        (r'\bdes\b|\bdes3\b|\btriple-?des\b', "DES", "Symmetric Cipher", "CRITICAL",
+         "DES/3DES legacy cipher detected.",
+         "Upgrade to AES-256-GCM.",
+         "Broken classically."),
+        (r'\brc4\b|\barcfour\b', "RC4", "Stream Cipher", "CRITICAL",
+         "RC4 stream cipher detected.",
+         "Upgrade to AES-256-GCM or ChaCha20-Poly1305.",
+         "Broken classically."),
+        (r'\brsa[-_ ]?(?:512|1024)\b|\brsa\b.*?(?:512|1024)', "RSA-1024", "Asymmetric Key", "CRITICAL",
+         "Legacy RSA key configuration with < 2048 bit size.",
+         "Upgrade key size to 3072 bits or adopt Post-Quantum ML-KEM.",
+         "Vulnerable to Shor's algorithm."),
+        (r'\b(?:mode_)?ecb\b', "ECB Mode", "Cipher Mode", "CRITICAL",
+         "Electronic Codebook (ECB) mode lacks cryptographic diffusion.",
+         "Adopt Authenticated Encryption (AEAD) such as AES-GCM.",
+         "Vulnerable to pattern leakage.")
     ]
 }
 
+LANGUAGE_ALIASES = {
+    'c': 'c_cpp',
+    'cpp': 'c_cpp',
+    'c++': 'c_cpp',
+    'c_cpp': 'c_cpp',
+    'py': 'python',
+    'python': 'python',
+    'java': 'java',
+    'golang': 'golang',
+    'go': 'golang',
+    'javascript': 'javascript',
+    'js': 'javascript',
+    'ts': 'javascript',
+    'typescript': 'javascript',
+    'node': 'javascript',
+    'rust': 'rust',
+    'rs': 'rust',
+    'csharp': 'csharp',
+    'cs': 'csharp',
+    'c#': 'csharp',
+    'dotnet': 'csharp',
+    'php': 'php',
+    'ruby': 'ruby',
+    'rb': 'ruby',
+    'swift': 'swift',
+    'kotlin': 'kotlin',
+    'kt': 'kotlin',
+    'universal': 'universal',
+    'generic': 'universal',
+    'unknown': 'universal',
+}
+
+_COMMENT_MASK_RE = re.compile(
+    r'("(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|`(?:\\.|[^`\\])*`)|(//[^\n]*|/\*.*?\*/)',
+    flags=re.DOTALL
+)
+
+# Precompile language rule regexes once at module load
+_COMPILED_LANGUAGE_RULES = {
+    lang: [
+        (re.compile(pattern, re.IGNORECASE), primitive, category, severity, issue, recommendation, quantum_risk)
+        for pattern, primitive, category, severity, issue, recommendation, quantum_risk in rules
+    ]
+    for lang, rules in LANGUAGE_RULES.items()
+}
+
+
 def mask_comments(source):
     """Replace comments with whitespace while preserving strings and source lines."""
-    pattern = r'("(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|`(?:\\.|[^`\\])*`)|(//[^\n]*|/\*.*?\*/)'
     def replace(match):
         if match.group(1):
             return match.group(1)
         return ''.join('\n' if c == '\n' else ' ' for c in match.group(0))
-    return re.sub(pattern, replace, source, flags=re.DOTALL)
+    return _COMMENT_MASK_RE.sub(replace, source)
 
 
-def scan_polyglot_code(source_code: str, language: str = 'python') -> Dict[str, Any]:
-    lang = language.lower().strip()
-    if lang not in LANGUAGE_RULES:
-        raise ValueError('Unsupported language')
+def scan_polyglot_code(source_code: str, language: str = 'python', fallback_to_universal: bool = True) -> Dict[str, Any]:
+    raw_lang = language.lower().strip()
+    lang = LANGUAGE_ALIASES.get(raw_lang, raw_lang)
+    if lang not in _COMPILED_LANGUAGE_RULES:
+        if fallback_to_universal:
+            lang = 'universal'
+        else:
+            raise ValueError('Unsupported language')
     cleaned = mask_comments(source_code) if lang != 'python' else source_code
     lines = source_code.splitlines()
+
+    # Precalculate newline offsets for fast O(log L) line number lookup via bisect
+    import bisect
+    newline_offsets = [0]
+    for idx, char in enumerate(cleaned):
+        if char == '\n':
+            newline_offsets.append(idx + 1)
+
     findings = []
-    for pattern, primitive, category, severity, issue, recommendation, quantum_risk in LANGUAGE_RULES[lang]:
-        for match in re.finditer(pattern, cleaned, re.IGNORECASE):
-            line = cleaned.count('\n', 0, match.start()) + 1
-            findings.append({'line': line, 'code': lines[line - 1].strip(), 'primitive': primitive,
-                'category': category, 'severity': severity, 'issue': issue,
-                'nist_recommendation': recommendation, 'quantum_risk': quantum_risk, 'language': lang})
+    for compiled_re, primitive, category, severity, issue, recommendation, quantum_risk in _COMPILED_LANGUAGE_RULES[lang]:
+        for match in compiled_re.finditer(cleaned):
+            line = bisect.bisect_right(newline_offsets, match.start())
+            findings.append({
+                'line': line,
+                'code': lines[line - 1].strip() if 0 < line <= len(lines) else '',
+                'primitive': primitive,
+                'category': category,
+                'severity': severity,
+                'issue': issue,
+                'nist_recommendation': recommendation,
+                'quantum_risk': quantum_risk,
+                'language': lang
+            })
     findings.sort(key=lambda f: f['line'])
     return {'language': lang, 'findings': findings, 'total_findings': len(findings),
             'critical_count': sum(f['severity'] == 'CRITICAL' for f in findings),
-            'high_count': sum(f['severity'] == 'HIGH' for f in findings), 'remediation': ''}
+            'high_count': sum(f['severity'] == 'HIGH' for f in findings),
+            'samples': POLYGLOT_SAMPLES.get(lang, ''),
+            'remediated_samples': POLYGLOT_REMEDIATIONS.get(lang, '')}

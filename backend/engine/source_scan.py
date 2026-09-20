@@ -18,8 +18,14 @@ EXTENSIONS = {
     '.jsx': 'javascript',
     '.tsx': 'javascript',
     '.rs': 'rust',
+    '.cs': 'csharp',
+    '.csx': 'csharp',
+    '.php': 'php',
+    '.swift': 'swift',
+    '.kt': 'kotlin',
+    '.kts': 'kotlin',
 }
-LANGUAGES = {'python', 'java', 'c_cpp', 'golang', 'javascript', 'rust'}
+LANGUAGES = {'python', 'java', 'c_cpp', 'golang', 'javascript', 'rust', 'csharp', 'php', 'ruby', 'swift', 'kotlin'}
 
 MANIFEST_NAMES = {
     'requirements.txt', 'pyproject.toml', 'poetry.lock',
@@ -209,12 +215,13 @@ def scan_sources(files, deep_scan: bool = True):
 
 
             coverage.append({'file': path, 'language': lang, 'status': 'scanned', 'engine': engine})
+            file_source_hash = hashlib.sha256(source.encode()).hexdigest()
             for finding in found:
                 finding.setdefault('file', path)
                 finding.setdefault('language', lang)
                 finding.setdefault('engine', engine)
                 finding.setdefault('confidence', 'medium' if lang == 'python' else 'low')
-                finding.setdefault('source_hash', hashlib.sha256(source.encode()).hexdigest())
+                finding.setdefault('source_hash', file_source_hash)
                 finding.setdefault('actual_use', True)
                 findings.append(finding)
 

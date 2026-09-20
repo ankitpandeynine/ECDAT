@@ -148,3 +148,85 @@ def test_mosca_api_and_timeline_with_assets():
             db.execute("DELETE FROM crypto_assets WHERE project = ?", (test_proj,))
             db.execute("DELETE FROM projects WHERE id = ?", (test_proj,))
             db.commit()
+
+
+def test_quantum_risk_summary_and_dependency_filtering():
+    """Verify /api/quantum/risk-summary returns accurate counts and excludes npm runtime packages."""
+    with TestClient(app) as client:
+        store = app.state.store
+        test_proj = "test-quantum-summary-proj"
+
+        with store.connect() as db:
+            db.execute(
+                "INSERT OR REPLACE INTO projects (id, name, created_at, updated_at) VALUES (?, ?, datetime('now'), datetime('now'))",
+                (test_proj, "Summary Test"),
+            )
+            db.execute("DELETE FROM crypto_assets WHERE project = ?", (test_proj,))
+
+            # Insert a mix of assets:
+            # 1. Broken NOW: MD5
+            db.execute(
+                """
+                INSERT INTO crypto_assets (id, project, name, algorithm, key_size, asset_type, status, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE', datetime('now'), datetime('now'))
+                """,
+                ("a-md5", test_proj, "md5_hash", "MD5", None, "hash"),
+            )
+            # 2. Quantum Critical (Shor): RSA-2048
+            db.execute(
+                """
+                INSERT INTO crypto_assets (id, project, name, algorithm, key_size, asset_type, status, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE', datetime('now'), datetime('now'))
+                """,
+                ("a-rsa", test_proj, "rsa_key", "RSA", 2048, "key"),
+            )
+            # 3. Quantum Safe: ML-KEM-768
+            db.execute(
+                """
+                INSERT INTO crypto_assets (id, project, name, algorithm, key_size, asset_type, status, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE', datetime('now'), datetime('now'))
+                """,
+                ("a-mlkem", test_proj, "kem_key", "ML-KEM-768", 768, "kem"),
+            )
+            # 4. Noise packages (should be filtered out completely)
+            db.execute(
+                """
+                INSERT INTO crypto_assets (id, project, name, algorithm, key_size, asset_type, status, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE', datetime('now'), datetime('now'))
+                """,
+                ("a-zod", test_proj, "zod-validation-error", "zod-validation-error", None, "DEPENDENCY"),
+            )
+            db.execute(
+                """
+                INSERT INTO crypto_assets (id, project, name, algorithm, key_size, asset_type, status, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE', datetime('now'), datetime('now'))
+                """,
+                ("a-colors", test_proj, "yoctocolors", "yoctocolors", None, "PACKAGE"),
+            )
+            db.commit()
+
+        # Test risk summary
+        resp = client.get(f"/api/quantum/risk-summary?project={test_proj}")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["broken_now"] == 1        # MD5
+        assert data["quantum_critical"] == 1   # RSA-2048
+        assert data["quantum_safe"] == 1       # ML-KEM-768
+        assert data["mosca_at_risk"] >= 1      # RSA and/or MD5
+        assert data["total_assets"] == 3       # zod and yoctocolors filtered out!
+
+        # Test timeline summary also excludes noise and has mosca_verdict
+        resp_tl = client.get(f"/api/quantum/timeline-summary?project={test_proj}")
+        assert resp_tl.status_code == 200
+        tl_data = resp_tl.json()
+        algos = [t["algorithm"] for t in tl_data]
+        assert not any("zod" in a.lower() or "color" in a.lower() for a in algos)
+        assert any("RSA" in a for a in algos)
+        assert all("mosca_verdict" in t for t in tl_data)
+
+        # Cleanup
+        with store.connect() as db:
+            db.execute("DELETE FROM crypto_assets WHERE project = ?", (test_proj,))
+            db.execute("DELETE FROM projects WHERE id = ?", (test_proj,))
+            db.commit()
+

@@ -77,6 +77,9 @@ import { AutoPatchShowpiece } from "@/components/ecdat/auto-patch-showpiece";
 import { ScanResultView } from "@/components/ecdat/scan-result-view";
 import { QuantumEstimatorShowpiece } from "@/components/ecdat/quantum-estimator-showpiece";
 import { CryptoAgilityView } from "@/components/ecdat/crypto-agility-view";
+import { QuantumRisk } from "@/components/ecdat/quantum-risk";
+import { AISidebar } from "@/components/ecdat/ai-sidebar";
+import { AISettingsModal } from "@/components/ecdat/ai-settings-modal";
 
 type TabKey =
   | "overview"
@@ -169,9 +172,40 @@ export default function ProjectWorkspacePage({
   // Mobile Navigation State
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
+  // Persistent AI Intelligence Copilot Sidebar & Settings
+  const [aiSidebarOpen, setAiSidebarOpen] = useState(false);
+  const [aiSettingsOpen, setAiSettingsOpen] = useState(false);
+
+  const TAB_TITLES: Record<string, string> = {
+    overview: "Executive Overview",
+    "custom-loop": "Autonomous Cryptographic Remediation Loop",
+    studio: "Scan Studio",
+    jobs: "Scan Jobs & Telemetry",
+    assets: "Cryptographic Asset Inventory",
+    evidence: "Proof & Evidence Explorer",
+    graph: "Cryptographic Dependency Graph",
+    quantum: "Quantum Risk & Vulnerability Matrix",
+    "quantum-estimator": "Quantum Resource Estimator (QRE)",
+    mosca: "Mosca & HNDL Timeline Deficit",
+    agility: "Cryptographic Agility Assessment",
+    blast: "Blast Radius & Cascading Impact Analysis",
+    autopatch: "Auto-Patch Engine",
+    migration: "PQC Migration Roadmap",
+    verify: "Closed-Loop Verification Engine",
+    standards: "NIST & FIPS Standards Compliance",
+    runtime: "Runtime & Envoy Telemetry",
+    "binary-pcap": "Binary & Network Deep Inspection",
+    cbom: "CycloneDX 1.6 Cryptographic BOM",
+    reports: "Compliance & Audit Reports",
+    archive: "Project Cryptographic Archive",
+    knowledge: "Cryptographic Knowledge Base",
+    settings: "Project Settings",
+  };
+
   // Google AI Studio / Gemini Copilot State
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [aiMode, setAiMode] = useState<"triage" | "explain" | "advisory" | "posture">("posture");
+
   const [aiApiKey, setAiApiKey] = useState("");
   const [aiSnippet, setAiSnippet] = useState(
     'def custom_encrypt(data, key):\n    return bytes([(b ^ key) << 2 for b in data])'
@@ -840,14 +874,23 @@ export default function ProjectWorkspacePage({
             </kbd>
           </button>
 
-          {/* AI Security Copilot Button */}
+          {/* AI Security Copilot Button (Opens Persistent Context Sidebar) */}
           <button
-            onClick={() => setAiModalOpen(true)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 hover:from-cyan-500/30 hover:to-indigo-500/30 border border-cyan-500/30 text-cyan-300 text-xs font-semibold shadow-sm transition-all"
-            title="Open Google AI Studio Cryptographic Copilot"
+            onClick={() => setAiSidebarOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 hover:from-cyan-500/30 hover:to-indigo-500/30 border border-cyan-500/30 text-cyan-300 text-xs font-semibold shadow-sm transition-all cursor-pointer"
+            title="Open Persistent ECDAT AI Intelligence Copilot"
           >
             <Sparkles className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
             <span className="hidden sm:inline">AI Copilot</span>
+          </button>
+
+          {/* One-Time AI Settings in Corner */}
+          <button
+            onClick={() => setAiSettingsOpen(true)}
+            className="p-1.5 rounded-lg border border-subtle hover:border-cyan-500/40 text-quiet hover:text-amber-400 text-xs flex items-center gap-1 transition-colors cursor-pointer"
+            title="Configure AI API Keys (Gemini & NVIDIA NIM)"
+          >
+            <Key className="h-3.5 w-3.5" />
           </button>
 
           {/* Refresh / Sync Button */}
@@ -1417,127 +1460,18 @@ export default function ProjectWorkspacePage({
             />
           )}
 
-          {/* TAB 7: QUANTUM RISK (Section 20) */}
+          {/* TAB 7: QUANTUM RISK */}
           {activeTab === "quantum" && (
-            <div className="space-y-6">
-              <div className="border-b border-subtle pb-4">
-                <h2 className="text-xl font-bold tracking-tight">Quantum Risk & Cryptanalytic Relevance</h2>
-                <p className="text-xs text-quiet mt-1">
-                  Deterministic evaluation under Shor and Grover threat models with NIST FIPS 203/204/205 replacement mappings.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="rounded-xl border border-rose-500/30 bg-rose-500/5 p-5 space-y-2">
-                  <div className="flex items-center gap-2 text-rose-400 font-bold text-sm">
-                    <Cpu className="h-4 w-4" />
-                    Shor&apos;s Algorithm Relevance (Asymmetric Cryptography)
-                  </div>
-                  <p className="text-xs text-foreground">
-                    Solves integer factorization and discrete logarithms in polynomial time. Completely breaks RSA, ECDSA, ECDH, DSA, and Ed25519 when a Cryptanalytically Relevant Quantum Computer (CRQC) is realized.
-                  </p>
-                  <div className="text-[11px] text-rose-300 font-mono pt-1">
-                    Remediation: NIST FIPS 203 (ML-KEM) &amp; NIST FIPS 204 (ML-DSA)
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 space-y-2">
-                  <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                    <ShieldCheck className="h-4 w-4" />
-                    Grover&apos;s Algorithm Relevance (Symmetric &amp; Hashing)
-                  </div>
-                  <p className="text-xs text-foreground">
-                    Provides a quadratic speedup for unstructured search. Halves effective bit-security. AES-128 drops to 64 bits (vulnerable); AES-256 remains post-quantum safe with 128 bits of security.
-                  </p>
-                  <div className="text-[11px] text-emerald-300 font-mono pt-1">
-                    Remediation: Enforce 256-bit symmetric keys (AES-256-GCM, SHA-384/512)
-                  </div>
-                </div>
-              </div>
-
-              {/* Real Project Transition Matrix */}
-              <div className="rounded-xl border border-subtle bg-surface overflow-hidden">
-                <div className="p-4 border-b border-subtle font-semibold text-sm">
-                  Cryptographic Algorithm Transition Matrix
-                </div>
-                {assets.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-quiet">
-                    No cryptographic algorithms recorded for this project. Run a scan to evaluate quantum risk.
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-canvas/50 border-b border-subtle text-quiet uppercase text-[10px] font-mono">
-                        <tr>
-                          <th className="p-3">Algorithm</th>
-                          <th className="p-3">Primary Role</th>
-                          <th className="p-3">Quantum Vulnerability</th>
-                          <th className="p-3">Target NIST PQC Primitive</th>
-                          <th className="p-3">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-subtle font-mono text-[11px]">
-                        {assets.map((a, idx) => {
-                          const algo = String(a.algorithm || a.name || "").toUpperCase();
-                          const isShor = algo.includes("RSA") || algo.includes("ECDSA") || algo.includes("ECDH");
-                          const isPqc = algo.includes("MLKEM") || algo.includes("ML-KEM");
-                          return (
-                            <tr key={idx} className="hover:bg-canvas/30">
-                              <td className="p-3 font-bold text-foreground">{a.algorithm || a.name}</td>
-                              <td className="p-3 text-quiet">{a.asset_type || "ALGORITHM"}</td>
-                              <td className="p-3">
-                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                  isShor
-                                    ? "bg-rose-500/15 text-rose-400"
-                                    : isPqc
-                                    ? "bg-emerald-500/15 text-emerald-400"
-                                    : "bg-cyan-500/15 text-cyan-300"
-                                }`}>
-                                  {isShor ? "CRITICAL (Shor)" : isPqc ? "PQC SECURE" : "GROVER RESISTANT"}
-                                </span>
-                              </td>
-                              <td className="p-3 text-cyan-300 font-semibold">
-                                {isShor ? "ML-KEM-768 / ML-DSA-65" : "NIST Standard Approved"}
-                              </td>
-                              <td className="p-3">
-                                <div className="flex items-center gap-1.5">
-                                  <button
-                                    onClick={() => {
-                                      setAiTargetAlgo(a.algorithm || a.name);
-                                      setAiTargetRole(a.asset_type || "ALGORITHM");
-                                      setAiMode("explain");
-                                      setAiModalOpen(true);
-                                    }}
-                                    className="text-[10px] px-2 py-1 rounded bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 cursor-pointer"
-                                  >
-                                    AI Explain
-                                  </button>
-                                  <button
-                                    onClick={() => setActiveTab("assets")}
-                                    className="text-[10px] px-2 py-1 rounded bg-subtle hover:bg-canvas text-quiet hover:text-foreground border border-subtle cursor-pointer"
-                                  >
-                                    → View Assets
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-                <div className="p-4 border-t border-subtle flex justify-between items-center bg-canvas/30 text-xs">
-                  <span className="text-quiet">Need data sensitivity and migration lead time calculations?</span>
-                  <button
-                    onClick={() => setActiveTab("mosca")}
-                    className="text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1 cursor-pointer"
-                  >
-                    → Open Mosca &amp; HNDL Deficit Analysis
-                  </button>
-                </div>
-              </div>
-            </div>
+            <QuantumRisk
+              projectId={projectId}
+              project={project}
+              onNavigateTab={(tab, filter) => {
+                if (filter) {
+                  setSearchQuery(filter);
+                }
+                setActiveTab(tab as TabKey);
+              }}
+            />
           )}
 
           {/* TAB: QUANTUM RESOURCE ESTIMATION (Priority 3 Showpiece) */}
@@ -2496,6 +2430,24 @@ export default function ProjectWorkspacePage({
           </div>
         </div>
       )}
+
+      {/* Persistent AI Intelligence Copilot Sidebar & Settings */}
+      <AISettingsModal
+        isOpen={aiSettingsOpen}
+        onClose={() => setAiSettingsOpen(false)}
+      />
+
+      <AISidebar
+        isOpen={aiSidebarOpen}
+        onClose={() => setAiSidebarOpen(false)}
+        projectId={projectId}
+        activePage={TAB_TITLES[activeTab] || activeTab}
+        projectData={project}
+        assets={assets}
+        riskMetrics={overviewData?.risk_distribution}
+        onOpenSettings={() => setAiSettingsOpen(true)}
+      />
     </div>
   );
 }
+

@@ -119,56 +119,152 @@ class PcapEngine:
         if len(pcap_data) < 24:
             raise ValueError("Invalid PCAP: file too small")
 
-        magic = struct.unpack("<I", pcap_data[:4])[0]
-        endian = "<"
-        if magic == 0xA1B2C3D4:
-            endian = "<"
-        elif magic == 0xD4C3B2A1:
-            endian = ">"
-        else:
-            raise ValueError("Unsupported capture format (must be standard PCAP)")
-
-        offset = 24  # Global header length
-        packets = 0
         sessions: Dict[Tuple[str, int, str, int], PcapHandshakeSession] = {}
-        evidence_records: List[EvidenceRecord] = []
+        packets = 0
 
-        while offset + 16 <= len(pcap_data):
-            _, _, caplen, _ = struct.unpack(endian + "IIII", pcap_data[offset:offset + 16])
-            offset += 16
-            if offset + caplen > len(pcap_data):
-                break
-            pkt = pcap_data[offset:offset + caplen]
-            offset += caplen
+        # Detect capture format
+        is_pcapng = pcap_data[:4] == b"\x0a\x0d\x0d\x0a"
+        raw_packets = []
+
+        if is_pcapng:
+            # PCAPNG Block Parser
+            pos = 0
+            default_linktype = 1
+            while pos + 12 <= len(pcap_data):
+                b_type, b_len = struct.unpack("<II", pcap_data[pos:pos+8])
+                if b_len < 12 or pos + b_len > len(pcap_data):
+                    break
+                if b_type == 0x00000001:  # Interface Description Block
+                    if pos + 10 <= len(pcap_data):
+                        default_linktype = struct.unpack("<H", pcap_data[pos+8:pos+10])[0]
+                elif b_type == 0x00000006:  # Enhanced Packet Block
+                    if pos + 32 <= len(pcap_data):
+                        caplen = struct.unpack("<I", pcap_data[pos+20:pos+24])[0]
+                        pkt_data = pcap_data[pos+28:pos+28+caplen]
+                        raw_packets.append((default_linktype, pkt_data))
+                elif b_type == 0x00000002:  # Simple Packet Block
+                    if pos + 16 <= len(pcap_data):
+                        caplen = struct.unpack("<I", pcap_data[pos+8:pos+12])[0]
+                        pkt_data = pcap_data[pos+16:pos+16+caplen]
+                        raw_packets.append((default_linktype, pkt_data))
+                pos += b_len
+        else:
+            magic = struct.unpack("<I", pcap_data[:4])[0]
+            if magic in (0xA1B2C3D4, 0xA1B23C4D):
+                endian = "<"
+            elif magic in (0xD4C3B2A1, 0x4D3CB2A1):
+                endian = ">"
+            else:
+                raise ValueError("Unsupported capture format (must be standard PCAP or PCAPNG)")
+
+            global_linktype = struct.unpack(endian + "I", pcap_data[20:24])[0]
+            offset = 24
+
+            while offset + 16 <= len(pcap_data):
+                _, _, caplen, _ = struct.unpack(endian + "IIII", pcap_data[offset:offset + 16])
+                offset += 16
+                if offset + caplen > len(pcap_data):
+                    break
+                pkt = pcap_data[offset:offset + caplen]
+                offset += caplen
+                raw_packets.append((global_linktype, pkt))
+
+        # Dissect each packet with full link-layer and network-layer versatility
+        for linktype, pkt in raw_packets:
             packets += 1
-
-            # Simple Ethernet (14) + IPv4 (20) + TCP (20) dissect
-            if len(pkt) < 54:
+            if len(pkt) < 28:
                 continue
 
-            # Check Ethernet EtherType (0x0800 for IPv4)
-            eth_proto = struct.unpack("!H", pkt[12:14])[0]
-            if eth_proto != 0x0800:
+            ip_offset = 0
+            eth_proto = 0
+
+            if linktype == 1:  # Ethernet
+                if len(pkt) < 14:
+                    continue
+                eth_proto = struct.unpack("!H", pkt[12:14])[0]
+                ip_offset = 14
+                if eth_proto == 0x8100 and len(pkt) >= 18:  # 802.1Q VLAN
+                    eth_proto = struct.unpack("!H", pkt[16:18])[0]
+                    ip_offset = 18
+            elif linktype == 113:  # Linux Cooked v1 (SLL)
+                if len(pkt) < 16:
+                    continue
+                eth_proto = struct.unpack("!H", pkt[14:16])[0]
+                ip_offset = 16
+            elif linktype == 276:  # Linux Cooked v2 (SLL2)
+                if len(pkt) < 20:
+                    continue
+                eth_proto = struct.unpack("!H", pkt[0:2])[0]
+                ip_offset = 20
+            elif linktype in (12, 101):  # Raw IP
+                ip_offset = 0
+                ver = (pkt[0] >> 4) & 0x0F
+                eth_proto = 0x0800 if ver == 4 else (0x86DD if ver == 6 else 0)
+            elif linktype == 0:  # BSD Loopback
+                if len(pkt) < 4:
+                    continue
+                ip_offset = 4
+                ver = (pkt[4] >> 4) & 0x0F if len(pkt) > 4 else 4
+                eth_proto = 0x0800 if ver == 4 else 0x86DD
+            else:
+                # Fallback heuristic: check if packet starts with standard IPv4 / IPv6
+                ver = (pkt[0] >> 4) & 0x0F
+                if ver == 4 and (pkt[0] & 0x0F) >= 5:
+                    eth_proto = 0x0800
+                    ip_offset = 0
+                elif ver == 6 and len(pkt) >= 40:
+                    eth_proto = 0x86DD
+                    ip_offset = 0
+                else:
+                    continue
+
+            # Parse IP Layer
+            src_ip, dst_ip = "", ""
+            tcp_offset = 0
+
+            if eth_proto == 0x0800:  # IPv4
+                if len(pkt) < ip_offset + 20:
+                    continue
+                ihl = (pkt[ip_offset] & 0x0F) * 4
+                if ihl < 20 or len(pkt) < ip_offset + ihl:
+                    continue
+                if pkt[ip_offset + 9] != 6:  # Must be TCP
+                    continue
+                src_ip = ".".join(str(b) for b in pkt[ip_offset + 12:ip_offset + 16])
+                dst_ip = ".".join(str(b) for b in pkt[ip_offset + 16:ip_offset + 20])
+                tcp_offset = ip_offset + ihl
+            elif eth_proto == 0x86DD:  # IPv6
+                if len(pkt) < ip_offset + 40:
+                    continue
+                next_hdr = pkt[ip_offset + 6]
+                if next_hdr != 6:  # Simple TCP check
+                    continue
+                import socket
+                try:
+                    src_ip = socket.inet_ntop(socket.AF_INET6, pkt[ip_offset + 8:ip_offset + 24])
+                    dst_ip = socket.inet_ntop(socket.AF_INET6, pkt[ip_offset + 24:ip_offset + 40])
+                except Exception:
+                    src_ip = ":".join(f"{pkt[ip_offset+8+i]:02x}{pkt[ip_offset+9+i]:02x}" for i in range(0, 16, 2))
+                    dst_ip = ":".join(f"{pkt[ip_offset+24+i]:02x}{pkt[ip_offset+25+i]:02x}" for i in range(0, 16, 2))
+                tcp_offset = ip_offset + 40
+            else:
                 continue
 
-            ip_header = pkt[14:34]
-            ip_proto = ip_header[9]
-            if ip_proto != 6:  # TCP
+            # Parse TCP Layer
+            if len(pkt) < tcp_offset + 20:
                 continue
+            src_port, dst_port = struct.unpack("!HH", pkt[tcp_offset:tcp_offset + 4])
+            tcp_data_offset = (pkt[tcp_offset + 12] >> 4) * 4
+            if tcp_data_offset < 20 or len(pkt) < tcp_offset + tcp_data_offset:
+                continue
+            payload = pkt[tcp_offset + tcp_data_offset:]
 
-            src_ip = ".".join(str(b) for b in ip_header[12:16])
-            dst_ip = ".".join(str(b) for b in ip_header[16:20])
-
-            tcp_header = pkt[34:54]
-            src_port, dst_port = struct.unpack("!HH", tcp_header[0:4])
-            tcp_data_offset = (tcp_header[12] >> 4) * 4
-            payload = pkt[14 + 20 + tcp_data_offset:]
-
-            # Check for TLS Handshake Record (Content Type = 22, Version >= 0x0301)
+            # Dissect TLS Handshake Record (Content Type = 22)
             if len(payload) >= 5 and payload[0] == 22:
                 PcapEngine._parse_tls_record(payload, src_ip, src_port, dst_ip, dst_port, sessions)
 
         # Generate EvidenceRecords from completed/observed sessions
+        evidence_records: List[EvidenceRecord] = []
         pqc_count = 0
         qv_count = 0
         for sess in sessions.values():
@@ -389,5 +485,97 @@ class PcapEngine:
         pkt2 = eth_hdr + ip_hdr2 + tcp_hdr2 + tls_rec2
         pkt2_hdr = struct.pack("<IIII", 1700000001, 0, len(pkt2), len(pkt2))
         out.extend(pkt2_hdr + pkt2)
+
+        return bytes(out)
+
+    @staticmethod
+    def generate_realistic_web_pcap() -> bytes:
+        """Generates a multi-session PCAP simulating real-world web traffic (PQC hybrid and classical)."""
+        out = bytearray()
+        # PCAP Global Header: Magic, Version 2.4, thiszone, sigfigs, snaplen (65535), network (Ethernet = 1)
+        out.extend(struct.pack("<IHHiIII", 0xA1B2C3D4, 2, 4, 0, 0, 65535, 1))
+
+        sessions_def = [
+            {
+                "client_ip": bytes([192, 168, 1, 105]),
+                "server_ip": bytes([104, 16, 132, 229]),
+                "client_port": 54321,
+                "server_port": 443,
+                "sni": "www.cloudflare.com",
+                "groups": [0x11EC, 0x001D, 0x0017],  # X25519MLKEM768 + x25519 + secp256r1
+                "ciphers": [0x1301, 0x1302, 0x1303, 0xC02F, 0xC030],
+                "chosen_cipher": 0x1301,  # TLS_AES_128_GCM_SHA256
+            },
+            {
+                "client_ip": bytes([192, 168, 1, 105]),
+                "server_ip": bytes([140, 82, 121, 4]),
+                "client_port": 54322,
+                "server_port": 443,
+                "sni": "api.github.com",
+                "groups": [0x001D, 0x0017, 0x0018],  # x25519, secp256r1
+                "ciphers": [0xC02F, 0xC030, 0xC02B, 0xC02C],
+                "chosen_cipher": 0xC02F,  # TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            },
+            {
+                "client_ip": bytes([10, 0, 1, 42]),
+                "server_ip": bytes([10, 0, 1, 1]),
+                "client_port": 38910,
+                "server_port": 8443,
+                "sni": "gateway.internal.bank",
+                "groups": [0x0017],  # secp256r1
+                "ciphers": [0x009D, 0x009C, 0x0035],
+                "chosen_cipher": 0x009D,  # TLS_RSA_WITH_AES_256_GCM_SHA384
+            }
+        ]
+
+        base_ts = 1715000000
+        eth_hdr = b"\x00" * 12 + struct.pack("!H", 0x0800)
+
+        for s_idx, s in enumerate(sessions_def):
+            # ClientHello
+            body = bytearray([0x03, 0x03])
+            body.extend([0x11 * (s_idx + 1)] * 32)
+            body.append(0)
+            body.extend(struct.pack('!H', len(s["ciphers"]) * 2))
+            for c in s["ciphers"]:
+                body.extend(struct.pack('!H', c))
+            body.extend([1, 0])
+
+            exts = bytearray()
+            # SNI
+            sni_b = s["sni"].encode("ascii")
+            sni_data = struct.pack('!HBH', len(sni_b) + 3, 0, len(sni_b)) + sni_b
+            exts.extend(struct.pack('!HH', 0, len(sni_data)) + sni_data)
+
+            # Supported Groups
+            g_bytes = bytearray(struct.pack('!H', len(s["groups"]) * 2))
+            for g in s["groups"]:
+                g_bytes.extend(struct.pack('!H', g))
+            exts.extend(struct.pack('!HH', 10, len(g_bytes)) + g_bytes)
+            body.extend(struct.pack('!H', len(exts)) + exts)
+
+            ch = bytes([1]) + struct.pack('!I', len(body))[1:] + bytes(body)
+            tls_rec = struct.pack('!BHH', 22, 0x0301, len(ch)) + ch
+
+            tcp_hdr = struct.pack("!HHIIBBHHH", s["client_port"], s["server_port"], 10000 + s_idx * 5000, 0, (5 << 4), 0x18, 65535, 0, 0)
+            ip_hdr = struct.pack("!BBHHHBBH", 0x45, 0, 20 + 20 + len(tls_rec), s_idx * 10 + 1, 0, 64, 6, 0) + s["client_ip"] + s["server_ip"]
+            pkt1 = eth_hdr + ip_hdr + tcp_hdr + tls_rec
+            out.extend(struct.pack("<IIII", base_ts + s_idx * 2, 0, len(pkt1), len(pkt1)) + pkt1)
+
+            # ServerHello
+            sh_body = bytearray([0x03, 0x03])
+            sh_body.extend([0x22 * (s_idx + 1)] * 32)
+            sh_body.append(0)
+            sh_body.extend(struct.pack('!H', s["chosen_cipher"]))
+            sh_body.append(0)
+            sh_body.extend(struct.pack('!H', 0))
+
+            sh = bytes([2]) + struct.pack('!I', len(sh_body))[1:] + bytes(sh_body)
+            tls_rec2 = struct.pack('!BHH', 22, 0x0303, len(sh)) + sh
+
+            tcp_hdr2 = struct.pack("!HHIIBBHHH", s["server_port"], s["client_port"], 50000 + s_idx * 5000, 10000 + s_idx * 5000 + len(tls_rec), (5 << 4), 0x18, 65535, 0, 0)
+            ip_hdr2 = struct.pack("!BBHHHBBH", 0x45, 0, 20 + 20 + len(tls_rec2), s_idx * 10 + 2, 0, 64, 6, 0) + s["server_ip"] + s["client_ip"]
+            pkt2 = eth_hdr + ip_hdr2 + tcp_hdr2 + tls_rec2
+            out.extend(struct.pack("<IIII", base_ts + s_idx * 2 + 1, 50000, len(pkt2), len(pkt2)) + pkt2)
 
         return bytes(out)

@@ -5,6 +5,7 @@ try:
     import yaml
 except ImportError:
     import json
+    import types
     from pathlib import Path
 
     class _YamlCompat:

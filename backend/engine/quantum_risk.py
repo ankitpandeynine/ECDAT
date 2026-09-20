@@ -1,4 +1,4 @@
-﻿from typing import Dict, Any, List
+from typing import Dict, Any, List
 
 def calculate_mosca_risk(shelf_life: int, migration_time: int, crqc_horizon: int = 8) -> Dict[str, Any]:
     """
@@ -67,12 +67,20 @@ def calculate_mosca_risk(shelf_life: int, migration_time: int, crqc_horizon: int
             "urgency": "RECOMMENDED (Conservative Back-up Alternative)"
         },
         {
-            "category": "Symmetric Ciphers & Hashing",
-            "legacy_primitive": "AES-128, 3DES, SHA-1, MD5",
+            "category": "Symmetric Ciphers (Grover Halving)",
+            "legacy_primitive": "AES-128",
             "quantum_threat": "Grover's Algorithm (Quadratic Speedup reduces 128-bit key to 64-bit security)",
-            "pqc_standard": "AES-256 (FIPS 197) + SHA-256 / SHA-3 / SHAKE-256",
+            "pqc_standard": "AES-256 (FIPS 197)",
             "security_levels": "AES-256 maintains >= 128 bits post-quantum security",
             "urgency": "MEDIUM (Upgrade key lengths from 128-bit to 256-bit)"
+        },
+        {
+            "category": "Classically Broken Primitives (No Quantum Needed)",
+            "legacy_primitive": "MD5, SHA-1, DES, 3DES, RC4",
+            "quantum_threat": "Classically Broken (Wang & Yu 2004, Sweet32, EFF Deep Crack) - DISALLOWED (NIST SP 800-131A Rev 2)",
+            "pqc_standard": "FIPS 180-4 (SHA-256 / SHA-512) & FIPS 197 (AES-256-GCM)",
+            "security_levels": "NIST Approved Classical / Quantum-Resistant Minimum",
+            "urgency": "FIX_NOW (Immediately Prohibited Under Classical Cryptanalysis)"
         }
     ]
 

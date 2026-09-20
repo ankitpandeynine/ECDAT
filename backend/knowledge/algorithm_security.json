@@ -114,7 +114,12 @@
       "quantum_security_bits": 56,
       "quantum_impact": "GROVER_HALVING",
       "pqc_status": "INSUFFICIENT_LEGACY",
-      "deprecation_status": "DEPRECATED"
+      "deprecation_status": "DEPRECATED",
+      "quantum_vulnerability": "CLASSICALLY_BROKEN",
+      "nist_status": "DISALLOWED (SP 800-131A Rev 2)",
+      "classical_status": "DISALLOWED",
+      "risk_tier": "FIX_NOW",
+      "classical_notes": "Vulnerable to SWEET32 collision attacks (CVE-2016-2183) on 64-bit block ciphers. Disallowed by NIST SP 800-131A Rev 2 after 2023."
     },
     {
       "canonical_name": "DES",
@@ -133,7 +138,12 @@
       "quantum_security_bits": 28,
       "quantum_impact": "BROKEN_CLASSICALLY",
       "pqc_status": "BROKEN",
-      "deprecation_status": "PROHIBITED"
+      "deprecation_status": "PROHIBITED",
+      "quantum_vulnerability": "CLASSICALLY_BROKEN",
+      "nist_status": "DISALLOWED (SP 800-131A Rev 2)",
+      "classical_status": "DISALLOWED",
+      "risk_tier": "FIX_NOW",
+      "classical_notes": "Classically broken by 56-bit key exhaust attacks (EFF Deep Crack). Disallowed by NIST SP 800-131A Rev 2."
     },
     {
       "canonical_name": "RC4",
@@ -156,7 +166,12 @@
       "quantum_security_bits": 20,
       "quantum_impact": "BROKEN_CLASSICALLY",
       "pqc_status": "BROKEN",
-      "deprecation_status": "PROHIBITED"
+      "deprecation_status": "PROHIBITED",
+      "quantum_vulnerability": "CLASSICALLY_BROKEN",
+      "nist_status": "DISALLOWED (SP 800-131A Rev 2)",
+      "classical_status": "DISALLOWED",
+      "risk_tier": "FIX_NOW",
+      "classical_notes": "Classically broken by statistical biases in keystream (RFC 7465). Disallowed by NIST SP 800-131A Rev 2."
     },
     {
       "canonical_name": "MD5",
@@ -175,7 +190,12 @@
       "quantum_security_bits": 32,
       "quantum_impact": "GROVER_HALVING_COLLISION",
       "pqc_status": "BROKEN_CLASSICALLY",
-      "deprecation_status": "PROHIBITED"
+      "deprecation_status": "PROHIBITED",
+      "quantum_vulnerability": "CLASSICALLY_BROKEN",
+      "nist_status": "DISALLOWED (SP 800-131A Rev 2)",
+      "classical_status": "DISALLOWED",
+      "risk_tier": "FIX_NOW",
+      "classical_notes": "Classically broken since 2004 (Wang & Yu collision attack). Disallowed by NIST SP 800-131A Rev 2."
     },
     {
       "canonical_name": "SHA-1",
@@ -198,7 +218,12 @@
       "quantum_security_bits": 40,
       "quantum_impact": "GROVER_HALVING_COLLISION",
       "pqc_status": "DEPRECATED_LEGACY",
-      "deprecation_status": "DEPRECATED"
+      "deprecation_status": "DEPRECATED",
+      "quantum_vulnerability": "CLASSICALLY_BROKEN",
+      "nist_status": "DISALLOWED (SP 800-131A Rev 2)",
+      "classical_status": "DISALLOWED",
+      "risk_tier": "FIX_NOW",
+      "classical_notes": "Classically broken by SHAttered (2017) and chosen-prefix collisions (2020). Disallowed by NIST SP 800-131A Rev 2."
     },
     {
       "canonical_name": "SHA-256",
