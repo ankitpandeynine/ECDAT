@@ -18,10 +18,20 @@ async function forward(
   try {
     const rawParams = await Promise.resolve(context.params);
     const path = Array.isArray(rawParams?.path) ? rawParams.path : [];
-    const base = (process.env.BACKEND_API_URL || 'http://127.0.0.1:8000/api').replace(/\/$/, '');
+    const configuredBase = process.env.BACKEND_API_URL || 'http://127.0.0.1:8000/api';
+    let baseUrl: URL;
+    try {
+      baseUrl = new URL(configuredBase);
+    } catch {
+      return Response.json({ detail: 'BACKEND_API_URL must be a valid absolute URL.' }, { status: 500 });
+    }
+    if (!['http:', 'https:'].includes(baseUrl.protocol)) {
+      return Response.json({ detail: 'BACKEND_API_URL must use HTTP or HTTPS.' }, { status: 500 });
+    }
+    const base = baseUrl.toString().replace(/\/$/, '');
     const targetUrl = new URL(`${base}/${path.map(encodeURIComponent).join('/')}`);
     request.nextUrl.searchParams.forEach((val, key) => {
-      targetUrl.searchParams.set(key, val);
+      targetUrl.searchParams.append(key, val);
     });
     const url = targetUrl.toString();
 
@@ -53,10 +63,17 @@ async function forward(
     const headers = new Headers();
     request.headers.forEach((value, key) => {
       const lower = key.toLowerCase();
-      if (!['host', 'connection', 'content-length', 'transfer-encoding'].includes(lower)) {
+      if (!['host', 'connection', 'content-length', 'transfer-encoding', 'accept-encoding'].includes(lower)) {
         headers.set(key, value);
       }
     });
+    // Avoid forwarding browser-only origin headers to the Render API. The API
+    // authenticates with the optional Bearer token configured on both hosts.
+    headers.delete('origin');
+    headers.delete('referer');
+    if (process.env.ECDAT_API_TOKEN) {
+      headers.set('Authorization', `Bearer ${process.env.ECDAT_API_TOKEN}`);
+    }
 
     const upstream = await fetch(url, {
       method: request.method,
@@ -75,12 +92,16 @@ async function forward(
       );
     }
 
+    const responseHeaders = new Headers();
+    responseHeaders.set('Content-Type', contentType || 'application/json');
+    responseHeaders.set('Cache-Control', 'no-store');
+    const disposition = upstream.headers.get('content-disposition');
+    if (disposition) responseHeaders.set('Content-Disposition', disposition);
+    const exposeHeaders = upstream.headers.get('access-control-expose-headers');
+    if (exposeHeaders) responseHeaders.set('Access-Control-Expose-Headers', exposeHeaders);
     return new Response(upstream.body, {
       status: upstream.status,
-      headers: {
-        'Content-Type': contentType || 'application/json',
-        'Cache-Control': 'no-store',
-      },
+      headers: responseHeaders,
     });
   } catch (err: any) {
     return Response.json(

@@ -95,7 +95,7 @@ app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=Fals
 async def access_and_size(request: Request, call_next):
     from fastapi.responses import JSONResponse
     token = os.getenv('ECDAT_API_TOKEN', '')
-    if request.method != 'OPTIONS' and request.url.path not in ('/', '/health', '/api/health') and token:
+    if request.method != 'OPTIONS' and request.url.path not in ('/', '/health', '/api/health', '/api/healthz') and token:
         if not secrets.compare_digest(request.headers.get('authorization', ''), 'Bearer ' + token):
             return JSONResponse({'detail': 'Unauthorized'}, status_code=401)
 
@@ -189,6 +189,11 @@ def enqueue(request, project, kind, payload, worker):
 
 @router.get('/health')
 def health():
+    return {'status': 'ok', 'version': '3.0.0'}
+
+
+@router.get('/healthz')
+def healthz():
     return {'status': 'ok', 'version': '3.0.0'}
 
 
@@ -2947,4 +2952,4 @@ app.add_api_route('/', health)
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run('main:app', host=os.getenv('HOST', '127.0.0.1'), port=int(os.getenv('PORT', '8000')))
+    uvicorn.run('main:app', host=os.getenv('HOST', '0.0.0.0'), port=int(os.getenv('PORT', '8000')))

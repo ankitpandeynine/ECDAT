@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: ecdat-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: ECDAT_DB
+        value: /var/data/scans.sqlite3
+      - key: HOST
+        value: 0.0.0.0
+      - key: ECDAT_API_TOKEN
+        sync: false
+      - key: ECDAT_ALLOWED_CIDRS
+        value: ""
+      - key: CORS_ORIGINS
+        value: http://localhost:3000
+    disk:
+      name: ecdat-data
+      mountPath: /var/data
+      sizeGB: 1
